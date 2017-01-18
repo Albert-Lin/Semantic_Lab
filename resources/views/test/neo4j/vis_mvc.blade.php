@@ -279,7 +279,6 @@
              * Create a new D3 LinkedGraph with Neo4J Data
              */
 			function main(){
-				console.log("YA HOOOOOOO");
 				// DOM:
 				var account = $("#server_account").val();
 				var password = $("#server_password").val();
@@ -295,7 +294,9 @@
 				neo4JCtrl.D3Vis(account, password, cypher, d3.linkedGraph);
 			}
 
-            // JS Event functions not for DOM
+
+
+            // JS && JQuery Event functions
 			/**
              * The reason that current function can not used in D3 class,
              * is because that every time new a object of D3
@@ -312,8 +313,9 @@
 				}
 			}
 
-
-			// All JQuery Event functions for DOM
+            /**
+             * All JQuery Event functions for DOM
+             */
 			function jQueryEvent(){
 				// transStatusEvent:
                 $('.nav-pills li a').click(function(){
