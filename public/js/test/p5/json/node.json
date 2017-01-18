@@ -1,0 +1,13 @@
+{
+	"node":[
+		{ "id":1, "class":"dbo:Person", "name":"Fucker", "url":"http://dbpedia.org/page/Rex_Chien" },
+		{ "id":2, "class":"dbo:Person", "name":"Albert", "url":"http://dbpedia.org/page/Albert_Lin" },
+		{ "id":3, "class":"dbo:Place", "name":"dbr:Fengyuan_District", "url":"http://dbpedia.org/page/Fengyuan_District" },
+		{ "id":4, "class":"dbo:Place", "name":"dbr:Taichung", "url":"http://dbpedia.org/page/Taichung" }
+	],
+	"relationship":[
+		{ "id":1, "subject":1, "predicate":"dbo:birthPlace", "url":"http://dbpedia.org/ontology/birthPlace",  "object":4 },
+		{ "id":2, "subject":2, "predicate":"dbo:birthPlace", "url":"http://dbpedia.org/ontology/birthPlace", "object":3 },
+		{ "id":3, "subject":3, "predicate":"dbo:isPartOf", "url":"http://dbpedia.org/ontology/isPartOf", "object":4 }
+	]
+}
