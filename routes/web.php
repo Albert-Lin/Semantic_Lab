@@ -19,6 +19,9 @@ Route::get( '/', 'RootController@index');
 Route::get( 'test', 'TestController@index');
 Route::get( 'test/beauty-url/{category}/{page}', 'TestController@beautyURL');
 
+// VIEW && TEMPLATE:
+Route::get('test/view/temp/{tempNum}', 'TestController@viewTemp');
+
 // ROUTE:
 Route::get( 'test/route', 'TestController@getRouteList');
 Route::get( 'test/route/view', 'TestController@getRouteListInView');

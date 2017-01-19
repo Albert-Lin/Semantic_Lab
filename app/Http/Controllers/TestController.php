@@ -46,6 +46,16 @@ class TestController extends Controller{
 
 
 	/*
+	 * View & Template:
+	 */
+	public function viewTemp($tempNum){
+		if($tempNum < 3) {
+			return View('test/view/temp')
+				->with('title', 'Template ' . $tempNum);
+		}
+	}
+
+	/*
 	 * ROUTE:
 	 */
 	/*
@@ -288,7 +298,6 @@ class TestController extends Controller{
 	}
 
 
-
 	/*
 	 * EXCUTE EXTERNAL FILE :
 	 */
@@ -329,7 +338,9 @@ class TestController extends Controller{
 	}
 
 
-	// CSS:
+	/*
+	 * CSS:
+	 */
 	public function sideBarTrans(){
 		return View('test/css/side_bar_trans')
 					->with('title', 'CSS TRANSITION');
