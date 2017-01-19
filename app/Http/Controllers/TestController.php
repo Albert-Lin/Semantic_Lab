@@ -46,7 +46,7 @@ class TestController extends Controller{
 
 
 	/*
-	 * View & Template:
+	 * VIEW & TEMPLATE:
 	 */
 	public function viewTemp($tempNum){
 		if($tempNum < 3) {
@@ -54,6 +54,16 @@ class TestController extends Controller{
 				->with('title', 'Template ' . $tempNum);
 		}
 	}
+
+
+	/*
+	 * MODEL
+	 */
+	public function modelNote(){
+	    return View('test/model/note')
+            -> with('title', 'Note for create model complete process');
+    }
+
 
 	/*
 	 * ROUTE:

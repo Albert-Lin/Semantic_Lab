@@ -22,6 +22,9 @@ Route::get( 'test/beauty-url/{category}/{page}', 'TestController@beautyURL');
 // VIEW && TEMPLATE:
 Route::get('test/view/temp/{tempNum}', 'TestController@viewTemp');
 
+// Model
+Route::get('test/model/note', 'TestController@modelNote');
+
 // ROUTE:
 Route::get( 'test/route', 'TestController@getRouteList');
 Route::get( 'test/route/view', 'TestController@getRouteListInView');
