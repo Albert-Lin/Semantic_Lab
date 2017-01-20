@@ -11,6 +11,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Model\UserInfo;
 
 /**
  * Description of TestController
@@ -64,6 +65,39 @@ class TestController extends Controller{
             -> with('title', 'Note for create model complete process');
     }
 
+    public function queryBuilder($action){
+		if($action === 'insert'){
+			$values = new \stdClass();
+			$values->name = "Albert Lin";
+			$values->password = "z/ m06";
+			$values->hashPassword = "hash(z/ m06)";
+			$values->email = "albert.lin.solventosoft.com.tw";
+
+			$userInfoTable = new UserInfo();
+			$response = $userInfoTable->insertAll($values);
+			echo $response;
+		}
+		else if($action === 'select'){
+			$userInfoTable = new UserInfo();
+			$allColumns = $userInfoTable->selectAll([]);
+			foreach($allColumns as $key => $value){
+				echo $key."  ".$value."<br>";
+			}
+			echo "<br><br><br>";
+
+			echo $userInfoTable->toLines($allColumns);
+			echo "<br><br><br>";
+
+			echo $userInfoTable->toTable($allColumns);
+			echo "<br><br><br>";
+		}
+		else if($action === 'update'){
+
+		}
+		else if($action === 'delete'){
+
+		}
+	}
 
 	/*
 	 * ROUTE:
@@ -359,5 +393,10 @@ class TestController extends Controller{
 	public function leftTabs(){
 			return View('test/css/left_tabs')
 						->with('title', 'CSS LEFT TABS');
+	}
+
+	public function grid(){
+		return View('test/css/grid')
+			->with('title', 'CSS GRID');
 	}
 }

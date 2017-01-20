@@ -24,6 +24,7 @@ Route::get('test/view/temp/{tempNum}', 'TestController@viewTemp');
 
 // Model
 Route::get('test/model/note', 'TestController@modelNote');
+Route::get('test/model/{action}', 'TestController@queryBuilder');
 
 // ROUTE:
 Route::get( 'test/route', 'TestController@getRouteList');
@@ -67,3 +68,4 @@ Route::get('test/exe/{type}', 'TestController@exe');
 // CSS:
 Route::get('test/css/side_bar_trans', 'TestController@sideBarTrans');
 Route::get('test/css/left_tabs', 'TestController@leftTabs');
+Route::get('test/css/grid', 'TestController@grid');
