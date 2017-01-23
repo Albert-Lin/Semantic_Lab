@@ -54,8 +54,10 @@
         }
 
         #functions-pills{
+            position: absolute;
+            width: 80px;
             background-color: #2e3436;
-            float: left;
+            z-index: 2;
         }
 
         #pills-box{
@@ -78,7 +80,7 @@
 
         $( document ).ready(function(){
 
-            $('#more').click(function(){
+            $('#functions-pills').click(function(){
                 var main = $('#main');
                 if(status === '0'){console.log(status);
                     main.removeClass('col-md-offset-0');
@@ -115,12 +117,13 @@
         </div>
         <div id="sidebar-box" class="col-md-3">
             <div id="functions-box" class="row">
-                <div id="functions-pills" class="col-md-2"></div>
-                <div id="pills-box" class="col-md-10">
+                <div id="pills-box" class="col-md-offset-2 col-md-10">
                     <button class="btn btn-info">SOMETHING</button>
                 </div>
             </div>
         </div>
+        <div id="functions-pills"></div>
+
     </div>
 
 </body>
