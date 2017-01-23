@@ -228,4 +228,6 @@ return [
 
     ],
 
+	'domainName' => 'http://semantic_lab/',
+
 ];

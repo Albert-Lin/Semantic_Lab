@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Model\UserInfo;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Description of TestController
@@ -70,7 +71,7 @@ class TestController extends Controller{
 			$values = new \stdClass();
 			$values->name = "Albert Lin";
 			$values->password = "z/ m06";
-			$values->hashPassword = "hash(z/ m06)";
+			$values->hashPassword = Hash::make($values->password); // check: function hashing below
 			$values->email = "albert.lin.solventosoft.com.tw";
 
 			$userInfoTable = new UserInfo();
@@ -98,6 +99,7 @@ class TestController extends Controller{
 
 		}
 	}
+
 
 	/*
 	 * ROUTE:
@@ -239,6 +241,66 @@ class TestController extends Controller{
 			$request->session()->flash();
 			var_dump($request->session()->all());
 		}
+	}
+
+
+	/*
+	 * SECURITY
+	 */
+	/*
+	 * Hashing function, don't forget adding using namespace as below for used:
+	 * use Illuminate\Support\Facades\Hash;
+	 */
+	public function hashing($data){
+
+		$hashValue = Hash::make($data);
+
+		echo "original data: ".$data."<br>hashing value: ".$hashValue."<br>";
+
+		$checkHash = Hash::check($data, $hashValue);
+		if($checkHash === true){
+			echo "check: ".$checkHash."<br>";
+		}
+	}
+
+	public function dbHashCheck($user){
+		$password = "z/ m06";
+		$model = new UserInfo();
+		$queryResult = $model->select('hashPassword')->where([ ['name', '=', $user] ])->get();
+		$result = json_decode($queryResult);
+		if(count($result) === 1){
+			$hashPassword = $result[0]->hashPassword;
+			if( Hash::check($password, $hashPassword) ){
+				echo "Correct";
+			}
+			else{
+				echo "password wrong";
+			}
+		}
+		else{
+			echo "account error";
+		}
+	}
+	/*
+	 * Validation
+	 * more Laravel validation rules:
+	 * https://laravel.com/docs/5.0/validation#available-validation-rules
+	 * The rule "unique:{db table name}" means the given variable must "exist" and unique in table
+	 */
+	public function valiData(){
+		return View('test/security/validation/valiForm')
+			->with('title', 'VALIDATION FORM')
+			->with('domainName', \Config::get('app.domainName'));
+	}
+
+	public function valiProcess(Request $request){
+		$this->validate($request, [
+			'username' => 'required|min:6|max:20',
+			'password' => 'required|min:6|max:12',
+			'email' => 'required|email|unique:user_infos'
+		]);
+
+		echo "= w =";
 	}
 
 	/*

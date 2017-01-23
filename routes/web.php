@@ -40,6 +40,12 @@ Route::get('test/set-session', 'TestController@setSession');
 Route::get('test/get-session/{type}', 'TestController@getSession');
 Route::get('test/delete-session/{type}', 'TestController@deleteSession');
 
+// SECURITY:
+Route::get('test/security/hashing/{data}', 'TestController@hashing');
+Route::get('test/security/hashing/db/{username}', 'TestController@dbHashCheck');
+Route::get('test/security/valiData', 'TestController@valiData');
+Route::post('test/security/valiProcess', 'TestController@valiProcess');
+
 // API:
 Route::get('test/call-api', 'TestController@callAPI');
 
