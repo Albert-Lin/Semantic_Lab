@@ -75,3 +75,4 @@ Route::get('test/exe/{type}', 'TestController@exe');
 Route::get('test/css/side_bar_trans', 'TestController@sideBarTrans');
 Route::get('test/css/left_tabs', 'TestController@leftTabs');
 Route::get('test/css/grid', 'TestController@grid');
+Route::get('test/css/bs_side_bar_trans', 'TestController@bsSideBarTrans');

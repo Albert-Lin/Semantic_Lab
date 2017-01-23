@@ -306,7 +306,7 @@ class TestController extends Controller{
 	/*
 	 * API:
 	 */
-	/**
+	/*
 	 * This is a function to call API with curl method
 	 */
 	public function callAPI(){
@@ -322,7 +322,7 @@ class TestController extends Controller{
 			echo "ERROR FOR ACCESS TOKEN";
 	}
 
-	/**
+	/*
 	 * This is an API function for return a token,
 	 * also the route forthis function is set in /route/api.php
 	 * @return \stdClass $jsonData
@@ -461,4 +461,9 @@ class TestController extends Controller{
 		return View('test/css/grid')
 			->with('title', 'CSS GRID');
 	}
+
+	public function bsSideBarTrans(){
+        return View('test/css/bs_side_bar_trans')
+            ->with('title', 'BS Side Bar Trans');
+    }
 }
