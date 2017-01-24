@@ -62,6 +62,8 @@
 
         #pills-box{
             background-color: #bce8f1;
+            padding-left: 15px;
+            padding-right: 15px;
         }
 
         .glyphicon-align-justify{
@@ -85,18 +87,65 @@
                 if(status === '0'){console.log(status);
                     main.removeClass('col-md-offset-0');
                     main.removeClass('col-md-12');
+                    main.removeClass('col-sm-offset-0');
+                    main.removeClass('col-sm-12');
+                    main.removeClass('col-xs-offset-0');
+                    main.removeClass('col-xs-12');
+
                     main.addClass('col-md-offset-3');
                     main.addClass('col-md-9');
+                    main.addClass('col-sm-offset-5');
+                    main.addClass('col-sm-7');
+                    main.addClass('col-xs-offset-9');
+                    main.addClass('col-xs-3');
                     status = '1';
                 }
                 else{
                     main.removeClass('col-md-offset-3');
                     main.removeClass('col-md-9');
+                    main.removeClass('col-sm-offset-5');
+                    main.removeClass('col-sm-7');
+                    main.removeClass('col-xs-offset-9');
+                    main.removeClass('col-xs-3');
+
                     main.addClass('col-md-offset-0');
                     main.addClass('col-md-12');
+                    main.addClass('col-sm-offset-0');
+                    main.addClass('col-sm-12');
+                    main.addClass('col-xs-offset-0');
+                    main.addClass('col-xs-12');
                     status = '0';
                 }
             });
+
+            var functionsPillsDom = $('#functions-pills');
+            var width = $('#main').width();
+            console.log("OUT: "+width);
+            if(width >= 1100){
+                functionsPillsDom.css('width', '80px');
+            }
+            else if(width < 1100 && width >= 750){
+                functionsPillsDom.css('width', '80px');
+            }
+            else{
+                functionsPillsDom.css('width', '40px');
+            }
+
+            $( window ).resize(function(){
+                var functionsPillsDom = $('#functions-pills');
+                var width = $('#main').width();
+                console.log("IN: "+width);
+                if(width >= 1100){
+                    functionsPillsDom.css('width', '80px');
+                }
+                else if(width < 1100 && width >= 750){
+                    functionsPillsDom.css('width', '80px');
+                }
+                else{
+                    functionsPillsDom.css('width', '40px');
+                }
+            });
+
 
         });
 
@@ -106,18 +155,18 @@
 <body>
 
     <div id="container" class="row">
-        <div id="main" class="col-md-offset-0 col-md-12">
+        <div id="main" class="col-md-offset-0 col-md-12 col-sm-offset-0 col-sm-12 col-xs-offset-0 col-xs-12">
             <div class="row rowMargin0">
                 <div class="col-md-1">
                     <div class="row rowMargin0">
-                        <div id="more" class="col-md-offset-3 col-md-6 glyphicon glyphicon-align-justify"></div>
+                        {{--<div id="more" class="col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-3 col-xs-6 glyphicon glyphicon-align-justify"></div>--}}
                     </div>
                 </div>
             </div>
         </div>
-        <div id="sidebar-box" class="col-md-3">
+        <div id="sidebar-box" class="col-md-3 col-sm-5 col-xs-9">
             <div id="functions-box" class="row">
-                <div id="pills-box" class="col-md-offset-2 col-md-10">
+                <div id="pills-box" class="col-md-offset-2 col-md-10 col-sm-offset-2 col-sm-10 col-xs-offset-2 col-xs-10">
                     <button class="btn btn-info">SOMETHING</button>
                 </div>
             </div>
