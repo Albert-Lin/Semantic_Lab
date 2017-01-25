@@ -466,4 +466,55 @@ class TestController extends Controller{
         return View('test/css/bs_side_bar_trans')
             ->with('title', 'BS Side Bar Trans');
     }
+
+
+    /*
+     * TEST
+     */
+    public function regex($regex){
+
+        $languageDir = $this->getLanguageDir('en-US');
+        $regex = str_replace('/', '\/', $regex);
+        $result = $this->scanDirFiles($languageDir, $regex);
+        foreach($result as $key => $file){
+            echo $file."<br>";
+        }
+
+    }
+
+    private function scanDirFiles($path, $regex){
+
+        $fileList = [];
+        $fileIndex = 0;
+        if(is_dir($path)){
+            $allDir = scandir($path);
+            foreach($allDir as $key => $dir){
+                $subDirPath = $path.'/'.$dir;
+                $subDirPath = str_replace('\\', '/', $subDirPath);
+
+                if($dir !== '.' && $dir !== '..') {
+                    if (is_dir($subDirPath)) {
+                        $allFile = $this->scanDirFiles($subDirPath, $regex);
+                        foreach($allFile as $subKey => $file){
+                            $fileList[$fileIndex] = $file;
+                            $fileIndex++;
+                        }
+                    }
+                    else if (is_file($subDirPath)) {
+                        if (preg_match('/'.$regex.'/', $subDirPath)) {
+                                $fileList[$fileIndex] = $subDirPath;
+                                $fileIndex++;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $fileList;
+
+    }
+
+    private function getLanguageDir($language){
+        return 'D:\Desktop\yii\message\en'.'/'.$language;
+    }
 }

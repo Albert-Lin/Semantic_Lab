@@ -76,3 +76,6 @@ Route::get('test/css/side_bar_trans', 'TestController@sideBarTrans');
 Route::get('test/css/left_tabs', 'TestController@leftTabs');
 Route::get('test/css/grid', 'TestController@grid');
 Route::get('test/css/bs_side_bar_trans', 'TestController@bsSideBarTrans');
+
+// TEST:
+Route::get('test/test/regex/{regex}', 'TestController@regex');
