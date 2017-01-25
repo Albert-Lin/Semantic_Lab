@@ -64,7 +64,7 @@
             background-color: #bce8f1;
         }
 
-        .glyphicon-align-justify{
+        .glyphicon-menu-hamburger{
             font-size: 24px;
             color: #ffffff;
         }
@@ -110,7 +110,7 @@
             <div class="row rowMargin0">
                 <div class="col-md-1">
                     <div class="row rowMargin0">
-                        <div id="more" class="col-md-offset-3 col-md-6 glyphicon glyphicon-align-justify"></div>
+                        <div id="more" class="col-md-offset-3 col-md-6 glyphicon glyphicon-menu-hamburger"></div>
                     </div>
                 </div>
             </div>
