@@ -77,5 +77,10 @@ Route::get('test/css/left_tabs', 'TestController@leftTabs');
 Route::get('test/css/grid', 'TestController@grid');
 Route::get('test/css/bs_side_bar_trans', 'TestController@bsSideBarTrans');
 
+// FACEBOOK:
+Route::get('test/facebook/', 'TestController@facebook');
+Route::get('test/facebook/login', 'TestController@fbLogin');
+
+
 // TEST:
 Route::get('test/test/regex/{regex}', 'TestController@regex');

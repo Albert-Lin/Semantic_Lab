@@ -1,6 +1,13 @@
 <?php
 
 /*
+ * For facebook web applications,
+ * we need to start the session before loading bootstrap
+ */
+session_start();
+
+
+/*
 |--------------------------------------------------------------------------
 | Create The Application
 |--------------------------------------------------------------------------
