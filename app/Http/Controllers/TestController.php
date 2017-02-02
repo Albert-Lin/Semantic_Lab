@@ -481,84 +481,86 @@ class TestController extends Controller{
 
         // login link:
         $helper = $fb->getRedirectLoginHelper();
-        $permissions = ['user_friends', 'read_custom_friendlists']; // optional
+        $permissions = ['user_friends']; // optional
         $loginUrl = $helper->getLoginUrl('http://semanticlab.com/test/facebook/login', $permissions);
 
-        echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
+		header('Location: '.$loginUrl);
+		exit();
     }
 
     public function fbLogin(){
 
-            $fb = new Facebook([
-                'app_id' => '368249613535369',
-                'app_secret' => 'c0bec84f53f0b4550712cec2d43e482c',
-                'default_graph_version' => 'v2.8',
-                'persistent_data_handler'=>'session'
-            ]);
+		$fb = new Facebook([
+			'app_id' => '368249613535369',
+			'app_secret' => 'c0bec84f53f0b4550712cec2d43e482c',
+			'default_graph_version' => 'v2.8',
+			'persistent_data_handler'=>'session'
+		]);
 
-            $helper = $fb->getRedirectLoginHelper();
+		$helper = $fb->getRedirectLoginHelper();
 
-            try {
-                $accessToken = $helper->getAccessToken();
-            } catch(\Facebook\Exceptions\FacebookResponseException $e) {
-                // When Graph returns an error
-                echo 'Graph returned an error: ' . $e->getMessage();
-                exit;
-            } catch(\Facebook\Exceptions\FacebookSDKException $e) {
-                // When validation fails or other local issues
-                echo 'Facebook SDK returned an error: ' . $e->getMessage();
-                exit;
-            }
+		try {
+			$accessToken = $helper->getAccessToken();
+		} catch(\Facebook\Exceptions\FacebookResponseException $e) {
+			// When Graph returns an error
+			echo 'Graph returned an error: ' . $e->getMessage();
+			exit;
+		} catch(\Facebook\Exceptions\FacebookSDKException $e) {
+			// When validation fails or other local issues
+			echo 'Facebook SDK returned an error: ' . $e->getMessage();
+			exit;
+		}
 
-            if (! isset($accessToken)) {
-                if ($helper->getError()) {
-                    header('HTTP/1.0 401 Unauthorized');
-                    echo "Error: " . $helper->getError() . "\n";
-                    echo "Error Code: " . $helper->getErrorCode() . "\n";
-                    echo "Error Reason: " . $helper->getErrorReason() . "\n";
-                    echo "Error Description: " . $helper->getErrorDescription() . "\n";
-                } else {
-                    header('HTTP/1.0 400 Bad Request');
-                    echo 'Bad request';
-                }
-                exit;
-            }
+		if (! isset($accessToken)) {
+			if ($helper->getError()) {
+				header('HTTP/1.0 401 Unauthorized');
+				echo "Error: " . $helper->getError() . "\n";
+				echo "Error Code: " . $helper->getErrorCode() . "\n";
+				echo "Error Reason: " . $helper->getErrorReason() . "\n";
+				echo "Error Description: " . $helper->getErrorDescription() . "\n";
+			} else {
+				header('HTTP/1.0 400 Bad Request');
+				echo 'Bad request';
+			}
+			exit;
+		}
 
-            // Logged in
+		// Logged in
 
-            // The OAuth 2.0 client handler helps us manage access tokens
-            $oAuth2Client = $fb->getOAuth2Client();
+		// The OAuth 2.0 client handler helps us manage access tokens
+		$oAuth2Client = $fb->getOAuth2Client();
 
-            // Get the access token metadata from /debug_token
-            $tokenMetadata = $oAuth2Client->debugToken($accessToken);
+		// Get the access token metadata from /debug_token
+		$tokenMetadata = $oAuth2Client->debugToken($accessToken);
 
-            // Validation (these will throw FacebookSDKException's when they fail)
-            $tokenMetadata->validateAppId('368249613535369'); // Replace {app-id} with your app id
-            // If you know the user ID this access token belongs to, you can validate it here
-            //$tokenMetadata->validateUserId('123');
-            $tokenMetadata->validateExpiration();
+		// Validation (these will throw FacebookSDKException's when they fail)
+		$tokenMetadata->validateAppId('368249613535369'); // Replace {app-id} with your app id
+		// If you know the user ID this access token belongs to, you can validate it here
+		//$tokenMetadata->validateUserId('123');
+		$tokenMetadata->validateExpiration();
 
-            if (! $accessToken->isLongLived()) {
-                // Exchanges a short-lived access token for a long-lived one
-                try {
-                    $accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
-                } catch (\Facebook\Exceptions\FacebookSDKException $e) {
-                    echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
-                    exit;
-                }
+		if (! $accessToken->isLongLived()) {
+			// Exchanges a short-lived access token for a long-lived one
+			try {
+				$accessToken = $oAuth2Client->getLongLivedAccessToken($accessToken);
+			} catch (\Facebook\Exceptions\FacebookSDKException $e) {
+				echo "<p>Error getting long-lived access token: " . $helper->getMessage() . "</p>\n\n";
+				exit;
+			}
 
-                echo '<h3>Long-lived</h3>';
-                var_dump($accessToken->getValue());
-            }
+			echo '<h3>Long-lived</h3>';
+			var_dump($accessToken->getValue());
+		}
 
-            $_SESSION['fb_access_token'] = (string) $accessToken;
+		// set the session by using global helper
+		session([ 'fb_access_token' => (string) $accessToken ]);
 
-            $friendList = $this->friendsRecursive($fb, $accessToken, null);
-            $index = 1;
-            foreach($friendList as $key => $friend){
-                echo $index." ".$friend['name']."<br>";
-                $index++;
-            }
+		$friendList = $this->friendsRecursive($fb, $accessToken, null);
+		$index = 1;
+		foreach($friendList as $key => $friend){
+			echo $index." ".$friend['id']." ".$friend['name']."<br>";
+			$index++;
+		}
 
     }
 
@@ -567,7 +569,6 @@ class TestController extends Controller{
         $response = "";
         $fb->setDefaultAccessToken($accessToken);
         try {
-            $response = "";
             if($after === null){
                 $response = $fb->get('/me/taggable_friends');
             }
@@ -581,7 +582,6 @@ class TestController extends Controller{
 
             if(isset($response->getGraphEdge()->getMetaData()['paging']['next'])){
                 $newAfter = $response->getGraphEdge()->getMetaData()['paging']['cursors']['after'];
-//                var_dump($newAfter)&die;
                 $nextFriendList = $this->friendsRecursive($fb, $accessToken, $newAfter);
                 foreach($nextFriendList as $nextKey => $nextFriend){
                     $allFriends[] = $nextFriend;

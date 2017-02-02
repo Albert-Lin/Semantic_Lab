@@ -11,76 +11,112 @@
 |
 */
 
-// The index of root page
-Route::get( '/', 'RootController@index');
+// ROOT PAGE
+//Route::get( '/', 'RootController@index');
 
 
-// NORMAL:
-Route::get( 'test', 'TestController@index');
-Route::get( 'test/beauty-url/{category}/{page}', 'TestController@beautyURL');
 
-// VIEW && TEMPLATE:
-Route::get('test/view/temp/{tempNum}', 'TestController@viewTemp');
+// FOR TEST CONTROLLER:
+Route::group(['prefix'=>'test'], function(){
 
-// Model
-Route::get('test/model/note', 'TestController@modelNote');
-Route::get('test/model/{action}', 'TestController@queryBuilder');
+	// NORMAL:
+	Route::get( '/', 'TestController@index');
+	Route::get( '/beauty-url/{category}/{page}', 'TestController@beautyURL');
 
-// ROUTE:
-Route::get( 'test/route', 'TestController@getRouteList');
-Route::get( 'test/route/view', 'TestController@getRouteListInView');
+	// VIEW && TEMPLATE:
+	Route::group(['prefix'=>'view'], function(){
+		Route::get('/temp/{tempNum}', 'TestController@viewTemp');
+	});
 
-// REQUEST:
-Route::get( 'test/request', 'TestController@request');
-Route::get( 'test/get-request/{type}', 'TestController@getReguest' );
-Route::get( 'test/url-request/{category}/{page}', 'TestController@getUrlRequest');
+	// Model
+	Route::group(['prefix'=>'model'], function(){
+		Route::get('/note', 'TestController@modelNote');
+		Route::get('/{action}', 'TestController@queryBuilder');
+	});
 
-// SESSION:
-Route::get('test/set-session', 'TestController@setSession');
-Route::get('test/get-session/{type}', 'TestController@getSession');
-Route::get('test/delete-session/{type}', 'TestController@deleteSession');
+	// ROUTE:
+	Route::group(['prefix'=>'route'], function(){
+		Route::get( '/', 'TestController@getRouteList');
+		Route::get( '/view', 'TestController@getRouteListInView');
+	});
 
-// SECURITY:
-Route::get('test/security/hashing/{data}', 'TestController@hashing');
-Route::get('test/security/hashing/db/{username}', 'TestController@dbHashCheck');
-Route::get('test/security/valiData', 'TestController@valiData');
-Route::post('test/security/valiProcess', 'TestController@valiProcess');
+	// REQUEST:
+	Route::group(['prefix'=>'request'], function(){
+		Route::get( '/', 'TestController@request');
+		Route::get( '/get-request/{type}', 'TestController@getReguest' );
+		Route::get( '/url-request/{category}/{page}', 'TestController@getUrlRequest');
+	});
 
-// API:
-Route::get('test/call-api', 'TestController@callAPI');
+	// SESSION:
+	Route::group(['prefix'=>'session'], function(){
+		Route::get('/set-session', 'TestController@setSession');
+		Route::get('/get-session/{type}', 'TestController@getSession');
+		Route::get('/delete-session/{type}', 'TestController@deleteSession');
+	});
 
-// Processing P5:
-Route::get('test/p5', 'TestController@p5');
-Route::get('test/p5/linked', 'TestController@p5Linked');
+	// SECURITY:
+	Route::group(['prefix'=>'security'], function(){
+		Route::get('/hashing/{data}', 'TestController@hashing');
+		Route::get('/hashing/db/{username}', 'TestController@dbHashCheck');
+		Route::get('/valiData', 'TestController@valiData');
+		Route::post('/valiProcess', 'TestController@valiProcess');
+	});
 
-// D3:
-Route::get('test/d3', 'TestController@d3');
-Route::get('test/d3/svg', 'TestController@d3Svg');
-Route::get('test/d3/svg/json', 'TestController@d3SvgJson');
-Route::get('test/d3/svg/path', 'TestController@path');
+	// API:
+	Route::group(['prefix'=>'call-api'], function(){
+		Route::get('/', 'TestController@callAPI');
+	});
 
-// NEO4J:
-Route::get('test/neo4j', 'TestController@neo4j');
-Route::get('test/neo4j/d3', 'TestController@vis');
-Route::get('test/neo4j/mvc', 'TestController@visMVC');
+	// Processing P5:
+	Route::group(['prefix'=>'p5'], function(){
+		Route::get('/', 'TestController@p5');
+		Route::get('/linked', 'TestController@p5Linked');
+	});
 
-// GOOGLE MAP:
-Route::get('test/google_map/', 'TestController@gmap');
-Route::get('test/google_map/class', 'TestController@googleMap');
+	// D3:
+	Route::group(['prefix'=>'d3'], function(){
+		Route::get('/', 'TestController@d3');
+		Route::get('/svg', 'TestController@d3Svg');
+		Route::get('/svg/json', 'TestController@d3SvgJson');
+		Route::get('/svg/path', 'TestController@path');
+	});
 
-// Excute external file:
-Route::get('test/exe/{type}', 'TestController@exe');
+	// NEO4J:
+	Route::group(['prefix'=>'neo4j'], function(){
+		Route::get('/', 'TestController@neo4j');
+		Route::get('/d3', 'TestController@vis');
+		Route::get('/mvc', 'TestController@visMVC');
+	});
 
-// CSS:
-Route::get('test/css/side_bar_trans', 'TestController@sideBarTrans');
-Route::get('test/css/left_tabs', 'TestController@leftTabs');
-Route::get('test/css/grid', 'TestController@grid');
-Route::get('test/css/bs_side_bar_trans', 'TestController@bsSideBarTrans');
+	// GOOGLE MAP:
+	Route::group(['prefix'=>'google_map'], function(){
+		Route::get('/', 'TestController@gmap');
+		Route::get('/class', 'TestController@googleMap');
+	});
 
-// FACEBOOK:
-Route::get('test/facebook/', 'TestController@facebook');
-Route::get('test/facebook/login', 'TestController@fbLogin');
+	// EXECUTE EXTERNAL FILE:
+	Route::group(['prefix'=>'exe'], function(){
+		Route::get('/{type}', 'TestController@exe');
+	});
 
+	// CSS:
+	Route::group(['prefix'=>'css'], function(){
+		Route::get('/side_bar_trans', 'TestController@sideBarTrans');
+		Route::get('/left_tabs', 'TestController@leftTabs');
+		Route::get('/grid', 'TestController@grid');
+		Route::get('/bs_side_bar_trans', 'TestController@bsSideBarTrans');
+	});
 
-// TEST:
-Route::get('test/test/regex/{regex}', 'TestController@regex');
+	// FACEBOOK:
+	Route::group(['prefix'=>'facebook'], function(){
+		Route::get('/', 'TestController@facebook');
+		Route::get('/login', 'TestController@fbLogin');
+	});
+
+	// TEST:
+	Route::get('/test/regex/{regex}', 'TestController@regex');
+
+});
+
+// FOR SEMANTIC LAB
+Route::get( '/', 'SemanticLabController@index')->name('root');

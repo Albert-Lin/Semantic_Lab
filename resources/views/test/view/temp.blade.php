@@ -26,7 +26,6 @@
 
 @endsection
 
-<!-- FOR include function -->
 @section('cont1-2')
 
     <p>This message is from temp.blade.php. For @ section function, using keyword @ parent can keep the default content in included blade file, just like:</p>
