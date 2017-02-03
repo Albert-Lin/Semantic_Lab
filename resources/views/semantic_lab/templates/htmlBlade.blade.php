@@ -14,6 +14,7 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title> @yield('title') </title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
@@ -28,12 +29,13 @@
             border: 0;
             margin: 0;
             padding: 0;
-            font-family:;
+            font-family: "Microsoft YaHei UI Light";
         }
         @show
     </style>
 
-    @yield('js')
+    @section('js')
+    @show
 
 </head>
 <html>

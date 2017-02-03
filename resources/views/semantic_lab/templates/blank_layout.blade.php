@@ -7,61 +7,76 @@
  */
 ?>
 
-<style>
-    html, body{
-        width: 100%;
-        height: 100%;
-        border: 0;
-        margin: 0;
-        padding: 0;
-        background-color: #ffffff;
-        color: #8c8c8c;
-        font-family: "Helvetica Neue";
-        vertical-align: middle;
-    }
+@extends('semantic_lab.templates.htmlBlade')
 
-    #container{
-        width: 100%;
-        height: 100%;
-    }
 
-    .row{
-        margin: 0;
-    }
+@section('css')
+    @parent
+@endsection
 
-    #logoText{
-        text-align: center;
-        color: #ff7766;
-        font-size: 120px;
-        background-color: #8c8c8c;
-    }
 
-    #infoBlock{
-        text-align: center;
-        color: #6677ff;
-        font-size: 16px;
-        background-color: #636b6f;
-    }
-</style>
-<body>
+@section('js')
+    @parent
+@endsection
+
+
+@section('body')
+    <style>
+        #container{
+            width: 100%;
+            height: 100%;
+            border: 0;
+            margin: 0;
+            padding: 0;
+            display: inline-block;
+        }
+        #container::before {
+            content: '';
+            width: 0;
+            height: 20%;
+            display: inline-block;
+            position: relative;
+            vertical-align: middle;
+        }
+
+        .row{
+            margin: 0;
+        }
+
+        #logoText{
+            text-align: center;
+            color: #ff7766;
+            font-size: 120px;
+            /*text-shadow: 2px 2px 5px #aa8888;*/
+        }
+
+        #infoBlock{
+            text-align: center;
+            color: #6677ff;
+            font-size: 20px;
+        }
+        #infoBlock::before{
+            content: '';
+            width: 100%;
+            height: 50px;
+            display: inline-block;
+        }
+    </style>
 
     <div id="container">
         <div class="row">
             <div id="logoText" class="col-md-offset-2 col-md-8 col-sm-offset-1 col-md-10 col-xs-12">
-                Semantic Lab
+                @section('logoText')
+                @show
             </div>
         </div>
 
         <div class="row">
             <div id="infoBlock" class="col-md-offset-2 col-md-8 col-sm-offset-1 col-md-10 col-xs-12">
-                <div class="row">
-                    <div class="col-md-4 col-sm-4">INFO-01......(more)</div>
-                    <div class="col-md-4 col-sm-4">INFO-02......(more)</div>
-                    <div class="col-md-4 col-sm-4">INFO-03......(more)</div>
-                </div>
+                @section('infoBlock')
+                @show
             </div>
         </div>
     </div>
-
-</body>
+@endsection
 

@@ -285,7 +285,7 @@ class TestController extends Controller{
 	/*
 	 * Validation
 	 * more Laravel validation rules:
-	 * https://laravel.com/docs/5.0/validation#available-validation-rules
+	 * https://laravel.com/docs/5.3/validation#available-validation-rules
 	 * The rule "unique:{db table name}" means the given variable must "exist" and unique in table
 	 */
 	public function valiData(){
