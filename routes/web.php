@@ -122,5 +122,7 @@ Route::group(['prefix'=>'test'], function(){
 Route::group(['prefix' => ''], function(){
 	Route::get( '/', 'SemanticLabController@index')->name('root');
 	Route::post('/login', 'SemanticLabController@login');
-	Route::get('/logout', 'SemanticLabController@logout');
+    Route::get('/logout', 'SemanticLabController@logout');
+    Route::post('/register', 'SemanticLabController@register');
+    Route::get('/dailyCost/{funName?}', 'SemanticLabController@dailyCost');
 });

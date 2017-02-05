@@ -47,13 +47,14 @@
             text-align: center;
             color: #ff7766;
             font-size: 120px;
-            /*text-shadow: 2px 2px 5px #aa8888;*/
         }
 
         #infoBlock{
             text-align: center;
-            color: #6677ff;
+            /*color: #6677ff;*/
+            color: #ffffff;
             font-size: 20px;
+            font-weight: 600;
         }
         #infoBlock::before{
             content: '';

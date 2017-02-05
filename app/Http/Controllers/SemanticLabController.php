@@ -14,25 +14,28 @@ use Illuminate\Http\Request;
 
 class SemanticLabController extends Controller
 {
+
+    public $renderView = '';
+    public $data = [];
+    public $nav = [];
+
 	public function index(Request $request){
 		// 00. check session
-		$renderView = '';
 		$user = $request->session()->get('account');
 
-		// 01. general view for non-sign in
-		if(!isset($user) || $user === "null"){
-			$renderView = 'semantic_lab/general';
+		if(!isset($user)){
+            // 01. general view for non-sign in
+			$this->nonLogin();
 		}
-
-		// 02. personal view for sign in account
 		else{
-			$renderView = 'semantic_lab/personal';
+            // 02. personal view for sign in account
+            $this->renderView = 'semantic_lab/personal';
+            $this->setSimpleNav($user);
 		}
 
 		// 03. render view
-		return View($renderView)
-			->with('title', 'Semantic Lab')
-			->with('domainURI', \Config::get('app.domainName'));
+        return View($this->renderView)
+            ->with('data', $this->data);
 	}
 
 	public function login(Request $request){
@@ -42,40 +45,42 @@ class SemanticLabController extends Controller
 			'pass' => 'required'
 		]);
 
-		// get raw data
+		// 02. get raw data
 		$account = $request->get('account');
 		$password = $request->get('pass');
 
-		// initialize model
+		// 03. initialize model
 		$userInfoTb = new UserInfo();
 
-		// select DB data
+		// 04. select DB data
 		$hashPass = "";
-		$message = "fail: no current username or password is wrong. ";
+		$message['title'] = "Error";
+		$message['content'] = "No current username or password is wrong ";
 		$queryResult = $userInfoTb->select('hashPassword')->where([ ['name', $account], ['password', $password] ])->get();
 		$result = json_decode($queryResult);
 		$numOfResult = count($result);
 		if($numOfResult === 1){
 			$hashPass = $result[0]->hashPassword;
 
-			// check hashing value
+			// 05. check hashing value
 			if(\Hash::check($password, $hashPass)){
-				$message = "success";
-				// set session
+                $message['title'] = "Redirect";
+                $message['content'] = \Config::get('app.domainName');
+				// 06. set session
 				$request->session()->put('account', $account);
 			}
 			else{
-				$message .= "(code:Sl01)";
+                $message['content'] .= "(code:sl01).";
 			}
 		}
 		else if($numOfResult === 0){
-			$message .= "(code:Sl02)";
+            $message['content'] .= "(code:sl02)";
 		}
 		else{
-			$message .= "(code:Sl03)";
+            $message['content'] .= "(code:sl03)";
 		}
 
-		return $message;
+		return json_encode($message);
 
 	}
 
@@ -83,4 +88,107 @@ class SemanticLabController extends Controller
 		$request->session()->forget('account');
 		return redirect()->route('root');
 	}
+
+	public function register(Request $request){
+        $message['title'] = '';
+        $message['body'] = '';
+        $userInfoTb = new UserInfo();
+
+	    // 01. validate
+        $this->validate($request, [
+            'username' => 'required',
+            'pass' => 'required',
+            'mail' => 'required',
+        ]);
+        $username = $request->get('username');
+        $pass = $request->get('pass');
+        $mail = $request->get('mail');
+
+        // 02. check unique data
+        $uniqueData['email'] = $mail;
+        $checkResult = $userInfoTb->unique($uniqueData);
+        if($checkResult === true){
+
+            // 03. insert data
+            $values = new \stdClass();
+            $values->name = $username;
+            $values->password = $pass;
+            $values->hashPassword = \Hash::make($values->password);
+            $values->email = $mail;
+            $insertResult = $userInfoTb->insertAll($values);
+
+            // 04. send email or redirect
+            if($insertResult === $userInfoTb->success){
+                $message['title'] = 'Redirect';
+//                $message['content'] =  'Please read the registered email for completed register.';
+                $message['content'] =  \Config::get('app.domainName');
+            }
+        }
+        else{
+            $message['title'] = 'Error';
+            $message['content'] =  $checkResult.' had been registered, please try new one.';
+        }
+
+        // 05. return
+        return json_encode($message);
+    }
+
+    public function dailyCost(Request $request, $funName = null){
+        // 00. check session
+        $user = $request->session()->get('account');
+
+        if(!isset($user)){
+            // 01. general view for non-sign in
+            $this->nonLogin();
+        }
+        else{
+            // 02. personal view for sign in account
+            $renderView = 'semantic_lab/personal';
+            $this->setSimpleNav($user);
+            $funs = [];
+            $funs[] = ['funName'=>'New Daily Cost', 'id'=>'newDC'];
+            $funs[] = ['funName'=>'View Record (Form)', 'id'=>'vRForm'];
+            $funs[] = ['funName'=>'View Record (Graphic)', 'id'=>'vRGraphic'];
+            $this->data['funs'] = $funs;
+
+            if($funName === 'newDC'){
+                $renderView = 'semantic_lab/functions/dailyCost/newDC';
+                $this->data['funName'] = 'dailyCost/newDC';
+            }
+            else if($funName === 'vRForm'){
+                $renderView = 'semantic_lab/personal';
+                $this->data['funName'] = 'dailyCost/vRForm';
+            }
+            else if($funName === 'vRGraphic'){
+                $renderView = 'semantic_lab/personal';
+                $this->data['funName'] = 'dailyCost/vRGraphic';
+            }
+        }
+
+        // 03. render view
+        return View($renderView)
+            ->with('data', $this->data);
+    }
+
+    private function nonLogin(){
+        $this->renderView = 'semantic_lab/general';
+        $this->data['title'] = 'Semantic Lab';
+        $this->data['domainURI'] = \Config::get('app.domainName');
+    }
+
+    private function setSimpleNav($user){
+        $navLeftFuns = [];
+        $navLeftFuns[] = ['funName'=>'Daily cost', 'URL'=>\Config::get('app.domainName').'dailyCost'];
+        $navLeftFuns[] = ['funName'=>'Data', 'URL'=>\Config::get('app.domainName').''];
+        $navLeftFuns[] = ['funName'=>'Learning', 'URL'=>\Config::get('app.domainName').''];
+        $navLeftFuns[] = ['funName'=>'Analysis', 'URL'=>\Config::get('app.domainName').''];
+        $navLeftFuns[] = ['funName'=>'Semantic', 'URL'=>\Config::get('app.domainName').''];
+        $this->nav['navLogoText'] = 'Semantic Lab';
+        $this->nav['userName'] = $user;
+        $this->nav['logoutURI'] = \Config::get('app.domainName').'logout';
+        $this->nav['navLeftFuns'] = $navLeftFuns;
+        $this->data['title'] = 'Semantic Lab';
+        $this->data['nav'] = $this->nav;
+        $this->data['domainURI'] = \Config::get('app.domainName');
+    }
 }

@@ -16,6 +16,8 @@ class RootModel extends Model
 
 	// set timestamp to false
 	public $timestamps = false;
+    public $success = 'Success';
+    public $error = 'Error';
 
 
 	/**
@@ -73,4 +75,18 @@ class RootModel extends Model
 
 		return '<table class"table">'.$tHead.$tBody.'</table>';
 	}
+
+
+	public function unique($dataArray){
+	    $result = true;
+	    foreach($dataArray as $key => $value){
+            $queryResult = $this->select('id')->where([ [$key, $value] ])->get();
+	        if(count($queryResult) !== 0){
+	            $result = $key;
+	            break;
+            }
+        }
+
+        return $result;
+    }
 }
