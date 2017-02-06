@@ -15,9 +15,9 @@ use Illuminate\Http\Request;
 class SemanticLabController extends Controller
 {
 
-    public $renderView = '';
-    public $data = [];
-    public $nav = [];
+    protected $renderView = '';
+	protected $data = [];
+	protected $nav = [];
 
 	public function index(Request $request){
 		// 00. check session
@@ -133,56 +133,22 @@ class SemanticLabController extends Controller
         return json_encode($message);
     }
 
-    public function dailyCost(Request $request, $funName = null){
-        // 00. check session
-        $user = $request->session()->get('account');
+	protected function setFuns(){}
 
-        if(!isset($user)){
-            // 01. general view for non-sign in
-            $this->nonLogin();
-        }
-        else{
-            // 02. personal view for sign in account
-            $renderView = 'semantic_lab/personal';
-            $this->setSimpleNav($user);
-            $funs = [];
-            $funs[] = ['funName'=>'New Daily Cost', 'id'=>'newDC'];
-            $funs[] = ['funName'=>'View Record (Form)', 'id'=>'vRForm'];
-            $funs[] = ['funName'=>'View Record (Graphic)', 'id'=>'vRGraphic'];
-            $this->data['funs'] = $funs;
-
-            if($funName === 'newDC'){
-                $renderView = 'semantic_lab/functions/dailyCost/newDC';
-                $this->data['funName'] = 'dailyCost/newDC';
-            }
-            else if($funName === 'vRForm'){
-                $renderView = 'semantic_lab/personal';
-                $this->data['funName'] = 'dailyCost/vRForm';
-            }
-            else if($funName === 'vRGraphic'){
-                $renderView = 'semantic_lab/personal';
-                $this->data['funName'] = 'dailyCost/vRGraphic';
-            }
-        }
-
-        // 03. render view
-        return View($renderView)
-            ->with('data', $this->data);
-    }
-
-    private function nonLogin(){
+	protected function nonLogin(){
         $this->renderView = 'semantic_lab/general';
         $this->data['title'] = 'Semantic Lab';
         $this->data['domainURI'] = \Config::get('app.domainName');
     }
 
-    private function setSimpleNav($user){
+	protected function setSimpleNav($user){
         $navLeftFuns = [];
         $navLeftFuns[] = ['funName'=>'Daily cost', 'URL'=>\Config::get('app.domainName').'dailyCost'];
         $navLeftFuns[] = ['funName'=>'Data', 'URL'=>\Config::get('app.domainName').''];
         $navLeftFuns[] = ['funName'=>'Learning', 'URL'=>\Config::get('app.domainName').''];
         $navLeftFuns[] = ['funName'=>'Analysis', 'URL'=>\Config::get('app.domainName').''];
-        $navLeftFuns[] = ['funName'=>'Semantic', 'URL'=>\Config::get('app.domainName').''];
+		$navLeftFuns[] = ['funName'=>'Semantic', 'URL'=>\Config::get('app.domainName').''];
+		$navLeftFuns[] = ['funName'=>'Test', 'URL'=>\Config::get('app.domainName').'test/route/view'];
         $this->nav['navLogoText'] = 'Semantic Lab';
         $this->nav['userName'] = $user;
         $this->nav['logoutURI'] = \Config::get('app.domainName').'logout';

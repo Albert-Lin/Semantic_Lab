@@ -481,7 +481,7 @@ class TestController extends Controller{
 
         // login link:
         $helper = $fb->getRedirectLoginHelper();
-        $permissions = ['user_friends']; // optional
+        $permissions = ['user_friends','user_posts']; // optional
         $loginUrl = $helper->getLoginUrl('http://semanticlab.com/test/facebook/login', $permissions);
 
 		header('Location: '.$loginUrl);
@@ -562,6 +562,8 @@ class TestController extends Controller{
 			$index++;
 		}
 
+		$this->createPost($accessToken);
+
     }
 
     private function friendsRecursive($fb, $accessToken, $after = null){
@@ -600,6 +602,33 @@ class TestController extends Controller{
 
         return $allFriends;
     }
+
+    private function createPost($accessToken){
+
+		$fb = new Facebook([
+			'app_id' => '368249613535369',
+			'app_secret' => 'c0bec84f53f0b4550712cec2d43e482c',
+			'default_graph_version' => 'v2.8',
+			'persistent_data_handler'=>'session'
+		]);
+
+		$privacy = new \stdClass();
+		$privacy->value = "SELF";
+
+		// $method, $endpoint, array $params = [], $accessToken = null, $eTag = null, $graphVersion = null
+
+		$requests = [
+			'postFeed' => $fb->request(
+				'POST',
+				'/me/feed',
+				array(
+					'message' => 'FROM ALBERT APP',
+					"tags"=>"AaKb-TZSiAQ6xgES8qyB0vVdm29IXmxh-T-lsGN1YvMTLy6iBXV8AuvIWS4mMlggdCh5hqLGJQxiStbp0ad4SKdbvY7IK-fMHi1gdOHokYUsmg,AaLBwo1JCnJmEFTbmsSmto-wRdW7QP5OzsKdHwEDArgJuEIwD9-5teJXE-sO3grJvNu8zq4GC2CL1YYH-q9iBD5URvoD0Ctiy8Ry5z5zE3UdOQ",
+					"privacy"=>$privacy
+				)),
+		];
+		$batchRequest = new \Facebook\FacebookBatchRequest($fb->getApp(), $requests, $accessToken);
+	}
 
 
     /*

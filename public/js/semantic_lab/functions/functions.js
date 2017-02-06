@@ -10,11 +10,19 @@ $(document).ready(function(){
         window.location = $('#domainURI').val()+'dailyCost/newDC';
     });
 
-    $("#vRForm").click(function(){
-        window.location = $('#domainURI').val()+'dailyCost/vRForm';
-    });
+	$("#vRForm").click(function(){
+		window.location = $('#domainURI').val()+'dailyCost/vRForm';
+	});
 
-    $("#vRGraphic").click(function(){
-        window.location = $('#domainURI').val()+'dailyCost/vRGraphic';
-    });
+	$("#vRGraphic").click(function(){
+		window.location = $('#domainURI').val()+'dailyCost/vRGraphic';
+	});
+
+	$("#currencyInfo").click(function(){
+		window.location = $('#domainURI').val()+'dailyCost/currencyInfo';
+	});
+
+	$("#itemInfo").click(function(){
+		window.location = $('#domainURI').val()+'dailyCost/itemInfo';
+	});
 });
