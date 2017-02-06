@@ -28,7 +28,8 @@ class UserInfo extends RootModel
 
 	// INSERT INTO * except `id`
 	public function insertAll($values){
-		$this->name = $values->name;
+        $this->name = $values->name;
+        $this->URI = $values->URI;
 		$this->password = $values->password;
 		$this->hashPassword = $values->hashPassword;
 		$this->email = $values->email;

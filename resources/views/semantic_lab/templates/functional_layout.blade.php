@@ -49,6 +49,8 @@
                 transition: 1s;
                 position: absolute;
                 z-index: 4;
+                overflow-x: hidden;
+                overflow-y: auto;
             }
     </style>
     <div id="main" class="row">

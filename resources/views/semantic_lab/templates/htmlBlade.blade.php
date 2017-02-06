@@ -40,6 +40,8 @@
         body{
             background-image: url('http://semanticlab.com/image/slbg.png');
             background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             /*background: #666666;*/
             /*background: -webkit-linear-gradient(to bottom right, #666666, #aa66aa); !* For Safari 5.1 to 6.0 *!*/
             /*background: -o-linear-gradient(to bottom right, #666666, #aa66aa); !* For Opera 11.1 to 12.0 *!*/

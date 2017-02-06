@@ -64,7 +64,7 @@
         <form class="form col-md-offset-4 col-md-4 col-sm-12 col-xs-12">
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                <input id="account" type="text" class="form-control input-lg" placeholder="Username">
+                <input id="mail" type="text" class="form-control input-lg" placeholder="E-mail">
             </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
@@ -84,7 +84,7 @@
 
                 $('body').keydown(function(event){
                     if(event.keyCode === 13 && status === '0'){
-                        var account = $('#account').val();
+                        var mail = $('#mail').val();
                         var pass = $('#pass').val();
 
                         // ajax for validate the info of input
@@ -97,7 +97,7 @@
                             url: $('#domainURI').val()+'login',
                             type: 'POST',
                             data: {
-                                account: account,
+                                mail: mail,
                                 pass: pass,
                             },
                             success: function(xhrResponseText){

@@ -19,7 +19,7 @@ class SemanticLabController extends Controller
 	protected $data = [];
 	protected $nav = [];
 
-	public function index(Request $request){
+	public function route(Request $request){
 		// 00. check session
 		$user = $request->session()->get('account');
 
@@ -41,12 +41,12 @@ class SemanticLabController extends Controller
 	public function login(Request $request){
 		// 01. validate raw data
 		$this->validate($request, [
-			'account' => 'required',
+			'mail' => 'required',
 			'pass' => 'required'
 		]);
 
 		// 02. get raw data
-		$account = $request->get('account');
+		$mail = $request->get('mail');
 		$password = $request->get('pass');
 
 		// 03. initialize model
@@ -56,10 +56,11 @@ class SemanticLabController extends Controller
 		$hashPass = "";
 		$message['title'] = "Error";
 		$message['content'] = "No current username or password is wrong ";
-		$queryResult = $userInfoTb->select('hashPassword')->where([ ['name', $account], ['password', $password] ])->get();
+		$queryResult = $userInfoTb->select('name', 'hashPassword')->where([ ['email', $mail], ['password', $password] ])->get();
 		$result = json_decode($queryResult);
 		$numOfResult = count($result);
 		if($numOfResult === 1){
+            $account = $result[0]->name;
 			$hashPass = $result[0]->hashPassword;
 
 			// 05. check hashing value
@@ -105,6 +106,7 @@ class SemanticLabController extends Controller
         $mail = $request->get('mail');
 
         // 02. check unique data
+        $uniqueData['name'] = $username;
         $uniqueData['email'] = $mail;
         $checkResult = $userInfoTb->unique($uniqueData);
         if($checkResult === true){
@@ -112,6 +114,7 @@ class SemanticLabController extends Controller
             // 03. insert data
             $values = new \stdClass();
             $values->name = $username;
+            $values->URI = \Config::get('app.domainName')."resource/".str_replace(" ", "_", $username);
             $values->password = $pass;
             $values->hashPassword = \Hash::make($values->password);
             $values->email = $mail;

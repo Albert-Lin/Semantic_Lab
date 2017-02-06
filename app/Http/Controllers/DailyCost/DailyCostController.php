@@ -95,7 +95,7 @@ class DailyCostController extends SemanticLabController
 	}
 
 	private function itemInfo(){
-		$this->renderView = 'semantic_lab/personal';
+		$this->renderView = 'semantic_lab/functions/dailyCost/itemInfo';
 		$this->data['funName'] = 'dailyCost/itemInfo';
 	}
 }
