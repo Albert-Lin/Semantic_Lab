@@ -91,4 +91,18 @@ class RootModel extends Model
 
         return $result;
     }
+
+    // none test:
+    public function autoComplete($data){
+	    $result = [];
+        $key = $data['key'];
+        $value = $data['value'].'%';
+	    $queryJsonResult = $this->select($key)->where([ [$key, 'LIKE', $value] ])->get();
+        $queryResult = json_decode($queryJsonResult);
+	    foreach($queryResult as $index => $object){
+            $result[] = $object->$key;
+        }
+
+	    return $result;
+    }
 }

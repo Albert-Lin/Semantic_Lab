@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 use App\Model\UserInfo;
 use Illuminate\Support\Facades\Hash;
 use Facebook\Facebook;
+use App\Utility\Cookie;
 
 /**
  * Description of TestController
@@ -243,6 +244,67 @@ class TestController extends Controller{
 			var_dump($request->session()->all());
 		}
 	}
+
+
+	/*
+	 * COOKIE:
+	 */
+	/*
+	 * We have not find better than native php cookie function
+	 */
+//	public function setCookie(){
+//      setcookie('name0', '', time()-3600);
+//    }
+//    public function getCookie(){
+//        echo $_COOKIE['name0'];
+//        var_dump($_COOKIE);
+//    }
+//    public function deleteCookie(){
+//        echo setCookie('name0', '', time()-3600);
+//    }
+
+    public function viewCookie(){
+        var_dump($_COOKIE);
+    }
+
+    public function setCookie($method){
+        if($method === 'single'){
+            Cookie::setCookie('data', 'first');
+            return redirect()->route('dumpCookie');
+        }
+        else if($method === 'different'){
+            Cookie::setCookie('data2', 'single');
+            return redirect()->route('dumpCookie');
+        }
+        else if($method === 'array'){
+            Cookie::setCookie('data', 'second');
+            return redirect()->route('dumpCookie');
+        }
+        else if($method === 'dSpecial'){
+            Cookie::deleteSpecialValue('data', 'second');
+            return redirect()->route('dumpCookie');
+        }
+        else if($method === 'delete'){
+            Cookie::deleteCookie('data2');
+            return redirect()->route('dumpCookie');
+        }
+    }
+
+    public function getCookie($method){
+        if($method === 'list'){
+            $result = Cookie::getNameList();
+            var_dump($result);
+        }
+        else if($method === 'value'){
+            $result = Cookie::getValues('data');
+            var_dump($result);
+        }
+        else if($method === 'latest'){
+            $result = Cookie::getLatestValue('data');
+            var_dump($result);
+        }
+    }
+
 
 
 	/*

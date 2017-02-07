@@ -53,6 +53,17 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/delete-session/{type}', 'TestController@deleteSession');
 	});
 
+	// COOKIE:
+    Route::group(['prefix'=>'cookie'], function(){
+
+        Route::get('/', 'TestController@viewCookie')->name('dumpCookie');
+
+        Route::get('/setCookie/{method}', 'TestController@setCookie');
+
+        Route::get('/getCookie/{method}', 'TestController@getCookie');
+
+    });
+
 	// SECURITY:
 	Route::group(['prefix'=>'security'], function(){
 		Route::get('/hashing/{data}', 'TestController@hashing');
