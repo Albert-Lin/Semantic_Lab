@@ -126,4 +126,5 @@ Route::group(['prefix' => ''], function(){
     Route::post('/register', 'SemanticLabController@register');
 
     Route::get('/dailyCost/{funName?}', 'DailyCost\DailyCostController@dailyCostRoute');
+    Route::post('/itemInfo/{action}', 'DailyCost\DailyCostController@itemInfoAction');
 });

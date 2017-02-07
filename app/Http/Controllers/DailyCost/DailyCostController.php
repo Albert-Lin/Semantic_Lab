@@ -10,7 +10,7 @@
 namespace App\Http\Controllers\DailyCost;
 
 use App\Http\Controllers\SemanticLabController;
-use App\Model\UserInfo;
+use App\Model\ItemInfo;
 use Illuminate\Http\Request;
 
 class DailyCostController extends SemanticLabController
@@ -97,5 +97,52 @@ class DailyCostController extends SemanticLabController
 	private function itemInfo(){
 		$this->renderView = 'semantic_lab/functions/dailyCost/itemInfo';
 		$this->data['funName'] = 'dailyCost/itemInfo';
+	}
+
+	public function itemInfoAction(Request $request, $action){
+		$message = [];
+		$message['title'] = '';
+		$message['content'] = '';
+
+		$user = $request->session()->get('account');
+		if(!isset($user)){
+			$message['title'] = 'Redirect';
+			$message['content'] = \Config::get('app.domainName');
+		}
+		else{
+			$itemInfo = new ItemInfo();
+			if($action === 'insert'){
+				$this->validate($request, [
+					'uri'=>'required|regex:/^http:\/\/.*/',
+					'type'=>'required|regex:/^http:\/\/.*/',
+					'label'=>'required',
+				]);
+
+				$values = new \stdClass();
+				$values->uri = $request->get('uri');
+				$values->type = $request->get('type');
+				$values->label = $request->get('label');
+				$insertResult = $itemInfo->insertAll($values);
+				if($insertResult === 'Success'){
+					$message['title'] = 'Success';
+					$message['content'] = 'new item has been save into RMDB';
+				}
+				else{
+					$message['title'] = 'Error';
+					$message['content'] = 'fail to add new item, please try again (code:di01).';
+				}
+			}
+			else if($action === 'delete'){
+
+			}
+			else if($action === 'update'){
+
+			}
+			else if($action === 'select'){
+
+			}
+		}
+
+		return json_encode($message);
 	}
 }

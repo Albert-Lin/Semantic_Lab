@@ -8,60 +8,57 @@
 ?>
 
 <style>
-    #sparqlSearch{
-        padding: 0;
-        margin-top: 5%;
-        background-color: #FFFFFF;
-        box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
-        font-weight: bolder;
-    }
     #sparqlEditor{
         width: 100%;
         border:0;
         padding: 15px;
         resize: none;
     }
-        #sparqlSearch>.itemFormTitle{
-            padding-top: 20px;
-            padding-right: 15px;
-            padding-bottom: 20px;
-            padding-left: 15px;
+        #sparqlSearch>.formHeader{
             background-color: #5b88de;
         }
-    #sparqlSearch>.searchBtn{
-        padding: 8px;
-    }
+        #sparqlSearch>.formHeader>.form-group, #sparqlSearch>.formHeader>.form-group>.form-control{
+            padding-right: 15px;
+            font-size: 16px;
+            font-weight: bolder;
+            float: left;
+        }
+        #sparqlSearch>.formHeader>.form-group>.form-control>option{
+            line-height: 18px;
+            font-size: 16px;
+            font-weight: bolder;
+        }
     #sparqlResult{
-        padding: 0;
-        margin-top: 5%;
-        background-color: #FFFFFF;
-        box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
-        font-weight: bolder;
         display: none;
     }
-        #sparqlResult>.itemFormTitle{
-            padding-top: 20px;
-            padding-right: 15px;
-            padding-bottom: 20px;
-            padding-left: 15px;
+        #sparqlResult>.formHeader{
             background-color: #f0ad4e;
         }
 </style>
 <div class="row">
-    <div id="sparqlSearch" class="col-md-offset-1 col-md-10 h100">
-        <div class="itemFormTitle">SPARQL Editor:</div>
-        <textarea id="sparqlEditor" rows="7">
+    <div id="sparqlSearch" class="col-md-offset-1 col-md-10 formLayout">
+        <div class="formHeader">
+            <div class="form-group">
+                <select class="form-control">
+                    <option>DBpedia</option>
+                    <option>WordNet</option>
+                    <option>Semantic Lab</option>
+                </select>
+            </div>
+            SPARQL Editor:
+        </div>
+        <textarea id="sparqlEditor" class="formBody" rows="7">
 SELECT DISTINCT
 WHERE
 {
 }
         </textarea>
-        <div class="searchBtn"><button id="searchDBpedia" class="btn btn-info"> SEARCH </button></div>
+        <div class="formFooter"><button id="searchDBpedia" class="btn btn-info"> SEARCH </button></div>
     </div>
 </div>
 <div class="row">
-    <div id="sparqlResult" class="col-md-offset-1 col-md-10 h100">
-        <div class="itemFormTitle">Search Result:</div>
-        <div id="sparqlResultBody"></div>
+    <div id="sparqlResult" class="col-md-offset-1 col-md-10 formLayout">
+        <div class="formHeader">Search Result:</div>
+        <div id="sparqlResultBody" class="formBody" ></div>
     </div>
 </div>

@@ -16,8 +16,8 @@ class CreateItemInfoTable extends Migration
         Schema::create('item_info', function(Blueprint $table){
         	$table->increments('id');
 			$table->string('URI');
-			$table->string('rdf:type');
-			$table->string('rdfs:label');
+			$table->string('rdf_type');
+			$table->string('rdfs_label');
 		});
     }
 

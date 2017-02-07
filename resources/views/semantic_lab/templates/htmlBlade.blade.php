@@ -69,6 +69,36 @@
             margin: 0;
         }
 
+        .formLayout{
+            padding: 0;
+            margin-top: 5%;
+            background-color: #FFFFFF;
+            box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
+            font-weight: bolder;
+        }
+
+        .formLayout>.formHeader{
+            padding-top: 20px;
+            padding-right: 15px;
+            padding-bottom: 20px;
+            padding-left: 15px;
+            background-color: #5b88de;
+        }
+
+        .formLayout>.formBody{
+            padding: 15px;
+        }
+
+        .formLayout>.formFooter{
+            padding: 8px;
+        }
+
+        .inputError{
+            color: #ff0000;
+            padding: 10px;
+            font-size: 14px;
+        }
+
         @section('css')
         @show
     </style>
@@ -84,9 +114,61 @@
         function ajaxCSRFHeader(){
             $.ajaxSetup({
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').prop('content')
                 }
             });
+
+
+        }
+
+        function formRegexChek(inputId, inputDefault, errorId){
+			var checkResult = true;
+        	for(var i = 0; i < inputId.length; i++){
+				$('#'+errorId[i]).html("");
+            }
+
+        	for(var i = 0; i < inputId.length; i++){
+				if($('#'+inputId[i]).val() === undefined ||
+					$('#'+inputId[i]).val().length <= 0 ||
+					$('#'+inputId[i]).val() === inputDefault[i]){
+
+					$('#'+errorId[i]).html("Required");
+					checkResult = false;
+				}
+            }
+
+			if(checkResult === true){
+				for(var i = 0; i < inputId.length; i++){
+
+					if($('#'+inputId[i]).prop('type') === 'url'){
+						if($('#'+inputId[i]).val().match(/^http:\/\/.*/) === null){
+							$('#'+errorId[i]).html("Should be URL format");
+							checkResult = false;
+						}
+					}
+					else if($('#'+inputId[i]).prop('type') === 'email'){
+						if($('#'+inputId[i]).val().match(/[0-9a-zA-Z]*@[0-9a-zA-Z]*\./) === null){
+							$('#'+errorId[i]).html("Should be email format");
+							checkResult = false;
+						}
+					}
+					else if($('#'+inputId[i]).prop('type') === 'number'){
+						if($('#'+inputId[i]).val().match(/[0-9]*/) === null){
+							$('#'+errorId[i]).html("Should be number format");
+							checkResult = false;
+						}
+					}
+				}
+			}
+
+            return checkResult;
+        }
+
+        function defaultFormColumn(inputId, inputDefault, errorId){
+			for(var i = 0; i < inputId.length; i++){
+                $('#'+inputId[i]).val(inputDefault[i]);
+                $('#'+errorId[i]).html('');
+			}
         }
 
     </script>

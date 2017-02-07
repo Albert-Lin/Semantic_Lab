@@ -16,8 +16,8 @@ class CreateCurrencyInfoTable extends Migration
 		Schema::create('currency_info', function(Blueprint $table){
 			$table->increments('id')->unique();
 			$table->string('URI')->unique();
-			$table->string('rdf:type');
-			$table->string('rdfs:label');
+			$table->string('rdf_type');
+			$table->string('rdfs_label');
 		});
     }
 

@@ -1,10 +1,25 @@
 <?php
 
-namespace App;
+namespace App\Model;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Model\RootModel;
 
-class ItemInfo extends Model
+class ItemInfo extends RootModel
 {
-    //
+	// set the table for model:
+	protected  $table = 'item_info';
+
+	public function insertAll($values){
+		$this->URI = $values->uri;
+		$this->rdf_type = $values->type;
+		$this->rdfs_label = $values->label;
+		$result = $this->save();
+
+		if($result === true){
+			return $this->success;
+		}
+		else{
+			return $this->error;
+		}
+	}
 }

@@ -18,27 +18,10 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
-        #itemInsertForm{
-            padding: 0;
-            margin-top: 5%;
-            background-color: #FFFFFF;
-            box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
-            font-weight: bolder;
-        }
-        #itemInsertForm>.itemFormTitle{
-            padding-top: 20px;
-            padding-right: 15px;
-            padding-bottom: 20px;
-            padding-left: 15px;
+        #itemInsertForm>.formHeader{
             background-color: #5b88de;
         }
-        #itemInsertForm>.itemFormBody{
-            margin: 20px;
-        }
         #itemSearchResultForm{
-            margin-top: 5%;
-            background-color: #FFFFFF;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
             display: none;
         }
 
@@ -46,32 +29,32 @@
     <div id="itemInfoBlock" class="row h100">
         <div class="col-md-6 h100">
             <div class="row">
-                <div id="itemInsertForm" class="col-md-offset-1 col-md-10">
-                    <div class="itemFormTitle">New Item:</div>
-                    <form class="itemFormBody form-horizontal">
+                <div id="itemInsertForm" class="col-md-offset-1 col-md-10 formLayout ">
+                    <div class="formHeader">New Item:</div>
+                    <form class="formBody form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-md-2">URI</label>
-                            <div class="col-md-7"><input type="url" class="form-control input-lg" value="{{ $data['domainURI'] }}" ></div>
-                            <div id="uriError" class="col-md-3"></div>
+                            <div class="col-md-7"><input id="iURI" type="url" class="form-control input-lg" value="{{ $data['domainURI'] }}" required></div>
+                            <div id="iUError" class="col-md-3 inputError"></div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-2">rdf:type</label>
-                            <div class="col-md-7"><input type="url" class="form-control input-lg" value="http://dbpedia.org/ontology/"></div>
-                            <div id="rdf:typeError" class="col-md-3"></div>
+                            <div class="col-md-7"><input id="iType" type="url" class="form-control input-lg" value="http://dbpedia.org/ontology/" required></div>
+                            <div id="iTError" class="col-md-3 inputError"></div>
                         </div>
                         <div class="form-group">
                             <label class="control-label col-md-2">rdfs:label</label>
-                            <div class="col-md-7"><input type="text" class="form-control input-lg" value="@(zh)"></div>
-                            <div id="rdfs:labelError" class="col-md-3"></div>
+                            <div class="col-md-7"><input id="iLabel" type="text" class="form-control input-lg" value="@(zh)" required></div>
+                            <div id="iLError" class="col-md-3 inputError"></div>
                         </div>
                         <div class="form-group">
-                            <div class="col-md-offset-2 col-md-2"><button class="btn btn-info form-control"> ADD </button></div>
+                            <div class="col-md-offset-2 col-md-2"><div id="itemInsertBtn" class="btn btn-info form-control"> ADD </div></div>
                         </div>
                     </form>
                 </div>
             </div>
             <div class="row">
-                <div id="itemSearchResultForm" class="col-md-offset-1 col-md-10 h100">
+                <div id="itemSearchResultForm" class="col-md-offset-1 col-md-10 formLayout">
 
                 </div>
             </div>
@@ -80,4 +63,58 @@
             @include('semantic_lab.templates.sparql_search_form')
         </div>
     </div>
+    <script>
+        $('#itemInsertBtn').click(function(){
+			var formInputId = ['iURI', 'iType', 'iLabel'];
+			var formInputDef = ['http://semanticlab.com/', 'http://dbpedia.org/ontology/', '@(zh)'];
+			var formErrorId = ['iUError', 'iTError', 'iLError'];
+			var regexCheck = formRegexChek(formInputId, formInputDef, formErrorId);
+			if(regexCheck === true){
+				ajaxCSRFHeader();
+				$.ajax({
+					url: $('#domainURI').val()+'itemInfo/insert',
+                    type: 'POST',
+                    data: {
+						uri : $('#iURI').val(),
+						type : $('#iType').val(),
+						label : $('#iLabel').val(),
+                    },
+                    success: function(xhrResponseText){
+						var message = $.parseJSON(xhrResponseText);
+						if(message.title === 'Error'){
+							messageBlock(message.title, message.content, '');
+							$('#messageModalBtn').click();
+						}
+						else if(message.title === 'Redirect'){
+							window.location = message.content;
+						}
+						else if(message.title === 'Success'){
+							//clear data
+							defaultFormColumn(formInputId, formInputDef, formErrorId);
+							messageBlock(message.title, message.content, '');
+							$('#messageModalBtn').click();
+                        }
+                    },
+                    error: function(xhrError){
+                        if(xhrError.status === 404){
+                        	message = {
+                        		title: "404",
+                                content: "Adding items fail, please contact programmer (code:dr404)."
+                            };
+							messageBlock(message.title, message.content, '');
+							$('#messageModalBtn').click();
+                        }
+                        else if(xhrError.status === 500){
+							message = {
+								title: "Sorry",
+								content: "Adding items fail, please contact programmer (code:dr500)."
+							};
+							messageBlock(message.title, message.content, '');
+							$('#messageModalBtn').click();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 @endsection

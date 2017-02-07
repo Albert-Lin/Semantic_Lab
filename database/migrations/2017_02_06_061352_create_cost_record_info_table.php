@@ -16,14 +16,14 @@ class CreateCostRecordInfoTable extends Migration
         Schema::create('cost_record_info', function(Blueprint $table){
         	$table->increments('id')->unique();
         	$table->string('URI')->unique();
-        	$table->string('slp:purchaser');
-			$table->string('rdf:type');
-			$table->string('dbo:year');
-			$table->string('dbo:month');
-			$table->string('dbo:date');
-			$table->string('dbp:commodity');
-			$table->string('dbo:currency');
-			$table->integer('dbo:price');
+        	$table->string('dbp_buyer');
+			$table->string('rdf_type');
+			$table->string('dbo_year');
+			$table->string('dbo_month');
+			$table->string('dbo_date');
+			$table->string('dbp_commodity');
+			$table->string('dbo_currency');
+			$table->integer('dbo_price');
 		});
     }
 

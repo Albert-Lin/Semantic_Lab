@@ -19,6 +19,8 @@ class RootModel extends Model
     public $success = 'Success';
     public $error = 'Error';
 
+	public function insertAll($values){
+	}
 
 	/**
 	 * SELECT * with some arguments
