@@ -90,7 +90,7 @@ class DailyCostController extends SemanticLabController
 	}
 
 	private function currencyInfo(){
-		$this->renderView = 'semantic_lab/personal';
+		$this->renderView = 'semantic_lab/functions/dailyCost/currencyInfo';
 		$this->data['funName'] = 'dailyCost/currencyInfo';
 	}
 

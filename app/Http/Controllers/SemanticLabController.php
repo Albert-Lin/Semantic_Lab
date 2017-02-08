@@ -72,7 +72,9 @@ class SemanticLabController extends Controller
 
 				// 07. set cookie
 				$info = \App\Utility\Cookie::settingInfo($request, 'mail', $mail);
-				return response(json_encode($message))->cookie($info['name'], $info['value'], $info['time'], $info['path']);
+                if($info !== null) {
+                    return response(json_encode($message))->cookie($info['name'], $info['value'], $info['time'], $info['path']);
+                }
 			}
 			else{
                 $message['content'] .= "(code:sl01).";

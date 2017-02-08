@@ -35,17 +35,25 @@
         #loginBlock{
             display: none;
             margin-top: 50px;
+            position: absolute;
+            z-index: 1;
         }
         #mail{
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
             margin-bottom: -1px;
         }
-        #mailAutoComplete{
+        #mailAutoCompleteBlock{
+            width: 391px;
+            position: absolute;
             display: none;
+            z-index: 10;
         }
-        #mailAutoComplete>label{
+        #mailAutoComplete{
             padding: 0;
+        }
+        .auto-com{
+            overflow:hidden;
         }
         #pass{
             border-top-right-radius: 0;
@@ -72,6 +80,10 @@
                 <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                 <input id="mail" type="text" class="form-control input-lg" placeholder="E-mail">
             </div>
+            <div id="mailAutoCompleteBlock" class="form-group">
+                <div id="mailAutoComplete"  class=" col-md-12">
+                </div>
+            </div>
             <div class="input-group">
                 <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
                 <input id="pass" type="password" class="form-control input-lg" placeholder="Password">
@@ -80,8 +92,7 @@
                 <div id="register" class="btn btn-md col-md-offset-3 col-md-6"> Register </div>
             </div>
         </form>
-        <div id="mailAutoComplete" class="col-md-4 col-sm-12 col-xs-12">
-        </div>
+
     </div>
     <script type="text/javascript">
 
@@ -138,41 +149,59 @@
                     }
 				}
 				else if(event.keyCode !== 13 && status === '0'){
-					var mail = $('#mail').val();
-					ajaxCSRFHeader();
-					$.ajax({
-						url: $('#domainURI').val()+'login/autoSearch/cookie',
+                    var mail = $('#mail').val();
+                    ajaxCSRFHeader();
+                    $.ajax({
+                        url: $('#domainURI').val() + 'login/autoSearch/cookie',
                         type: 'POST',
                         data: {
-							input: mail,
+                            input: mail,
                             cookieName: 'mail'
                         },
-                        success: function(xhrResponseText){
-							$message = $.parseJSON(xhrResponseText);
-							if($message.length > 0) { console.log($message.length)
-								var top5 = [];
-								for(var i = 0; i < $message.length; i++){
-									top5[i] = '<a class="list-group-item col-md-12 auto-com">'+$message[i]+'</a>';
-									if(i === 4){
-										break;
+                        success: function (xhrResponseText) {
+                            var message = $.parseJSON(xhrResponseText);
+                            if (message.length > 0) {
+                                var top5 = [];
+                                for (var i = 0; i < message.length; i++) {
+                                    top5[i] = '<a class="list-group-item col-md-12 auto-com">' + message[i] + '</a>';
+                                    if (i === 4) {
+                                        break;
                                     }
                                 }
-                                var mailAutoComplete = $('#mailAutoComplete');
-								mailAutoComplete.html(top5);
-								mailAutoComplete.css('display', 'block');
-							}
-							else{
-								var mailAutoComplete = $('#mailAutoComplete');
-								mailAutoComplete.html('');
-								mailAutoComplete.css('display', 'none');
+                                var Blockwidth = $('#loginBlock form div').css('width');
+
+                                var mailAutoCompleteBlock = $('#mailAutoCompleteBlock');
+                                mailAutoCompleteBlock.html(top5);
+                                mailAutoCompleteBlock.css('width', Blockwidth);
+                                mailAutoCompleteBlock.css('display', 'block');
+
+                                $('.auto-com').click(function () {
+                                    $('#mail').val($(this).html());
+                                    mailAutoCompleteBlock.html('');
+                                    mailAutoCompleteBlock.css('display', 'none');
+                                });
+                            }
+                            else {
+                                var mailAutoCompleteBlock = $('#mailAutoCompleteBlock');
+                                mailAutoCompleteBlock.html('');
+                                mailAutoCompleteBlock.css('display', 'none');
                             }
                         },
-                        error: function(xhrError){
-                        	console.log(xhrError);
+                        error: function (xhrError) {
+                            console.log(xhrError);
                         }
 
                     });
 				}
+            });
+
+            $('#mail').on('keydown', function(event){
+                if(event.keyCode === 9 && status === '0') {
+                    if ($('#mailAutoCompleteBlock').css('display') === 'block') {
+                        $('#mailAutoCompleteBlock').html('');
+                        $('#mailAutoCompleteBlock').css('display', 'none');
+                    }
+                }
             });
 
 			$('body').on('keyup', function(event){
@@ -190,10 +219,13 @@
                 }
             });
 
-			$('.auto-com').on('click', function(){
-				console.log($(this).html());
-				$('#mail').val($(this).html());
+			$('body').on('click', function(){
+			    if($('#mailAutoCompleteBlock').css('display') === 'block'){
+                    $('#mailAutoCompleteBlock').css('display', 'none');
+                }
             });
+
+
         });
 
         $('#swIcon').click(function(){

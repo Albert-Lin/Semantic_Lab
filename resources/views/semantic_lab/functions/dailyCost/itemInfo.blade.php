@@ -11,14 +11,11 @@
 
 @section('contentBody')
     <style>
-        .h100{
-            height: 100%;
-        }
         #itemInfoBlock{
             overflow-x: hidden;
             overflow-y: auto;
         }
-        #itemInsertForm>.formHeader{
+        #itemInsertForm>.boxHeader{
             background-color: #5b88de;
         }
         #itemSearchResultForm{
@@ -29,9 +26,9 @@
     <div id="itemInfoBlock" class="row h100">
         <div class="col-md-6 h100">
             <div class="row">
-                <div id="itemInsertForm" class="col-md-offset-1 col-md-10 formLayout ">
-                    <div class="formHeader">New Item:</div>
-                    <form class="formBody form-horizontal">
+                <div id="itemInsertForm" class="col-md-offset-1 col-md-10 layoutBox ">
+                    <div class="boxHeader">New Item:</div>
+                    <form class="boxBody form-horizontal">
                         <div class="form-group">
                             <label class="control-label col-md-2">URI</label>
                             <div class="col-md-7"><input id="iURI" type="url" class="form-control input-lg" value="{{ $data['domainURI'] }}" required></div>
@@ -54,7 +51,7 @@
                 </div>
             </div>
             <div class="row">
-                <div id="itemSearchResultForm" class="col-md-offset-1 col-md-10 formLayout">
+                <div id="itemSearchResultForm" class="col-md-offset-1 col-md-10 layoutBox">
 
                 </div>
             </div>

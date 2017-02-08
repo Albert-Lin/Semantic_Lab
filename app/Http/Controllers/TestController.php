@@ -274,7 +274,8 @@ class TestController extends Controller{
         else if($method === 'delete'){
 			$info = Cookie::deletingInfo($request, 'data2');
         }
-		return response('')->cookie($info['name'], $info['value'], $info['time'], $info['path']);
+        if($info !== null)
+		    return response('')->cookie($info['name'], $info['value'], $info['time'], $info['path']);
     }
 
     public function getCookie(Request $request, $method){

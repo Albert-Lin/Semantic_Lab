@@ -69,7 +69,7 @@
             margin: 0;
         }
 
-        .formLayout{
+        .layoutBox{
             padding: 0;
             margin-top: 5%;
             background-color: #FFFFFF;
@@ -77,7 +77,7 @@
             font-weight: bolder;
         }
 
-        .formLayout>.formHeader{
+        .layoutBox>.boxHeader{
             padding-top: 20px;
             padding-right: 15px;
             padding-bottom: 20px;
@@ -85,11 +85,11 @@
             background-color: #5b88de;
         }
 
-        .formLayout>.formBody{
+        .layoutBox>.boxBody{
             padding: 15px;
         }
 
-        .formLayout>.formFooter{
+        .layoutBox>.boxFooter{
             padding: 8px;
         }
 
@@ -97,6 +97,10 @@
             color: #ff0000;
             padding: 10px;
             font-size: 14px;
+        }
+
+        .h100{
+            height: 100%;
         }
 
         @section('css')

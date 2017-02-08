@@ -14,16 +14,16 @@
         padding: 15px;
         resize: none;
     }
-        #sparqlSearch>.formHeader{
+        #sparqlSearch>.boxHeader{
             background-color: #5b88de;
         }
-        #sparqlSearch>.formHeader>.form-group, #sparqlSearch>.formHeader>.form-group>.form-control{
+        #sparqlSearch>.boxHeader>.form-group, #sparqlSearch>.boxHeader>.form-group>.form-control{
             padding-right: 15px;
             font-size: 16px;
             font-weight: bolder;
             float: left;
         }
-        #sparqlSearch>.formHeader>.form-group>.form-control>option{
+        #sparqlSearch>.boxHeader>.form-group>.form-control>option{
             line-height: 18px;
             font-size: 16px;
             font-weight: bolder;
@@ -31,13 +31,13 @@
     #sparqlResult{
         display: none;
     }
-        #sparqlResult>.formHeader{
+        #sparqlResult>.boxHeader{
             background-color: #f0ad4e;
         }
 </style>
 <div class="row">
-    <div id="sparqlSearch" class="col-md-offset-1 col-md-10 formLayout">
-        <div class="formHeader">
+    <div id="sparqlSearch" class="col-md-offset-1 col-md-10 layoutBox">
+        <div class="boxHeader">
             <div class="form-group">
                 <select class="form-control">
                     <option>DBpedia</option>
@@ -47,18 +47,18 @@
             </div>
             SPARQL Editor:
         </div>
-        <textarea id="sparqlEditor" class="formBody" rows="7">
+        <textarea id="sparqlEditor" class="boxBody" rows="7">
 SELECT DISTINCT
 WHERE
 {
 }
         </textarea>
-        <div class="formFooter"><button id="searchDBpedia" class="btn btn-info"> SEARCH </button></div>
+        <div class="boxFooter"><button id="searchDBpedia" class="btn btn-info"> SEARCH </button></div>
     </div>
 </div>
 <div class="row">
-    <div id="sparqlResult" class="col-md-offset-1 col-md-10 formLayout">
-        <div class="formHeader">Search Result:</div>
-        <div id="sparqlResultBody" class="formBody" ></div>
+    <div id="sparqlResult" class="col-md-offset-1 col-md-10 boxLayout">
+        <div class="boxHeader">Search Result:</div>
+        <div id="sparqlResultBody" class="boxBody" ></div>
     </div>
 </div>
