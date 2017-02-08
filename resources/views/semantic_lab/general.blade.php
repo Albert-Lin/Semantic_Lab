@@ -36,10 +36,16 @@
             display: none;
             margin-top: 50px;
         }
-        #account{
+        #mail{
             border-bottom-right-radius: 0;
             border-bottom-left-radius: 0;
             margin-bottom: -1px;
+        }
+        #mailAutoComplete{
+            display: none;
+        }
+        #mailAutoComplete>label{
+            padding: 0;
         }
         #pass{
             border-top-right-radius: 0;
@@ -74,53 +80,126 @@
                 <div id="register" class="btn btn-md col-md-offset-3 col-md-6"> Register </div>
             </div>
         </form>
+        <div id="mailAutoComplete" class="col-md-4 col-sm-12 col-xs-12">
+        </div>
     </div>
     <script type="text/javascript">
-        var status = '1';
+
+		var status = '1';
+		var messageStatus = '1';
+
+        function loging(){
+			var mail = $('#mail').val();
+			var pass = $('#pass').val();
+
+			// ajax for validate the info of input
+			// redirect if the info is correct
+
+			// before using ajax to post data, we need to set CSRF value in post header:
+			ajaxCSRFHeader();
+
+			$.ajax({
+				url: $('#domainURI').val()+'login',
+				type: 'POST',
+				data: {
+					mail: mail,
+					pass: pass,
+				},
+				success: function(xhrResponseText){
+					var message = $.parseJSON(xhrResponseText);
+					if(message.title === 'Error'){
+						messageBlock(message.title, message.content, '');
+						$('#messageModalBtn').click();
+
+					}
+					else if(message.title === 'Redirect'){
+						window.location = message.content;
+					}
+				},
+				error: function(xhrError){
+					if(xhrError.status === 422){
+						messageBlock('Error', 'Validation error (code:sl04).', '');
+						$('#messageModalBtn').click();
+					}
+				}
+			});
+        }
+
+        $(function() {
+			$('#mail').on('keyup', function(event){
+				if(event.keyCode === 13 && status === '0'){
+					if(messageStatus === '1') {
+						loging();
+						messageStatus = '0';
+					}
+					else{
+						messageStatus = '1';
+						$('#messageModalBtn').click();
+                    }
+				}
+				else if(event.keyCode !== 13 && status === '0'){
+					var mail = $('#mail').val();
+					ajaxCSRFHeader();
+					$.ajax({
+						url: $('#domainURI').val()+'login/autoSearch/cookie',
+                        type: 'POST',
+                        data: {
+							input: mail,
+                            cookieName: 'mail'
+                        },
+                        success: function(xhrResponseText){
+							$message = $.parseJSON(xhrResponseText);
+							if($message.length > 0) { console.log($message.length)
+								var top5 = [];
+								for(var i = 0; i < $message.length; i++){
+									top5[i] = '<a class="list-group-item col-md-12 auto-com">'+$message[i]+'</a>';
+									if(i === 4){
+										break;
+                                    }
+                                }
+                                var mailAutoComplete = $('#mailAutoComplete');
+								mailAutoComplete.html(top5);
+								mailAutoComplete.css('display', 'block');
+							}
+							else{
+								var mailAutoComplete = $('#mailAutoComplete');
+								mailAutoComplete.html('');
+								mailAutoComplete.css('display', 'none');
+                            }
+                        },
+                        error: function(xhrError){
+                        	console.log(xhrError);
+                        }
+
+                    });
+				}
+            });
+
+			$('body').on('keyup', function(event){
+				if (!$('#mail').is(":focus")) {
+					if(event.keyCode === 13 && status === '0') {
+						if (messageStatus === '1') {
+							loging();
+							messageStatus = '0';
+						}
+						else {
+							messageStatus = '1';
+							$('#messageModalBtn').click();
+						}
+					}
+                }
+            });
+
+			$('.auto-com').on('click', function(){
+				console.log($(this).html());
+				$('#mail').val($(this).html());
+            });
+        });
+
         $('#swIcon').click(function(){
             if(status === '1'){
                 $('#loginBlock').css('display', 'block');
                 status = '0';
-
-                $('body').keydown(function(event){
-                    if(event.keyCode === 13 && status === '0'){
-                        var mail = $('#mail').val();
-                        var pass = $('#pass').val();
-
-                        // ajax for validate the info of input
-                        // redirect if the info is correct
-
-                        // before using ajax to post data, we need to set CSRF value in post header:
-                        ajaxCSRFHeader();
-
-                        $.ajax({
-                            url: $('#domainURI').val()+'login',
-                            type: 'POST',
-                            data: {
-                                mail: mail,
-                                pass: pass,
-                            },
-                            success: function(xhrResponseText){
-                                var message = $.parseJSON(xhrResponseText);
-                                if(message.title === 'Error'){
-                                    messageBlock(message.title, message.content, '');
-                                    $('#messageModalBtn').click();
-
-                                }
-                                else if(message.title === 'Redirect'){
-                                    window.location = message.content;
-                                }
-                            },
-                            error: function(xhrError){
-                                if(xhrError.status === 422){
-                                    messageBlock('Error', 'Validation error (code:sl04).', '');
-                                    $('#messageModalBtn').click();
-                                }
-                            }
-                        });
-                    }
-                });
-
             }
             else{
                 $('#loginBlock').css('display', 'none');

@@ -69,6 +69,10 @@ class SemanticLabController extends Controller
                 $message['content'] = \Config::get('app.domainName');
 				// 06. set session
 				$request->session()->put('account', $account);
+
+				// 07. set cookie
+				$info = \App\Utility\Cookie::settingInfo($request, 'mail', $mail);
+				return response(json_encode($message))->cookie($info['name'], $info['value'], $info['time'], $info['path']);
 			}
 			else{
                 $message['content'] .= "(code:sl01).";
@@ -83,6 +87,23 @@ class SemanticLabController extends Controller
 
 		return json_encode($message);
 
+	}
+
+	public function autoInputSearch(Request $request, $searchData){
+		$result = '';
+		$value = $request->get('input');
+		if(isset($value) && $value !== null) {
+			$name = $request->get('cookieName');
+			if ($searchData === 'cookie') {
+				$cookie = \App\Utility\Cookie::getValues($request, $name);
+				$result = \App\Utility\Utility::arrayRegexSearch($value, $cookie);
+			}
+		}
+		else{
+			$result = 'none';
+		}
+
+		return json_encode($result);
 	}
 
 	public function logout(Request $request){

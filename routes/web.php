@@ -62,6 +62,10 @@ Route::group(['prefix'=>'test'], function(){
 
         Route::get('/getCookie/{method}', 'TestController@getCookie');
 
+		Route::get('/setC', 'TestController@setC');
+
+		route::get('/getC', 'TestController@getC');
+
     });
 
 	// SECURITY:
@@ -123,8 +127,14 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/login', 'TestController@fbLogin');
 	});
 
+	// UTILITY:
+	Route::group(['prefix' => 'utility'], function(){
+		Route::get('/regexSearch/{searchWord}', 'TestController@autoCompleteSearch');
+	});
+
 	// TEST:
 	Route::get('/test/regex/{regex}', 'TestController@regex');
+
 
 });
 
@@ -132,7 +142,11 @@ Route::group(['prefix'=>'test'], function(){
 // FOR SEMANTIC LAB
 Route::group(['prefix' => ''], function(){
 	Route::get( '/', 'SemanticLabController@route')->name('root');
-	Route::post('/login', 'SemanticLabController@login');
+
+	Route::group(['prefix' => 'login'], function(){
+		Route::post('/', 'SemanticLabController@login');
+		Route::post('/autoSearch/{searchData}', 'SemanticLabController@autoInputSearch');
+	});
     Route::get('/logout', 'SemanticLabController@logout');
     Route::post('/register', 'SemanticLabController@register');
 

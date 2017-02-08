@@ -252,59 +252,60 @@ class TestController extends Controller{
 	/*
 	 * We have not find better than native php cookie function
 	 */
-//	public function setCookie(){
-//      setcookie('name0', '', time()-3600);
-//    }
-//    public function getCookie(){
-//        echo $_COOKIE['name0'];
-//        var_dump($_COOKIE);
-//    }
-//    public function deleteCookie(){
-//        echo setCookie('name0', '', time()-3600);
-//    }
 
     public function viewCookie(){
         var_dump($_COOKIE);
     }
 
-    public function setCookie($method){
+    public function setCookie(Request $request, $method){
+    	$info = '';
         if($method === 'single'){
-            Cookie::setCookie('data', 'first');
-            return redirect()->route('dumpCookie');
+            $info = Cookie::settingInfo($request, 'data', 'first');
         }
         else if($method === 'different'){
-            Cookie::setCookie('data2', 'single');
-            return redirect()->route('dumpCookie');
+			$info = Cookie::settingInfo($request, 'data2', 'data2');
         }
         else if($method === 'array'){
-            Cookie::setCookie('data', 'second');
-            return redirect()->route('dumpCookie');
+			$info = Cookie::settingInfo($request, 'data', 'second');
         }
         else if($method === 'dSpecial'){
-            Cookie::deleteSpecialValue('data', 'second');
-            return redirect()->route('dumpCookie');
+			$info = Cookie::specialDeletingInfo($request, 'data', 'second');
         }
         else if($method === 'delete'){
-            Cookie::deleteCookie('data2');
-            return redirect()->route('dumpCookie');
+			$info = Cookie::deletingInfo($request, 'data2');
         }
+		return response('')->cookie($info['name'], $info['value'], $info['time'], $info['path']);
     }
 
-    public function getCookie($method){
+    public function getCookie(Request $request, $method){
         if($method === 'list'){
             $result = Cookie::getNameList();
             var_dump($result);
         }
         else if($method === 'value'){
-            $result = Cookie::getValues('data');
+            $result = Cookie::getValues($request, 'data');
             var_dump($result);
         }
         else if($method === 'latest'){
-            $result = Cookie::getLatestValue('data');
+            $result = Cookie::getLatestValue($request, 'data');
             var_dump($result);
         }
     }
 
+    public function setC(){
+    	$data = [];
+		$data['title'] = 'Semantic Lab';
+		$data['domainURI'] = \Config::get('app.domainName');
+    	return response()
+			->view('semantic_lab/general', ['data'=>$data])
+			->cookie('re', 'val', 36400, '/');
+	}
+
+	public function getC(Request $request){
+		$value = $request->cookie('re');
+		var_dump($value);
+		var_dump($_COOKIE);
+	}
 
 
 	/*
@@ -693,6 +694,29 @@ class TestController extends Controller{
 	}
 
 
+	/*
+	 * UTILITY:
+	 */
+	public function autoCompleteSearch($searchWord){
+		$array = [];
+		$array[] = '*albert';
+		$array[] = 'a*lbert';
+		$array[] = 'al*bert';
+		$array[] = 'alb*ert';
+		$array[] = 'albe*rt';
+		$array[] = 'alber*t';
+		$array[] = 'albert*';
+		$subArray = [];
+		$subArray[] = 'albert lin';
+		$subArray[] = 'albert lin success';
+		$subArray[] = 'albert *lin';
+		$array[] = $subArray;
+
+		$searchResult = \App\Utility\Utility::arrayRegexSearch($searchWord, $array);
+		var_dump($searchResult);
+	}
+
+
     /*
      * TEST
      */
@@ -742,4 +766,7 @@ class TestController extends Controller{
     private function getLanguageDir($language){
         return 'D:\Desktop\yii\message\en'.'/'.$language;
     }
+
+
+
 }

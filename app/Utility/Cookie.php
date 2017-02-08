@@ -9,6 +9,8 @@
 
 namespace App\Utility;
 
+use Illuminate\Http\Request;
+
 class Cookie
 {
     public static function getNameList(){
@@ -20,11 +22,12 @@ class Cookie
         return $result;
     }
 
-    public static function getValues($name){
-        if(isset($_COOKIE[$name])){
-            $result = json_decode($_COOKIE[$name], true);
+    public static function getValues(Request $request, $name){
+    	$cookie = $request->cookie($name);
+        if(isset($cookie) && $cookie !== null){
+            $result = json_decode($cookie, true);
             if($result === null){
-                return $_COOKIE[$name];
+                return $cookie;
             }
             else{
                 return $result;
@@ -35,8 +38,8 @@ class Cookie
         }
     }
 
-    public static function getLatestValue($name){
-        $cookie = self::getValues($name);
+    public static function getLatestValue(Request $request, $name){
+        $cookie = self::getValues($request, $name);
         if($cookie !== null){
             if(is_array($cookie)){
                 $length = count($cookie);
@@ -51,8 +54,8 @@ class Cookie
         }
     }
 
-    public static function existCookie($name, $value){
-        $cookie = self::getValues($name);
+    public static function existCookie(Request $request, $name, $value){
+        $cookie = self::getValues($request, $name);
         if($cookie !== null){
             if(is_array($cookie)){
                 if(($key = array_search($value, $cookie)) !== false){
@@ -71,53 +74,64 @@ class Cookie
         }
     }
 
-    public static function setCookie($name, $value, $seconds=null){
-        $cookie = self::getValues($name);
-        $exist = self::existCookie($name, $value);
-
-        if($seconds === null){
-            $seconds = 86400*30;
-        }
+    public static function settingInfo(Request $request, $name, $value){
+        $cookie = self::getValues($request, $name);
+        $exist = self::existCookie($request, $name, $value);
 
         if($cookie !== null){
             if($exist === false) {
                 if (is_array($cookie)) {
                     $cookie[] = $value;
-                    setcookie($name, json_encode($cookie), time() + $seconds, '/');
+
+					return self::returnInfo($name, json_encode($cookie));
+
                 } else {
                     $array = [];
                     $array[] = $cookie;
                     $array[] = $value;
-                    setcookie($name, json_encode($array), time() + $seconds, '/');
+
+					return self::returnInfo($name, json_encode($array));
                 }
             }
         }
         else{
             $array = [];
             $array[] = $value;
-            setcookie($name, json_encode($array), time()+$seconds, '/');
+
+			return self::returnInfo($name, json_encode($array));
         }
     }
 
-    public static function deleteCookie($name){
-        $cookie = self::getValues($name);
-        if($cookie !== null){
-            setcookie($name, '', time()-3600, '/');
-        }
+    public static function deletingInfo(Request $request, $name){
+		return self::returnInfo($name, '', -3600);
     }
 
-    public static function deleteSpecialValue($name, $value){
-        $cookie = self::getValues($name);
+    public static function specialDeletingInfo(Request $request, $name, $value){
+        $cookie = self::getValues($request, $name);
         if($cookie !== null){
             if(is_array($cookie)){
                 if (($key = array_search($value, $cookie)) !== false) {
                     unset($cookie[$key]);
                 }
-                setcookie($name, json_encode($cookie), time()+(86400*30), '/');
+				return self::returnInfo($name, json_encode($cookie));
             }
             else{
-                setcookie($name, '', time()-3600, '/');
+				return self::returnInfo($name, '', -3600);
             }
         }
+        else{
+			return self::returnInfo($name, '', -3600);return self::returnInfo($name, '', -3600);
+		}
     }
+
+    private static function returnInfo($name, $value='', $minutes=(1440*30), $path='/'){
+		$info = [];
+		$info['name'] = $name;
+		$info['value'] = $value;
+		$info['time'] = $minutes;
+		$info['path'] = $path;
+
+		return $info;
+	}
+
 }
