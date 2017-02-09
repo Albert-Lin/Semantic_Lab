@@ -21,6 +21,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="{{ $data['domainURI'] }}js/semantic_lab/functions/functions.js"></script>
+    <script src="{{ $data['domainURI'] }}js/semantic_lab/functions/ajaxObject.js"></script>
+    <script src="{{ $data['domainURI'] }}js/semantic_lab/functions/utility.js"></script>
 
     <style>
         @font-face {
@@ -115,58 +117,58 @@
             $('#messageFooter').html(footerText);
         }
 
-        function ajaxCSRFHeader(){
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').prop('content')
-                }
-            });
+//        function ajaxCSRFHeader(){
+//            $.ajaxSetup({
+//                headers: {
+//                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').prop('content')
+//                }
+//            });
+//
+//
+//        }
 
+        {{--function formRegexChek(inputId, inputDefault, errorId){--}}
+			{{--var checkResult = true;--}}
+        	{{--for(var i = 0; i < inputId.length; i++){--}}
+				{{--$('#'+errorId[i]).html("");--}}
+            {{--}--}}
 
-        }
+        	{{--for(var i = 0; i < inputId.length; i++){--}}
+				{{--if($('#'+inputId[i]).val() === undefined ||--}}
+					{{--$('#'+inputId[i]).val().length <= 0 ||--}}
+					{{--$('#'+inputId[i]).val() === inputDefault[i]){--}}
 
-        function formRegexChek(inputId, inputDefault, errorId){
-			var checkResult = true;
-        	for(var i = 0; i < inputId.length; i++){
-				$('#'+errorId[i]).html("");
-            }
+					{{--$('#'+errorId[i]).html("Required");--}}
+					{{--checkResult = false;--}}
+				{{--}--}}
+            {{--}--}}
 
-        	for(var i = 0; i < inputId.length; i++){
-				if($('#'+inputId[i]).val() === undefined ||
-					$('#'+inputId[i]).val().length <= 0 ||
-					$('#'+inputId[i]).val() === inputDefault[i]){
+			{{--if(checkResult === true){--}}
+				{{--for(var i = 0; i < inputId.length; i++){--}}
 
-					$('#'+errorId[i]).html("Required");
-					checkResult = false;
-				}
-            }
+					{{--if($('#'+inputId[i]).prop('type') === 'url'){--}}
+						{{--if($('#'+inputId[i]).val().match(/^http:\/\/.*/) === null){--}}
+							{{--$('#'+errorId[i]).html("Should be URL format");--}}
+							{{--checkResult = false;--}}
+						{{--}--}}
+					{{--}--}}
+					{{--else if($('#'+inputId[i]).prop('type') === 'email'){--}}
+						{{--if($('#'+inputId[i]).val().match(/[0-9a-zA-Z]*@[0-9a-zA-Z]*\./) === null){--}}
+							{{--$('#'+errorId[i]).html("Should be email format");--}}
+							{{--checkResult = false;--}}
+						{{--}--}}
+					{{--}--}}
+					{{--else if($('#'+inputId[i]).prop('type') === 'number'){--}}
+						{{--if($('#'+inputId[i]).val().match(/[0-9]*/) === null){--}}
+							{{--$('#'+errorId[i]).html("Should be number format");--}}
+							{{--checkResult = false;--}}
+						{{--}--}}
+					{{--}--}}
+				{{--}--}}
+			{{--}--}}
 
-			if(checkResult === true){
-				for(var i = 0; i < inputId.length; i++){
-
-					if($('#'+inputId[i]).prop('type') === 'url'){
-						if($('#'+inputId[i]).val().match(/^http:\/\/.*/) === null){
-							$('#'+errorId[i]).html("Should be URL format");
-							checkResult = false;
-						}
-					}
-					else if($('#'+inputId[i]).prop('type') === 'email'){
-						if($('#'+inputId[i]).val().match(/[0-9a-zA-Z]*@[0-9a-zA-Z]*\./) === null){
-							$('#'+errorId[i]).html("Should be email format");
-							checkResult = false;
-						}
-					}
-					else if($('#'+inputId[i]).prop('type') === 'number'){
-						if($('#'+inputId[i]).val().match(/[0-9]*/) === null){
-							$('#'+errorId[i]).html("Should be number format");
-							checkResult = false;
-						}
-					}
-				}
-			}
-
-            return checkResult;
-        }
+            {{--return checkResult;--}}
+        {{--}--}}
 
         function defaultFormColumn(inputId, inputDefault, errorId){
 			for(var i = 0; i < inputId.length; i++){

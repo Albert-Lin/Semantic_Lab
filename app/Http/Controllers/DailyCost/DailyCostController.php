@@ -10,6 +10,7 @@
 namespace App\Http\Controllers\DailyCost;
 
 use App\Http\Controllers\SemanticLabController;
+use App\Model\CurrencyInfo;
 use App\Model\ItemInfo;
 use Illuminate\Http\Request;
 
@@ -52,11 +53,11 @@ class DailyCostController extends SemanticLabController
 						break;
 				}
 			}
-
-			// 05. render view
-			return View($this->renderView)
-				->with('data', $this->data);
 		}
+
+		// 05. render view
+		return View($this->renderView)
+			->with('data', $this->data);
 
 	}
 
@@ -99,7 +100,45 @@ class DailyCostController extends SemanticLabController
 		$this->data['funName'] = 'dailyCost/itemInfo';
 	}
 
-	public function itemInfoAction(Request $request, $action){
+	public function currencyInfoAction(Request $request, $action = null){
+		$message = [];
+		$user = $this->getUserSession($request);
+
+		if(!isset($user)){
+			$message = $this->redirectMessage();
+		}
+		else{
+			$currencyInfo = new CurrencyInfo();
+
+			if($action === 'insert'){
+				$this->validate($request, [
+					'uri' => 'required|regex:/^http:\/\/.*/',
+					'type' => 'required|regex:/^http:\/\/.*/',
+					'label' => 'required|regex:/.*@.*/'
+				]);
+
+				$values = new \stdClass();
+				$values->uri = $request->get('uri');
+				$values->type = $request->get('type');
+				$values->label = $request->get('label');
+				$insertResult = $currencyInfo->insertAll($values);
+
+				$message = $this->insertResult($insertResult, $currencyInfo->success);
+			}
+			else if($action === 'delete'){
+
+			}
+			else if($action === 'update'){
+
+			}
+			else if($action === 'select'){
+
+			}
+		}
+		return json_encode($message);
+	}
+
+	public function itemInfoAction(Request $request, $action = null){
 		$message = [];
 		$message['title'] = '';
 		$message['content'] = '';
@@ -145,4 +184,19 @@ class DailyCostController extends SemanticLabController
 
 		return json_encode($message);
 	}
+
+	private function insertResult($result, $success){
+		$message = [];
+		if($result === $success){
+			$message['title'] = 'Success';
+			$message['content'] = 'new record has been save into RMDB';
+		}
+		else{
+			$message['title'] = 'Error';
+			$message['content'] = 'fail to add new item, please try again (code:day_ins_01).';
+		}
+
+		return $message;
+	}
+
 }

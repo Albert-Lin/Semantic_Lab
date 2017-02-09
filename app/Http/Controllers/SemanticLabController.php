@@ -183,4 +183,15 @@ class SemanticLabController extends Controller
         $this->data['nav'] = $this->nav;
         $this->data['domainURI'] = \Config::get('app.domainName');
     }
+
+    protected function getUserSession(Request $request){
+		return $request->session()->get('account');
+	}
+
+	protected function redirectMessage(){
+    	$message = [];
+		$message['title'] = 'Redirect';
+		$message['content'] = \Config::get('app.domainName');
+		return $message;
+	}
 }
