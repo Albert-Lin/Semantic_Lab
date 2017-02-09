@@ -100,6 +100,42 @@ class DailyCostController extends SemanticLabController
 		$this->data['funName'] = 'dailyCost/itemInfo';
 	}
 
+
+	public function insert(Request $request, $function = null){
+		$message = [];
+		$user = $this->getUserSession($request);
+
+		if(!isset($user)){
+			$message = $this->redirectMessage();
+		}
+		else{
+			if($function === 'newDC'){
+
+			}
+			else if($function === 'currencyInfo'){
+				$currencyInfo = new CurrencyInfo();
+				$this->validate($request, [
+					'uri' => 'required|regex:/^http:\/\/.*/',
+					'type' => 'required|regex:/^http:\/\/.*/',
+					'label' => 'required|regex:/.*@.*/'
+				]);
+
+				$values = new \stdClass();
+				$values->uri = $request->get('uri');
+				$values->type = $request->get('type');
+				$values->label = $request->get('label');
+				$insertResult = $currencyInfo->insertAll($values);
+
+				$message = $this->insertResult($insertResult, $currencyInfo->success);
+			}
+			else if($function === 'itemInfo'){
+
+			}
+		}
+		return json_encode($message);
+	}
+
+
 	public function currencyInfoAction(Request $request, $action = null){
 		$message = [];
 		$user = $this->getUserSession($request);

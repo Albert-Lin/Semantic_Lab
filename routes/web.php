@@ -152,6 +152,7 @@ Route::group(['prefix' => ''], function(){
 
     Route::get('/dailyCost/{funName?}', 'DailyCost\DailyCostController@dailyCostRoute');
     Route::post('/itemInfo/{action?}', 'DailyCost\DailyCostController@itemInfoAction');
-    Route::post('/dailyCost/currencyInfo/{action?}', 'DailyCost\DailyCostController@currencyInfoAction');
+//    Route::post('/dailyCost/currencyInfo/{action?}', 'DailyCost\DailyCostController@currencyInfoAction');
+    Route::post('/dailyCost/{function}/insert', 'DailyCost\DailyCostController@insert');
 
 });
