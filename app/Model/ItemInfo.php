@@ -16,10 +16,10 @@ class ItemInfo extends RootModel
 		$result = $this->save();
 
 		if($result === true){
-			return $this->success;
+			return self::$success;
 		}
 		else{
-			return $this->error;
+			return self::$error;
 		}
 	}
 }

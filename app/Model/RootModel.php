@@ -16,8 +16,8 @@ class RootModel extends Model
 
 	// set timestamp to false
 	public $timestamps = false;
-    public $success = 'Success';
-    public $error = 'Error';
+    public static $success = 'Success';
+    public static $error = 'Error';
 
 	public function insertAll($values){
 	}

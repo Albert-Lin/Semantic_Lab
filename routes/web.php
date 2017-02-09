@@ -141,7 +141,7 @@ Route::group(['prefix'=>'test'], function(){
 
 // FOR SEMANTIC LAB
 Route::group(['prefix' => ''], function(){
-	Route::get( '/', 'SemanticLabController@route')->name('root');
+	Route::get( '/', 'SemanticLabController@viewRoute')->name('root');
 
 	Route::group(['prefix' => 'login'], function(){
 		Route::post('/', 'SemanticLabController@login');
@@ -150,8 +150,8 @@ Route::group(['prefix' => ''], function(){
     Route::get('/logout', 'SemanticLabController@logout');
     Route::post('/register', 'SemanticLabController@register');
 
-    Route::get('/dailyCost/{funName?}', 'DailyCost\DailyCostController@dailyCostRoute');
-    Route::post('/itemInfo/{action?}', 'DailyCost\DailyCostController@itemInfoAction');
+    Route::get('/dailyCost/{funName?}', 'DailyCost\DailyCostController@viewRoute');
+//    Route::post('/itemInfo/{action?}', 'DailyCost\DailyCostController@itemInfoAction');
 //    Route::post('/dailyCost/currencyInfo/{action?}', 'DailyCost\DailyCostController@currencyInfoAction');
     Route::post('/dailyCost/{function}/insert', 'DailyCost\DailyCostController@insert');
 

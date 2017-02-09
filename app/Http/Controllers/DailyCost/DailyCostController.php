@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 
 class DailyCostController extends SemanticLabController
 {
-	public function dailyCostRoute(Request $request, $funName = null){
+	public function viewRoute(Request $request, $funName = null){
 		// 00. check session
 		$user = $request->session()->get('account');
 
@@ -31,7 +31,7 @@ class DailyCostController extends SemanticLabController
 			$funs = [];
 
 			// 03. set side bar functions for DailyCost
-			$this->setFuns();
+			$this->setSubFun();
 
 			// 04. route for different function
 			if(isset($funName)) {
@@ -61,7 +61,7 @@ class DailyCostController extends SemanticLabController
 
 	}
 
-	protected function setFuns(){
+	protected function setSubFun(){
 		// All these setting should been set by automatically which select from DB:
 		// general functions for all user:
 		$funs[] = ['funName'=>'New Daily Cost', 'id'=>'newDC'];
@@ -100,7 +100,6 @@ class DailyCostController extends SemanticLabController
 		$this->data['funName'] = 'dailyCost/itemInfo';
 	}
 
-
 	public function insert(Request $request, $function = null){
 		$message = [];
 		$user = $this->getUserSession($request);
@@ -112,112 +111,38 @@ class DailyCostController extends SemanticLabController
 			if($function === 'newDC'){
 
 			}
-			else if($function === 'currencyInfo'){
+			else if($function === 'currencyInfo' || $function === 'itemInfo'){
+
+			    // 01. create Model object
 				$currencyInfo = new CurrencyInfo();
+				if($function === 'itemInfo'){
+                    $itemInfo = new ItemInfo();
+                }
+
+                // 02. "POST" data validation
 				$this->validate($request, [
 					'uri' => 'required|regex:/^http:\/\/.*/',
 					'type' => 'required|regex:/^http:\/\/.*/',
 					'label' => 'required|regex:/.*@.*/'
 				]);
 
+				// 03. create insert data
 				$values = new \stdClass();
 				$values->uri = $request->get('uri');
 				$values->type = $request->get('type');
 				$values->label = $request->get('label');
-				$insertResult = $currencyInfo->insertAll($values);
 
-				$message = $this->insertResult($insertResult, $currencyInfo->success);
-			}
-			else if($function === 'itemInfo'){
+				// 04. insert data
+				if($function === 'currencyInfo'){
+                    $insertResult = $currencyInfo->insertAll($values);
+                }
+                else{
+                    $insertResult = $itemInfo->insertAll($values);
+                }
 
-			}
-		}
-		return json_encode($message);
-	}
-
-
-	public function currencyInfoAction(Request $request, $action = null){
-		$message = [];
-		$user = $this->getUserSession($request);
-
-		if(!isset($user)){
-			$message = $this->redirectMessage();
-		}
-		else{
-			$currencyInfo = new CurrencyInfo();
-
-			if($action === 'insert'){
-				$this->validate($request, [
-					'uri' => 'required|regex:/^http:\/\/.*/',
-					'type' => 'required|regex:/^http:\/\/.*/',
-					'label' => 'required|regex:/.*@.*/'
-				]);
-
-				$values = new \stdClass();
-				$values->uri = $request->get('uri');
-				$values->type = $request->get('type');
-				$values->label = $request->get('label');
-				$insertResult = $currencyInfo->insertAll($values);
-
-				$message = $this->insertResult($insertResult, $currencyInfo->success);
-			}
-			else if($action === 'delete'){
-
-			}
-			else if($action === 'update'){
-
-			}
-			else if($action === 'select'){
-
+				$message = $this->insertResult($insertResult, \App\Model\RootModel::$success);
 			}
 		}
-		return json_encode($message);
-	}
-
-	public function itemInfoAction(Request $request, $action = null){
-		$message = [];
-		$message['title'] = '';
-		$message['content'] = '';
-
-		$user = $request->session()->get('account');
-		if(!isset($user)){
-			$message['title'] = 'Redirect';
-			$message['content'] = \Config::get('app.domainName');
-		}
-		else{
-			$itemInfo = new ItemInfo();
-			if($action === 'insert'){
-				$this->validate($request, [
-					'uri'=>'required|regex:/^http:\/\/.*/',
-					'type'=>'required|regex:/^http:\/\/.*/',
-					'label'=>'required',
-				]);
-
-				$values = new \stdClass();
-				$values->uri = $request->get('uri');
-				$values->type = $request->get('type');
-				$values->label = $request->get('label');
-				$insertResult = $itemInfo->insertAll($values);
-				if($insertResult === 'Success'){
-					$message['title'] = 'Success';
-					$message['content'] = 'new item has been save into RMDB';
-				}
-				else{
-					$message['title'] = 'Error';
-					$message['content'] = 'fail to add new item, please try again (code:di01).';
-				}
-			}
-			else if($action === 'delete'){
-
-			}
-			else if($action === 'update'){
-
-			}
-			else if($action === 'select'){
-
-			}
-		}
-
 		return json_encode($message);
 	}
 

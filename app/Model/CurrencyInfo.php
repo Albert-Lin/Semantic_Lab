@@ -14,11 +14,11 @@ class CurrencyInfo extends RootModel
 		$this->rdfs_label = $values->label;
 		$result = $this->save();
 
-		if($result === true){
-			return $this->success;
-		}
-		else{
-			return $this->error;
-		}
+        if($result === true){
+            return self::$success;
+        }
+        else{
+            return self::$error;
+        }
 	}
 }

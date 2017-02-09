@@ -73,7 +73,7 @@
 				// 01. form validation
                 if(regexCheck === true){
 					// 02. insert data by ajax
-					ajaxCSRFHeader();
+                    ajaxObject.ajaxCSRFHeader();
 					$.ajax(ajaxObject.ajax);
                 }
             });
