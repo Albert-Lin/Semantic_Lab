@@ -40,7 +40,7 @@
         }
 
         body{
-            background-image: url('http://semanticlab.com/image/slbg.png');
+            background-image: url('http://semanticlab.com/image/semantic desktop8.jpg');
             background-size: cover;
             background-repeat: no-repeat;
             background-attachment: fixed;

@@ -14,37 +14,45 @@ function AjaxObject(blade, action, passData){
         });
     };
 
-	if(blade === 'currencyInfo'){
+	if(blade === 'general'){
+	    if(action === 'register'){
+	        this.ajax = insertAjax();
+	        this.ajax.url = passData.domainURI+'register';
+	        this.ajax.data = {
+                userName: passData.userName,
+                pass: passData.pass,
+                mail: passData.mail
+            };
+	        this.ajax.success = passData.successFun;
+	        this.ajax.error = passData.errorFun;
+        }
+        else if(action === 'autoSearch'){
+	        this.ajax = insertAjax();
+	        this.ajax.url = passData.domainURI+'login/autoSearch/cookie';
+	        this.ajax.data = {
+                input: passData.input,
+                cookieName: passData.cookieName
+            };
+	        this.ajax.success = passData.successFun;
+	        this.ajax.error = passData.errorFun;
+
+        }
+    }
+	else if(blade === 'currencyInfo'){
 		if(action === 'insert'){
-			this.ajax = {
-				url: passData.domainURI+'dailyCost/currencyInfo/insert',
-				type: 'POST',
-				data: {
-					uri: passData.uri,
-					type: passData.type,
-					label: passData.label,
-				},
-				success: function(xhrResponseText){
-					var message = $.parseJSON(xhrResponseText);
-					if(message.title === 'Success'){
-						message.fun = function(){
-							resetForm(passData);
-							showMessageBox(message);
-						}
-					}
-					messageBox(message);
-				},
-				error: function(xhrError){
-					var message = insertError(xhrError);
-					messageBox(message);
-				}
-			};
+            this.ajax = insertAjax();
+            this.ajax.url = passData.domainURI+'dailyCost/currencyInfo/insert';
+            this.ajax.data = {
+                uri: passData.uri,
+                type: passData.type,
+                label: passData.label
+            };
 		}
 	}
 	else if(blade === 'itemInfo'){
 	    if(action === 'insert'){
 	        this.ajax = insertAjax();
-	        this.ajax.url = passData.domainURI+'dailyCost/itemInfo/insert'
+	        this.ajax.url = passData.domainURI+'dailyCost/itemInfo/insert';
             this.ajax.data = {
                 uri: passData.uri,
                 type: passData.type,
@@ -67,7 +75,7 @@ function AjaxObject(blade, action, passData){
                 messageBox(message);
             }
         };
-    };
+    }
 
     function insertSuccess(xhrResponseText){
         var message = $.parseJSON(xhrResponseText);

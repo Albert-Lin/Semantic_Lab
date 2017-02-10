@@ -120,33 +120,32 @@ class SemanticLabController extends RootController
 
         // 01. validate
         $this->validate($request, [
-            'username' => 'required',
+            'userName' => 'required',
             'pass' => 'required',
             'mail' => 'required',
         ]);
-        $username = $request->get('username');
+        $userName = $request->get('userName');
         $pass = $request->get('pass');
         $mail = $request->get('mail');
 
         // 02. check unique data
-        $uniqueData['name'] = $username;
+        $uniqueData['name'] = $userName;
         $uniqueData['email'] = $mail;
         $checkResult = $userInfoTb->unique($uniqueData);
-        if($checkResult === true){
+        if($checkResult === \App\Model\RootModel::$success){
 
             // 03. insert data
             $values = new \stdClass();
-            $values->name = $username;
-            $values->URI = \Config::get('app.domainName')."resource/".str_replace(" ", "_", $username);
+            $values->name = $userName;
+            $values->URI = \Config::get('app.domainName')."resource/".str_replace(" ", "_", $userName);
             $values->password = $pass;
             $values->hashPassword = \Hash::make($values->password);
             $values->email = $mail;
             $insertResult = $userInfoTb->insertAll($values);
 
             // 04. send email or redirect
-            if($insertResult === $userInfoTb->success){
+            if($insertResult === \App\Model\RootModel::$success){
                 $message['title'] = 'Redirect';
-//                $message['content'] =  'Please read the registered email for completed register.';
                 $message['content'] =  \Config::get('app.domainName');
             }
         }

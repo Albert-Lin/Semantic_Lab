@@ -99,7 +99,7 @@
 		var status = '1';
 		var messageStatus = '1';
 
-        function loging(){
+        function login(){
 			var mail = $('#mail').val();
 			var pass = $('#pass').val();
             var ajaxObject = new AjaxObject();
@@ -137,10 +137,22 @@
         }
 
         $(function() {
+
+            $('#swIcon').on('click', function(){
+                if(status === '1'){
+                    $('#loginBlock').css('display', 'block');
+                    status = '0';
+                }
+                else{
+                    $('#loginBlock').css('display', 'none');
+                    status = '1';
+                }
+            });
+
 			$('#mail').on('keyup', function(event){
 				if(event.keyCode === 13 && status === '0'){
 					if(messageStatus === '1') {
-						loging();
+						login();
 						messageStatus = '0';
 					}
 					else{
@@ -149,31 +161,24 @@
                     }
 				}
 				else if(event.keyCode !== 13 && status === '0'){
-                    var mail = $('#mail').val();
-                    var ajaxObject = new AjaxObject();
-					ajaxObject.ajaxCSRFHeader();
-                    $.ajax({
-                        url: $('#domainURI').val() + 'login/autoSearch/cookie',
-                        type: 'POST',
-                        data: {
-                            input: mail,
-                            cookieName: 'mail'
-                        },
-                        success: function (xhrResponseText) {
+				    var passData = {
+                        domainURI:$('#domainURI').val(),
+                        input: $('#mail').val(),
+                        cookieName: 'mail',
+                        successFun: function(xhrResponseText){
+                            var mailAutoCompleteBlock = $('#mailAutoCompleteBlock');
                             var message = $.parseJSON(xhrResponseText);
                             if (message.length > 0) {
                                 var top5 = [];
+                                var blockWidth = $('#loginBlock form div').css('width');
                                 for (var i = 0; i < message.length; i++) {
                                     top5[i] = '<a class="list-group-item col-md-12 auto-com">' + message[i] + '</a>';
                                     if (i === 4) {
                                         break;
                                     }
                                 }
-                                var Blockwidth = $('#loginBlock form div').css('width');
-
-                                var mailAutoCompleteBlock = $('#mailAutoCompleteBlock');
                                 mailAutoCompleteBlock.html(top5);
-                                mailAutoCompleteBlock.css('width', Blockwidth);
+                                mailAutoCompleteBlock.css('width', blockWidth);
                                 mailAutoCompleteBlock.css('display', 'block');
 
                                 $('.auto-com').click(function () {
@@ -182,17 +187,18 @@
                                     mailAutoCompleteBlock.css('display', 'none');
                                 });
                             }
-                            else {
-                                var mailAutoCompleteBlock = $('#mailAutoCompleteBlock');
+                            else{
                                 mailAutoCompleteBlock.html('');
                                 mailAutoCompleteBlock.css('display', 'none');
                             }
                         },
-                        error: function (xhrError) {
+                        errorFun: function(xhrError){
                             console.log(xhrError);
                         }
-
-                    });
+                    };
+                    var ajaxObject = new AjaxObject('general', 'autoSearch', passData);
+                    ajaxObject.ajaxCSRFHeader();
+                    $.ajax(ajaxObject.ajax);
 				}
             });
 
@@ -209,7 +215,7 @@
 				if (!$('#mail').is(":focus")) {
 					if(event.keyCode === 13 && status === '0') {
 						if (messageStatus === '1') {
-							loging();
+							login();
 							messageStatus = '0';
 						}
 						else {
@@ -226,93 +232,94 @@
                 }
             });
 
+            $('#register').on('click', function(){
 
-        });
+                var body = '' +
+                    '<form class="form-horizontal">' +
+                    '<div class="form-group">' +
+                    '<label class="col-md-3 control-label">e-mail:</label>' +
+                    '<div class="col-md-9"><input id="fMail" type="text" class="form-control input-lg" placeholder="Username"></div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label class="col-md-3 control-label">user name:</label>' +
+                    '<div class="col-md-9"><input id="fUserName" type="text" class="form-control input-lg" placeholder="Username"></div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label class="col-md-3 control-label">password:</label>' +
+                    '<div class="col-md-9"><input id="fPass" type="password" class="form-control input-lg" placeholder="Username"></div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label class="col-md-3 control-label">re-password:</label>' +
+                    '<div class="col-md-9"><input id="fRPass" type="password" class="form-control input-lg" placeholder="Username"></div>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<div id="fMessage" class="col-md-offset-3 col-md-9"></div>' +
+                    '</div>' +
+                    '</form>';
 
-        $('#swIcon').click(function(){
-            if(status === '1'){
-                $('#loginBlock').css('display', 'block');
-                status = '0';
-            }
-            else{
-                $('#loginBlock').css('display', 'none');
+                var footer = '<div id="fRegister" class="btn btn-md"> Register</div>';
+
+                var message = {
+                    title: 'Register',
+                    content: body,
+                    footer: footer
+                };
+
                 status = '1';
-            }
-        });
 
-        $('#register').click(function(){
-            $('#loginBlock').css('display', 'none');
-            status = '1';
+                $('#loginBlock').css('display', 'none');
 
-            $('#messageDialog').removeClass('modal-sm');
-            $('#messageDialog').addClass('modal-md');
-            var body = '' +
-                '<form class="form-horizontal">' +
-                    '<div class="form-group">' +
-                        '<label class="col-md-3 control-label">e-mail:</label>' +
-                        '<div class="col-md-9"><input id="fMail" type="text" class="form-control input-lg" placeholder="Username"></div>' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                        '<label class="col-md-3 control-label">user name:</label>' +
-                        '<div class="col-md-9"><input id="fUserName" type="text" class="form-control input-lg" placeholder="Username"></div>' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                        '<label class="col-md-3 control-label">password:</label>' +
-                        '<div class="col-md-9"><input id="fPass" type="password" class="form-control input-lg" placeholder="Username"></div>' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                        '<label class="col-md-3 control-label">re-password:</label>' +
-                        '<div class="col-md-9"><input id="fRPass" type="password" class="form-control input-lg" placeholder="Username"></div>' +
-                    '</div>' +
-                    '<div class="form-group">' +
-                        '<div id="fMessage" class="col-md-offset-3 col-md-9"></div>' +
-                    '</div>' +
-                '</form>';
-            var footer = '<div id="fRegister" class="btn btn-md"> Register</div>';
-            messageBlock('Register', body, footer);
-            $('#messageModalBtn').click();
+                $('#messageDialog').removeClass('modal-sm');
 
-            $('input').click(function(){
-                $('#fMessage').html('');
-            });
+                $('#messageDialog').addClass('modal-md');
 
-            $('#fRegister').click(function(){
-                var fPass = $('#fPass').val();
-                var fRPass = $('#fRPass').val();
-                var ajaxObject = new AjaxObject();
+                $('input').click(function(){
+                    $('#fMessage').html('');
+                });
 
-                if(fPass === fRPass){
-                    ajaxObject.ajaxCSRFHeader();
-                    $.ajax({
-                        url: $('#domainURI').val()+'register',
-                        type: 'POST',
-                        data: {
-                            username: $('#fUserName').val(),
+                $('#fRegister').click(function(){
+
+                    var fPass = $('#fPass').val();
+
+                    var fRPass = $('#fRPass').val();
+
+                    if(fPass === fRPass){
+                        var passData = {
+                            domainURI: $('#domainURI').val(),
+                            userName: $('#fUserName').val(),
                             pass: fPass,
-                            mail: $('#fMail').val()
-                        },
-                        success: function(xhrResponseText){
-                            var message = $.parseJSON(xhrResponseText);
-                            if(message.title === 'Error'){
-                                $('#fMessage').html(message.title+': '+message.content+'.');
+                            mail: $('#fMail').val(),
+                            successFun: function(xhrResponseText){
+                                var message = $.parseJSON(xhrResponseText);
+                                if(message.title === 'Error'){
+                                    $('#fMessage').html(message.title+': '+message.content+'.');
+                                }
+                                else if(message.title === 'Redirect'){
+                                    console.log("REDIRECT");
+                                    window.location = message.content;
+                                }
+                            },
+                            errorFun: function(xhrError){
+                                if(xhrError.status === 422){
+                                    $('#fMessage').html('Validation error: missing data for register (code:sr04).');
+                                }
                             }
-                            else if(message.title === 'Redirect'){
-                                window.location = message.content;
-                            }
-                        },
-                        error: function(xhrError){
-                            if(xhrError.status === 422){
-                                $('#fMessage').html('Validation error: missing data for register (code:sr04).');
-                            }
-                        }
-                    });
-                }
-                else{
-                    $('#fMessage').html('password & re-password are different, please retype again.');
-                }
-            });
+                        };
+                        var ajaxObject = new AjaxObject('general', 'register', passData);
 
+                        ajaxObject.ajaxCSRFHeader();
+                        $.ajax(ajaxObject.ajax);
+                    }
+                    else{
+                        $('#fMessage').html('password & re-password are different, please retype again.');
+                    }
+                });
+
+                showMessageBox(message);
+
+            });
         });
+
 
     </script>
 @endsection

@@ -35,7 +35,7 @@ class UserInfo extends RootModel
 		$this->email = $values->email;
 		$this->save();
 
-		return $this->success;
+		return self::$success;
 	}
 
 }
