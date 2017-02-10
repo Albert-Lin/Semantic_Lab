@@ -30,7 +30,8 @@ Route::group(['prefix'=>'test'], function(){
 	// Model
 	Route::group(['prefix'=>'model'], function(){
 		Route::get('/note', 'TestController@modelNote');
-		Route::get('/{action}', 'TestController@queryBuilder');
+		Route::get('/builder/{action}', 'TestController@queryBuilder');
+		Route::get('/unique', 'TestController@unique');
 	});
 
 	// ROUTE:
@@ -106,6 +107,7 @@ Route::group(['prefix'=>'test'], function(){
 	Route::group(['prefix'=>'google_map'], function(){
 		Route::get('/', 'TestController@gmap');
 		Route::get('/class', 'TestController@googleMap');
+		Route::get('/car', 'TestController@googleCarMap');
 	});
 
 	// EXECUTE EXTERNAL FILE:
@@ -142,17 +144,16 @@ Route::group(['prefix'=>'test'], function(){
 // FOR SEMANTIC LAB
 Route::group(['prefix' => ''], function(){
 	Route::get( '/', 'SemanticLabController@viewRoute')->name('root');
-
-	Route::group(['prefix' => 'login'], function(){
-		Route::post('/', 'SemanticLabController@login');
-		Route::post('/autoSearch/{searchData}', 'SemanticLabController@autoInputSearch');
-	});
+	Route::post('/login', 'SemanticLabController@login');
+	Route::post('/login/autoSearch/{searchData}', 'SemanticLabController@autoInputSearch');
     Route::get('/logout', 'SemanticLabController@logout');
     Route::post('/register', 'SemanticLabController@register');
 
-    Route::get('/dailyCost/{funName?}', 'DailyCost\DailyCostController@viewRoute');
-//    Route::post('/itemInfo/{action?}', 'DailyCost\DailyCostController@itemInfoAction');
-//    Route::post('/dailyCost/currencyInfo/{action?}', 'DailyCost\DailyCostController@currencyInfoAction');
-    Route::post('/dailyCost/{function}/insert', 'DailyCost\DailyCostController@insert');
+	Route::group(['prefix' => 'dailyCost'], function(){
+		Route::get('/{funName?}', 'DailyCost\DailyCostController@viewRoute');
+		Route::post('/{function?}/insert', 'DailyCost\DailyCostController@insert');
+	});
+
+
 
 });

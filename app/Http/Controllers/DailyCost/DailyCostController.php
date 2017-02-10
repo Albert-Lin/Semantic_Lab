@@ -114,9 +114,9 @@ class DailyCostController extends SemanticLabController
 			else if($function === 'currencyInfo' || $function === 'itemInfo'){
 
 			    // 01. create Model object
-				$currencyInfo = new CurrencyInfo();
+				$model = new CurrencyInfo();
 				if($function === 'itemInfo'){
-                    $itemInfo = new ItemInfo();
+					$model = new ItemInfo();
                 }
 
                 // 02. "POST" data validation
@@ -126,35 +126,46 @@ class DailyCostController extends SemanticLabController
 					'label' => 'required|regex:/.*@.*/'
 				]);
 
-				// 03. create insert data
-				$values = new \stdClass();
-				$values->uri = $request->get('uri');
-				$values->type = $request->get('type');
-				$values->label = $request->get('label');
+				// 03. check unique data
+				$uniqueData['URI'] = $request->get('uri');
+				$checkResult = $model->unique($uniqueData);
+				if($checkResult === $model::$success) {
+					// 04. create insert data
+					$values = new \stdClass();
+					$values->uri = $request->get('uri');
+					$values->type = $request->get('type');
+					$values->label = $request->get('label');
 
-				// 04. insert data
-				if($function === 'currencyInfo'){
-                    $insertResult = $currencyInfo->insertAll($values);
-                }
-                else{
-                    $insertResult = $itemInfo->insertAll($values);
-                }
+					// 05. insert data
+					$insertResult = $model->insertAll($values);
 
-				$message = $this->insertResult($insertResult, \App\Model\RootModel::$success);
+					$message = $this->insertResult($insertResult, $model::$success, $function);
+				}
+				else{
+					$message = $this->insertResult('Exist', $model::$success, $function, $checkResult);
+				}
 			}
 		}
 		return json_encode($message);
 	}
 
-	private function insertResult($result, $success){
+	private function insertResult($result, $success, $function, $existResult = null){
 		$message = [];
 		if($result === $success){
 			$message['title'] = 'Success';
 			$message['content'] = 'new record has been save into RMDB';
 		}
+		else if($result === 'Exist'){
+			$message['title'] = 'Exist';
+			$message['content'] = 'fail to add new data,<br>'.
+				'the column(s) ('.$existResult.') of data had been exist<br>'.
+				'(code:ctr_dailyCost_'.$function.'_insert_01).';
+		}
 		else{
 			$message['title'] = 'Error';
-			$message['content'] = 'fail to add new item, please try again (code:day_ins_01).';
+			$message['content'] = 'fail to add new item,<br>'.
+				'please try again <br>'.
+				'(code:ctr_dailyCost_'.$function.'_insert_01).';
 		}
 
 		return $message;

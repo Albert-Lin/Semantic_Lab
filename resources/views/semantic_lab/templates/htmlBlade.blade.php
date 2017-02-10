@@ -111,72 +111,6 @@
 
     <script>
 
-        function messageBlock(headerText, bodyText, footerText){
-            $('#messageHeader').html(headerText);
-            $('#messageBody').html(bodyText);
-            $('#messageFooter').html(footerText);
-        }
-
-//        function ajaxCSRFHeader(){
-//            $.ajaxSetup({
-//                headers: {
-//                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').prop('content')
-//                }
-//            });
-//
-//
-//        }
-
-        {{--function formRegexChek(inputId, inputDefault, errorId){--}}
-			{{--var checkResult = true;--}}
-        	{{--for(var i = 0; i < inputId.length; i++){--}}
-				{{--$('#'+errorId[i]).html("");--}}
-            {{--}--}}
-
-        	{{--for(var i = 0; i < inputId.length; i++){--}}
-				{{--if($('#'+inputId[i]).val() === undefined ||--}}
-					{{--$('#'+inputId[i]).val().length <= 0 ||--}}
-					{{--$('#'+inputId[i]).val() === inputDefault[i]){--}}
-
-					{{--$('#'+errorId[i]).html("Required");--}}
-					{{--checkResult = false;--}}
-				{{--}--}}
-            {{--}--}}
-
-			{{--if(checkResult === true){--}}
-				{{--for(var i = 0; i < inputId.length; i++){--}}
-
-					{{--if($('#'+inputId[i]).prop('type') === 'url'){--}}
-						{{--if($('#'+inputId[i]).val().match(/^http:\/\/.*/) === null){--}}
-							{{--$('#'+errorId[i]).html("Should be URL format");--}}
-							{{--checkResult = false;--}}
-						{{--}--}}
-					{{--}--}}
-					{{--else if($('#'+inputId[i]).prop('type') === 'email'){--}}
-						{{--if($('#'+inputId[i]).val().match(/[0-9a-zA-Z]*@[0-9a-zA-Z]*\./) === null){--}}
-							{{--$('#'+errorId[i]).html("Should be email format");--}}
-							{{--checkResult = false;--}}
-						{{--}--}}
-					{{--}--}}
-					{{--else if($('#'+inputId[i]).prop('type') === 'number'){--}}
-						{{--if($('#'+inputId[i]).val().match(/[0-9]*/) === null){--}}
-							{{--$('#'+errorId[i]).html("Should be number format");--}}
-							{{--checkResult = false;--}}
-						{{--}--}}
-					{{--}--}}
-				{{--}--}}
-			{{--}--}}
-
-            {{--return checkResult;--}}
-        {{--}--}}
-
-        function defaultFormColumn(inputId, inputDefault, errorId){
-			for(var i = 0; i < inputId.length; i++){
-                $('#'+inputId[i]).val(inputDefault[i]);
-                $('#'+errorId[i]).html('');
-			}
-        }
-
     </script>
     @section('js')
     @show
@@ -186,7 +120,7 @@
     <body>
     <input id="domainURI" type="hidden" value="{{ $data['domainURI'] }}"/>
     <div id="messageModal" class="modal fade" role="dialog">
-        <div id="messageDialog" class="modal-dialog modal-sm">
+        <div id="messageDialog" class="modal-dialog modal-mg">
             <div class="modal-content">
                 <div id="messageHeader" class="modal-header"></div>
                 <hr>

@@ -80,12 +80,18 @@ class RootModel extends Model
 
 
 	public function unique($dataArray){
-	    $result = true;
+	    $result = self::$success;
+	    $index = 0;
 	    foreach($dataArray as $key => $value){
             $queryResult = $this->select('id')->where([ [$key, $value] ])->get();
 	        if(count($queryResult) !== 0){
-	            $result = $key;
-	            break;
+	            if($index === 0) {
+					$result = $key;
+				}
+				else{
+					$result .= ", ".$key;
+				}
+				$index++;
             }
         }
 

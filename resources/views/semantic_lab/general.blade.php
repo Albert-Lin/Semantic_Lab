@@ -102,12 +102,12 @@
         function loging(){
 			var mail = $('#mail').val();
 			var pass = $('#pass').val();
-
+            var ajaxObject = new AjaxObject();
 			// ajax for validate the info of input
 			// redirect if the info is correct
 
 			// before using ajax to post data, we need to set CSRF value in post header:
-			ajaxCSRFHeader();
+			ajaxObject.ajaxCSRFHeader();
 
 			$.ajax({
 				url: $('#domainURI').val()+'login',
@@ -150,7 +150,8 @@
 				}
 				else if(event.keyCode !== 13 && status === '0'){
                     var mail = $('#mail').val();
-                    ajaxCSRFHeader();
+                    var ajaxObject = new AjaxObject();
+					ajaxObject.ajaxCSRFHeader();
                     $.ajax({
                         url: $('#domainURI').val() + 'login/autoSearch/cookie',
                         type: 'POST',
@@ -278,8 +279,10 @@
             $('#fRegister').click(function(){
                 var fPass = $('#fPass').val();
                 var fRPass = $('#fRPass').val();
+                var ajaxObject = new AjaxObject();
+
                 if(fPass === fRPass){
-                    ajaxCSRFHeader();
+                    ajaxObject.ajaxCSRFHeader();
                     $.ajax({
                         url: $('#domainURI').val()+'register',
                         type: 'POST',

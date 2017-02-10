@@ -102,7 +102,12 @@ class TestController extends Controller{
 		}
 	}
 
-
+	public function unique(){
+		$model = new \App\Model\ItemInfo();
+		$uniqueData['URI'] = 'http://semanticlab.com/Headphones';
+		$checkResult = $model->unique($uniqueData);
+		var_dump($checkResult);
+	}
 	/*
 	 * ROUTE:
 	 */
@@ -466,6 +471,11 @@ class TestController extends Controller{
 	public function googleMap(){
 		return View('test/google/map/index_class')
 				->with('title', 'Google Map');
+	}
+
+	public function googleCarMap(){
+		return View('test/google/map/car/car')
+				->with('title', 'Google Car Map');
 	}
 
 

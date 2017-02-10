@@ -2,14 +2,6 @@
  * Created by AlbertLin on 2017/2/9.
  */
 
-// function ajaxCSRFHeader(){
-// 	$.ajaxSetup({
-// 		headers: {
-// 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').prop('content')
-// 		}
-// 	});
-// }
-
 function AjaxObject(blade, action, passData){
 
 	this.ajax = undefined;
@@ -99,19 +91,19 @@ function AjaxObject(blade, action, passData){
             message.title = '404';
             message.content = 'Adding new data fail.<br>' +
                 'Please contact programmer.<br>' +
-                '(code:curr_ins_404)';
+                '(code:ajx_'+blade+'_'+action+'_404)';
         }
         else if(xhrError.status === 442){
             message.title = 'Sorry';
             message.content = 'Adding new data fail.<br>' +
                 'Please make sure all required fields are filled out correctly.<br>' +
-                '(code:curr_ins_442)';
+                '(code:ajx_'+blade+'_'+action+'_442)';
         }
         else if(xhrError.status == 500){
             message.title = 'Sorry';
             message.content = 'Adding new data fail.<br>' +
-                'Current data already exist, please add new one.<br>' +
-                '(code:curr_ins_500)';
+                'Please contact programmer.<br>' +
+                '(code:ajx_'+blade+'_'+action+'_500)';
         }
 
         return message;
