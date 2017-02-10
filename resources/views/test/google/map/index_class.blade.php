@@ -741,7 +741,7 @@
 
 					<!--SUBMIT LIST-->
 					<div id="submitBlock">
-						<button id="markerButton" type="button" class="btn btn-info">SUBMIT</buton>
+						<button id="markerButton" type="button" class="btn btn-info">SUBMIT</button>
 					</div>
 					<br>
 					<br>
