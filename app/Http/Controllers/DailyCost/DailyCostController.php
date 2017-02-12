@@ -22,7 +22,7 @@ class DailyCostController extends SemanticLabController
 
 		if(!isset($user)){
 			// 01. general view for non-sign in
-			$this->nonLogin();
+			$this->nonLoginData();
 		}
 		else{
 			// 02. personal view for sign in account

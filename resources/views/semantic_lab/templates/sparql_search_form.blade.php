@@ -28,18 +28,29 @@
             font-size: 16px;
             font-weight: bolder;
         }
+
+        #sparqlSearch>.boxLoading{
+            text-align: center;
+            line-height: 50px;
+            font-size: 16px;
+            font-weight: bolder;
+            color: #ff0000;
+            display: none;
+        }
+
     #sparqlResult{
         display: none;
     }
         #sparqlResult>.boxHeader{
             background-color: #f0ad4e;
         }
+
 </style>
-<div class="row">
+<div class="row sparqlBlock">
     <div id="sparqlSearch" class="col-md-offset-1 col-md-10 layoutBox">
         <div class="boxHeader">
             <div class="form-group">
-                <select class="form-control">
+                <select id="sparqlResource" class="form-control">
                     <option>DBpedia</option>
                     <option>WordNet</option>
                     <option>Semantic Lab</option>
@@ -53,7 +64,8 @@ WHERE
 {
 }
         </textarea>
-        <div class="boxFooter"><button id="searchDBpedia" class="btn btn-info"> SEARCH </button></div>
+        <div class="boxFooter"><button id="sparqlBtn" class="btn btn-info"> SEARCH </button></div>
+        <div class="boxLoading"> LOADING ... </div>
     </div>
 </div>
 <div class="row">
@@ -62,3 +74,32 @@ WHERE
         <div id="sparqlResultBody" class="boxBody" ></div>
     </div>
 </div>
+
+<script>
+    $(function(){
+
+        $( document ).ajaxStart(function() {
+            $('.boxLoading').css('display', 'block');
+        });
+
+        $( document ).ajaxStop(function() {
+            $('.boxLoading').css('display', 'none');
+        });
+
+        $('#sparqlBtn').on('click', function(){
+            var passData = {
+                domainURI: $('#domainURI').val(),
+                resource: $('#sparqlResource').find(':selected').html(),
+                query: $('#sparqlEditor').val(),
+                successFun: function (xhrResponseText) {
+                    var message = $.parseJSON(xhrResponseText);
+                    console.log(message);
+                }
+            };
+
+            var ajaxObject = new AjaxObject('sparql', 'select', passData);
+            ajaxObject.ajaxCSRFHeader();
+            $.ajax(ajaxObject.ajax);
+        });
+    });
+</script>

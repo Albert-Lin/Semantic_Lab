@@ -15,6 +15,8 @@ use App\Model\UserInfo;
 use Illuminate\Support\Facades\Hash;
 use Facebook\Facebook;
 use App\Utility\Cookie;
+use App\semsol\arc2\TripleStore;
+use App\semsol\Triple;
 
 /**
  * Description of TestController
@@ -108,6 +110,7 @@ class TestController extends Controller{
 		$checkResult = $model->unique($uniqueData);
 		var_dump($checkResult);
 	}
+
 	/*
 	 * ROUTE:
 	 */
@@ -726,6 +729,61 @@ class TestController extends Controller{
 		$searchResult = \App\Utility\Utility::arrayRegexSearch($searchWord, $array);
 		var_dump($searchResult);
 	}
+
+
+	/*
+	 * RDF/TRIPLE STORE
+	 */
+	public function tripleStore(){
+	    $tripleStore = new TripleStore();
+    }
+
+    public function dbpedia(){
+	    $query = 'SELECT DISTINCT dbr:Dirk_Nowitzki ?p ?o '.
+        'WHERE{ '.
+        '  ?s ?p ?o.'.
+        '}';
+
+	    $tripleStore = new TripleStore('dbpedia');
+	    $result = $tripleStore->get($query);
+
+	    var_dump($result['result']);
+    }
+
+    public function arc2QueryBuilder(){
+        $tripleStore = new TripleStore('dbpedia');
+        $result = $tripleStore->select(["?s", "?p", "?o"], true)->where([
+            Triple::triple('?s', 'rdfs:label', '"Dirk Nowitzki"'),
+            Triple::triple('?s', '?p', '?o'),
+        ])
+        ->get();
+
+        var_dump($result);
+    }
+
+    public function qbList(){
+        $tripleStore = new TripleStore('dbpedia');
+        $selectKey = ['?s', '?p', '?o'];
+        $tripleQuery = [
+            Triple::triple('?s', 'rdfs:label', '"Dirk Nowitzki"@en'),
+            Triple::triple('?s', '?p', '?o')
+        ];
+        $result = $tripleStore
+                    ->select($selectKey, true)
+                    ->where($tripleQuery)
+                    ->get();
+        $keys = $tripleStore->getSelectKeys();
+
+        foreach($result as $index => $tripleInfo){
+            $RDF = '';
+            foreach($keys as $kIndex => $key){
+                $RDF .= $tripleInfo[$key].' ';
+            }
+            $RDF .= '<br>';
+
+            echo $RDF;
+        }
+    }
 
 
     /*

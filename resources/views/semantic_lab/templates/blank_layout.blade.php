@@ -33,7 +33,7 @@
         #container::before {
             content: '';
             width: 0;
-            height: 20%;
+            height: 25%;
             display: inline-block;
             position: relative;
             vertical-align: middle;
@@ -46,13 +46,13 @@
         #logoText{
             text-align: center;
             color: #ff7766;
-            font-size: 120px;
+            font-size: 100px;
         }
 
         #infoBlock{
             text-align: center;
-            /*color: #6677ff;*/
-            color: #ffffff;
+            color: #aaaaaa;
+            /*color: #ffffff;*/
             font-size: 20px;
             font-weight: 600;
         }

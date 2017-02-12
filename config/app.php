@@ -229,5 +229,10 @@ return [
     ],
 
 	'domainName' => 'http://semanticlab.com/',
+    'tripleStore' => [
+        'database' => env('RDF_DB_DATABASE'),
+        'username' => env('RDF_DB_USERNAME'),
+        'password' => env('RDF_DB_PASSWORD'),
+    ],
 
 ];

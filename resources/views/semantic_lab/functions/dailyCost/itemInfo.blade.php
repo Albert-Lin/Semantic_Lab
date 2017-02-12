@@ -22,6 +22,11 @@
             display: none;
         }
 
+        #infoBlock{
+            background-color: #8eb4cb;
+            border-width: 2px;
+            border-style: dotted;
+        }
     </style>
     <div id="itemInfoBlock" class="row h100">
         <div class="col-md-6 h100">

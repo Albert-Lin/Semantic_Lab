@@ -66,6 +66,20 @@ return [
             'engine' => null,
         ],
 
+        'tripleStore' => [
+            'driver' => 'mysql',
+            'host' => env('RDF_DB_HOST', 'localhost'),
+            'port' => env('RDF_DB_PORT', '3306'),
+            'database' => env('RDF_DB_DATABASE', 'forge'),
+            'username' => env('RDF_DB_USERNAME', 'forge'),
+            'password' => env('RDF_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => true,
+            'engine' => null,
+        ],
+
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),

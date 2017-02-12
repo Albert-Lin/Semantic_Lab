@@ -134,6 +134,12 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/regexSearch/{searchWord}', 'TestController@autoCompleteSearch');
 	});
 
+	// RDF/TRIPLE STORE
+    Route::get('/triplestore', 'TestController@tripleStore');
+    Route::get('/triplestore/dbpedia', 'TestController@dbpedia');
+    Route::get('/triplestore/qb', 'TestController@arc2QueryBuilder');
+    Route::get('/triplestore/qbList', 'TestController@qbList');
+
 	// TEST:
 	Route::get('/test/regex/{regex}', 'TestController@regex');
 
@@ -154,6 +160,8 @@ Route::group(['prefix' => ''], function(){
 		Route::post('/{function?}/insert', 'DailyCost\DailyCostController@insert');
 	});
 
-
+    Route::group(['prefix'=>'sparql'], function(){
+        Route::post('/select', 'SparqlController@select');
+    });
 
 });

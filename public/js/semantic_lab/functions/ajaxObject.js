@@ -14,7 +14,18 @@ function AjaxObject(blade, action, passData){
         });
     };
 
-	if(blade === 'general'){
+	if(blade === 'sparql'){
+	    if(action === 'select'){
+            this.ajax = selectAjax();
+            this.ajax.url = passData.domainURI+'sparql/select';
+            this.ajax.data = {
+                resource: passData.resource,
+                query: passData.query
+            };
+            this.ajax.success = passData.successFun;
+        }
+    }
+	else if(blade === 'general'){
 	    if(action === 'register'){
 	        this.ajax = insertAjax();
 	        this.ajax.url = passData.domainURI+'register';
@@ -61,6 +72,27 @@ function AjaxObject(blade, action, passData){
         }
     }
 
+    function selectAjax(){
+	    return {
+	        url: '',
+            type: 'POST',
+            data: {},
+            success: function(xhrResponseText){
+                var message = $.parseJSON(xhrResponseText);
+                if(message.title === 'Success'){
+                    message.fun = function(){
+                        showMessageBox(message);
+                    }
+                }
+                messageBox(message);
+            },
+            error: function(xhrError){
+                var message = error(xhrError);
+                messageBox(message);
+            }
+        };
+    }
+
     function insertAjax(){
 	    return {
             url: '',
@@ -71,7 +103,7 @@ function AjaxObject(blade, action, passData){
                 messageBox(message);
             },
             error: function(xhrError){
-                var message = insertError(xhrError);
+                var message = error(xhrError);
                 messageBox(message);
             }
         };
@@ -89,7 +121,7 @@ function AjaxObject(blade, action, passData){
         return message;
     }
 
-    function insertError(xhrError){
+    function error(xhrError){
         var message = {
             title: '',
             content: ''
