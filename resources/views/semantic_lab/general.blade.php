@@ -118,19 +118,14 @@
 				},
 				success: function(xhrResponseText){
 					var message = $.parseJSON(xhrResponseText);
-					if(message.title === 'Error'){
-						messageBlock(message.title, message.content, '');
-						$('#messageModalBtn').click();
-
-					}
-					else if(message.title === 'Redirect'){
-						window.location = message.content;
-					}
+					messageBox(message);
 				},
 				error: function(xhrError){
 					if(xhrError.status === 422){
-						messageBlock('Error', 'Validation error (code:sl04).', '');
-						$('#messageModalBtn').click();
+						var message = [];
+						message['title'] = 'Error';
+						message['content'] = 'Validation error (code:sl04).';
+						messageBox(message);
 					}
 				}
 			});
