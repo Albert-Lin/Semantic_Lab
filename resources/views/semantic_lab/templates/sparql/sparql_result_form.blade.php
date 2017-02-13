@@ -26,7 +26,7 @@
         float: right;
         background-color: #f0ad4e;
     }
-    #sparqlResult>.boxBody{
+    #sparqlResultBody{
         overflow-x: hidden;
         overflow-y: auto;
         font-size: 14px;
@@ -37,13 +37,15 @@
     <div id="sparqlResult" class="col-md-offset-1 col-md-10 layoutBox h100">
         <div class="boxHeader row">
             <div class="headerTitle">Search Result:</div>
-            <button class="headerCloseBtn btn btn-sm glyphicon glyphicon-remove">
+            <button class="headerCloseBtn btn btn-sm glyphicon glyphicon-remove"></button>
         </div>
         <div id="sparqlResultBody" class="boxBody h100" ></div>
     </div>
 </div>
 <script>
+
     $(function(){
+
     	$('#sparqlResult .headerCloseBtn').on('click', function(){
 			$('#sparqlResultBlock').css('display', 'none');
         });

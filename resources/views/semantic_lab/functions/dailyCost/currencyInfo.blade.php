@@ -20,23 +20,23 @@
         }
     </style>
     <div id="currencyInfoBlock" Class="row  h100">
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-12 col-xs-12">
             <div class="row">
                 <div id="currencyInfo" class="col-md-offset-1 col-md-10 layoutBox">
                     <div class="boxHeader">New Currency:</div>
                     <form class="boxBody form-horizontal">
                         <div class="form-group">
-                            <label class="control-label col-md-2"></label>
+                            <label class="control-label col-md-2">URI</label>
                             <div class="col-md-7"><input id="cURI" type="url" class="form-control input-lg" value="http://dbpedia.org/resource/"></div>
                             <div id="eCURI" class="fcol-md-3 inputError"></div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-2"></label>
+                            <label class="control-label col-md-2">rdf:type</label>
                             <div class="col-md-7"><input id="cType" type="url" class="form-control input-lg" value="http://dbpedia.org/ontology/"></div>
                             <div id="eCType" class="fcol-md-3 inputError"></div>
                         </div>
                         <div class="form-group">
-                            <label class="control-label col-md-2"></label>
+                            <label class="control-label col-md-2">rdfs:label</label>
                             <div class="col-md-7"><input id="cLabel" type="text" class="form-control input-lg" value="@en"></div>
                             <div id="eCLabel" class="fcol-md-3 inputError"></div>
                         </div>
@@ -47,8 +47,8 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            @include('semantic_lab.templates.sparql.sparql_search_form');
+        <div class="col-md-6 col-sm-12 col-xs-12">
+            @include('semantic_lab.templates.sparql.sparql_search_form')
         </div>
     </div>
     @include('semantic_lab.templates.sparql.sparql_result_form')

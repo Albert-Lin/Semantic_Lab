@@ -19,7 +19,7 @@
         }
     </style>
     <div id="itemInfoBlock" class="row h100">
-        <div class="col-md-6">
+        <div class="col-md-6 col-sm-12 col-xs-12">
             <div class="row">
                 <div id="itemInsertForm" class="col-md-offset-1 col-md-10 layoutBox ">
                     <div class="boxHeader">New Item:</div>
@@ -46,7 +46,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6  col-sm-12 col-xs-12">
             @include('semantic_lab.templates.sparql.sparql_search_form')
         </div>
     </div>

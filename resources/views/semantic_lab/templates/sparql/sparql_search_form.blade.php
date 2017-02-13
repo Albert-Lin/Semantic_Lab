@@ -69,6 +69,13 @@ WHERE
 </div>
 
 <script>
+
+    function setHeight(){
+        var headerHeight = $('#sparqlResult .boxHeader').css('height');
+        var cssHeight = 'calc(100% - '+headerHeight+')';
+        $('.sparqlTBBlock').css('height', cssHeight);
+    }
+
     $(function(){
 
         $( document ).ajaxStart(function() {
@@ -89,7 +96,7 @@ WHERE
                     if(message.title === 'Success'){
                     	var queryKeys = message.key;
                     	var queryResults = message.content;
-                        var table = '<div class="table-responsive"><table id="sparqlResultTB" class="table table-striped">'+
+                        var table = '<div class="table-responsive sparqlTBBlock"><table id="sparqlResultTB" class="table table-striped">'+
                             '<thead><tr>';
                         for(var i = 0; i < queryKeys.length; i++){
                         	table += '<td>'+queryKeys[i]+'</td>';
@@ -108,6 +115,7 @@ WHERE
 
                         $('#sparqlResultBody').html(table);
                         $('#sparqlResultBlock').css('display', 'block');
+                        setHeight();
                     }
                 }
             };

@@ -137,7 +137,7 @@ function AjaxObject(blade, action, passData){
             message.title = 'Sorry';
             message.content = mainMessage+'<br>' +
                 'Please make sure all required fields are filled out correctly.<br>' +
-                '(code:ajx_'+blade+'_'+action+'_442)';
+                '(code:ajx_'+blade+'_'+action+'_422)';
         }
         else if(xhrError.status == 500){
             message.title = 'Sorry';
