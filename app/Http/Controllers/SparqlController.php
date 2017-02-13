@@ -40,6 +40,7 @@ class SparqlController extends RootController
         if(count($result) > 0){
             $message['title'] = 'Success';
             $message['content'] = $result;
+            $message['key'] = $tripleStore->getSelectKeys();
         }
         else{
             $message['title'] = 'Error';

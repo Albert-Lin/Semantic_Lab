@@ -29,20 +29,17 @@
             font-weight: bolder;
         }
 
-        #sparqlSearch>.boxLoading{
-            text-align: center;
-            line-height: 50px;
-            font-size: 16px;
-            font-weight: bolder;
-            color: #ff0000;
-            display: none;
+        #sparqlSearch>div>.footerBtn{
+            float: left;
+            padding-left: 15px;
+            padding-right: 15px;
         }
 
-    #sparqlResult{
-        display: none;
-    }
-        #sparqlResult>.boxHeader{
-            background-color: #f0ad4e;
+        #sparqlSearch>div>.inputError{
+            text-align: center;
+            display: none;
+            float: right;
+            padding-bottom: 0;
         }
 
 </style>
@@ -64,14 +61,10 @@ WHERE
 {
 }
         </textarea>
-        <div class="boxFooter"><button id="sparqlBtn" class="btn btn-info"> SEARCH </button></div>
-        <div class="boxLoading"> LOADING ... </div>
-    </div>
-</div>
-<div class="row">
-    <div id="sparqlResult" class="col-md-offset-1 col-md-10 boxLayout">
-        <div class="boxHeader">Search Result:</div>
-        <div id="sparqlResultBody" class="boxBody" ></div>
+        <div class="boxFooter row">
+            <div class="footerBtn"><button id="sparqlBtn" class="btn btn-info"> SEARCH </button></div>
+            <div class="inputError"> LOADING ... </div>
+        </div>
     </div>
 </div>
 
@@ -79,11 +72,11 @@ WHERE
     $(function(){
 
         $( document ).ajaxStart(function() {
-            $('.boxLoading').css('display', 'block');
+            $('.inputError').css('display', 'block');
         });
 
         $( document ).ajaxStop(function() {
-            $('.boxLoading').css('display', 'none');
+            $('.inputError').css('display', 'none');
         });
 
         $('#sparqlBtn').on('click', function(){
@@ -93,10 +86,31 @@ WHERE
                 query: $('#sparqlEditor').val(),
                 successFun: function (xhrResponseText) {
                     var message = $.parseJSON(xhrResponseText);
-                    console.log(message);
+                    if(message.title === 'Success'){
+                    	var queryKeys = message.key;
+                    	var queryResults = message.content;
+                        var table = '<div class="table-responsive"><table id="sparqlResultTB" class="table table-striped">'+
+                            '<thead><tr>';
+                        for(var i = 0; i < queryKeys.length; i++){
+                        	table += '<td>'+queryKeys[i]+'</td>';
+                        }
+                        table += '</tr></thead><tbody>';
+                        for(var i = 0; i < queryResults.length; i++){
+                        	table += '<tr>';
+                        	$.each(queryResults[i], function(key, value){
+                        		if(!key.includes('type') && !key.includes('lang')){
+                        			table += '<td>'+value+'</td>';
+                                }
+                            });
+                            table += '</tr>';
+                        }
+                        table += '</tbody></table></div>';
+
+                        $('#sparqlResultBody').html(table);
+                        $('#sparqlResultBlock').css('display', 'block');
+                    }
                 }
             };
-
             var ajaxObject = new AjaxObject('sparql', 'select', passData);
             ajaxObject.ajaxCSRFHeader();
             $.ajax(ajaxObject.ajax);

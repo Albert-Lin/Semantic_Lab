@@ -87,7 +87,7 @@ function AjaxObject(blade, action, passData){
                 messageBox(message);
             },
             error: function(xhrError){
-                var message = error(xhrError);
+                var message = error(xhrError, 'Selection fail.');
                 messageBox(message);
             }
         };
@@ -103,7 +103,7 @@ function AjaxObject(blade, action, passData){
                 messageBox(message);
             },
             error: function(xhrError){
-                var message = error(xhrError);
+                var message = error(xhrError, 'Adding new data fail.');
                 messageBox(message);
             }
         };
@@ -121,7 +121,7 @@ function AjaxObject(blade, action, passData){
         return message;
     }
 
-    function error(xhrError){
+    function error(xhrError, mainMessage){
         var message = {
             title: '',
             content: ''
@@ -129,19 +129,19 @@ function AjaxObject(blade, action, passData){
 
         if(xhrError.status === 404){
             message.title = '404';
-            message.content = 'Adding new data fail.<br>' +
+            message.content = mainMessage+'<br>' +
                 'Please contact programmer.<br>' +
                 '(code:ajx_'+blade+'_'+action+'_404)';
         }
-        else if(xhrError.status === 442){
+        else if(xhrError.status === 422){
             message.title = 'Sorry';
-            message.content = 'Adding new data fail.<br>' +
+            message.content = mainMessage+'<br>' +
                 'Please make sure all required fields are filled out correctly.<br>' +
                 '(code:ajx_'+blade+'_'+action+'_442)';
         }
         else if(xhrError.status == 500){
             message.title = 'Sorry';
-            message.content = 'Adding new data fail.<br>' +
+            message.content = mainMessage+'<br>' +
                 'Please contact programmer.<br>' +
                 '(code:ajx_'+blade+'_'+action+'_500)';
         }

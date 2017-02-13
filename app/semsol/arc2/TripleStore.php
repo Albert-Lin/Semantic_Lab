@@ -10,6 +10,7 @@
 namespace App\semsol\arc2;
 
 use App\semsol\Triple;
+use Psy\Exception\ErrorException;
 
 class TripleStore
 {
@@ -167,9 +168,21 @@ class TripleStore
             $query .= " }";
         }
 
-        $result = $this->TripleStore->query($query);
+		$result = $this->TripleStore->query($query);
 
-        return $result['result']['rows'];
+        if($sparql !== null){
+			if(strpos('?', $sparql) !== false){
+				$this->selects = $result['result']['variables'];
+			}
+		}
+
+		if(isset($result['result']['rows']) && isset($result['result'])){
+			return $result['result']['rows'];
+		}
+		else{
+			return [];
+		}
+
     }
     
 

@@ -14,22 +14,12 @@
         #itemInfoBlock{
             overflow-x: hidden;
             overflow-y: auto;
-        }
-        #itemInsertForm>.boxHeader{
-            background-color: #5b88de;
-        }
-        #itemSearchResultForm{
-            display: none;
-        }
-
-        #infoBlock{
-            background-color: #8eb4cb;
-            border-width: 2px;
-            border-style: dotted;
+            display: flex;
+            align-items: center;
         }
     </style>
     <div id="itemInfoBlock" class="row h100">
-        <div class="col-md-6 h100">
+        <div class="col-md-6">
             <div class="row">
                 <div id="itemInsertForm" class="col-md-offset-1 col-md-10 layoutBox ">
                     <div class="boxHeader">New Item:</div>
@@ -55,16 +45,12 @@
                     </form>
                 </div>
             </div>
-            <div class="row">
-                <div id="itemSearchResultForm" class="col-md-offset-1 col-md-10 layoutBox">
-
-                </div>
-            </div>
         </div>
-        <div class="col-md-6 h100">
-            @include('semantic_lab.templates.sparql_search_form')
+        <div class="col-md-6">
+            @include('semantic_lab.templates.sparql.sparql_search_form')
         </div>
     </div>
+    @include('semantic_lab.templates.sparql.sparql_result_form')
     <script>
 
         $(function(){

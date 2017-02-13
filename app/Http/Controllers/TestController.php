@@ -17,6 +17,7 @@ use Facebook\Facebook;
 use App\Utility\Cookie;
 use App\semsol\arc2\TripleStore;
 use App\semsol\Triple;
+use League\Flysystem\Exception;
 
 /**
  * Description of TestController
@@ -739,15 +740,17 @@ class TestController extends Controller{
     }
 
     public function dbpedia(){
-	    $query = 'SELECT DISTINCT dbr:Dirk_Nowitzki ?p ?o '.
+	    $query = 'SELECT DISTINCT ?p ?o '.
         'WHERE{ '.
-        '  ?s ?p ?o.'.
+        '  dbr:Dirk_Nowitzki ?p ?o.'.
         '}';
 
-	    $tripleStore = new TripleStore('dbpedia');
-	    $result = $tripleStore->get($query);
+//		$query = 'SELECT DISTINCT WHERE{}';
 
-	    var_dump($result['result']);
+	    $tripleStore = new TripleStore('dbpedia');
+		$result = $tripleStore->get($query);
+
+	    var_dump($result);
     }
 
     public function arc2QueryBuilder(){

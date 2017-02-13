@@ -43,7 +43,6 @@ function resetForm(passData){
 	}
 }
 
-
 function formRegexChek(inputId, inputDefault, errorId){
 	var checkResult = true;
 	for(var i = 0; i < inputId.length; i++){

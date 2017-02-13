@@ -73,7 +73,7 @@
 
         .layoutBox{
             padding: 0;
-            margin-top: 5%;
+            /*margin-top: 5%;*/
             background-color: #FFFFFF;
             box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
             font-weight: bolder;
@@ -103,6 +103,24 @@
 
         .h100{
             height: 100%;
+        }
+        .h80{
+            height: 80%;
+        }
+        .h70{
+            height: 70%;
+        }
+        .h60{
+            height: 60%;
+        }
+        .h50{
+            height: 50%;
+        }
+        .h45{
+            height: 45%;
+        }
+        .h30{
+            height: 30%;
         }
 
         @section('css')
