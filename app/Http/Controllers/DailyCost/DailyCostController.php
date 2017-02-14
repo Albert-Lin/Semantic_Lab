@@ -9,12 +9,12 @@
 
 namespace App\Http\Controllers\DailyCost;
 
-use App\Http\Controllers\RootController;
+use App\Http\Controllers\SemanticLabController;
 use App\Model\CurrencyInfo;
 use App\Model\ItemInfo;
 use Illuminate\Http\Request;
 
-class DailyCostController extends RootController
+class DailyCostController extends SemanticLabController
 {
 	public $controllerId = 'dailyCost';
 

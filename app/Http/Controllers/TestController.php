@@ -169,7 +169,6 @@ class TestController extends Controller{
 					['routeList' => $routeList,'title' => 'Route List']);
 
 	}
-
 	/**
 	 * get route list also group by prefix
 	 */
@@ -191,6 +190,24 @@ class TestController extends Controller{
 
 		var_dump($prefixList);
 	}
+
+	public function routeGroupView(){
+	    $prefixList = [];
+	    $routeCotroller = Route::getRoutes();
+	    foreach($routeCotroller as $route){
+	        $uri = $route->getUri();
+	        $prefix = $route->getPrefix();
+
+	        if(!isset($prefixList[$prefix])){
+                $prefixList[$prefix] = [];
+            }
+
+            $prefixList[$prefix][] = $uri;
+        }
+
+        return response()
+                ->view('test/route/routeBlock', ['data' => $prefixList]);
+    }
 
 	// REQUEST:
 	//=====================================================================================

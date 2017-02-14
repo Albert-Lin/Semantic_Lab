@@ -38,7 +38,8 @@ Route::group(['prefix'=>'test'], function(){
 	Route::group(['prefix'=>'route'], function(){
 		Route::get( '/', 'TestController@getRouteList');
 		Route::get( '/view', 'TestController@getRouteListInView');
-		Route::get('/prefixGroup', 'TestController@getRouteGroupByPrefix');
+        Route::get('/prefixGroup', 'TestController@getRouteGroupByPrefix');
+        Route::get('/routeBlock', 'TestController@routeGroupView');
 	});
 
 	// REQUEST:

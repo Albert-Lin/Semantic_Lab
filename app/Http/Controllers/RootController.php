@@ -83,22 +83,7 @@ class RootController extends Controller{
 	 * Function for setting "simple-nav" of view
 	 * @param $user
 	 */
-	protected function setSimpleNav($user){
-		$navLeftFuns = [];
-		$navLeftFuns[] = ['funName'=>'Daily cost', 'URL'=>\Config::get('app.domainName').'dailyCost'];
-		$navLeftFuns[] = ['funName'=>'Data', 'URL'=>\Config::get('app.domainName').''];
-		$navLeftFuns[] = ['funName'=>'Learning', 'URL'=>\Config::get('app.domainName').''];
-		$navLeftFuns[] = ['funName'=>'Analysis', 'URL'=>\Config::get('app.domainName').''];
-		$navLeftFuns[] = ['funName'=>'Semantic', 'URL'=>\Config::get('app.domainName').''];
-		$navLeftFuns[] = ['funName'=>'Test', 'URL'=>\Config::get('app.domainName').'test/route/view'];
-		$this->nav['navLogoText'] = 'Semantic Lab';
-		$this->nav['userName'] = $user;
-		$this->nav['logoutURI'] = \Config::get('app.domainName').'logout';
-		$this->nav['navLeftFuns'] = $navLeftFuns;
-		$this->data['title'] = 'Semantic Lab';
-		$this->data['nav'] = $this->nav;
-		$this->data['domainURI'] = \Config::get('app.domainName');
-	}
+	protected function setSimpleNav($user){}
 
 	/**
 	 * Function for setting side bar sub-functions
