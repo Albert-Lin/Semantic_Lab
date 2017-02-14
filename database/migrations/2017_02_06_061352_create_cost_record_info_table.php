@@ -13,7 +13,7 @@ class CreateCostRecordInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('cost_record_info', function(Blueprint $table){
+        Schema::connection('mysql')->create('cost_record_info', function(Blueprint $table){
         	$table->increments('id')->unique();
         	$table->string('URI')->unique();
         	$table->string('dbp_buyer');

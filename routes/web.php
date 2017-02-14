@@ -38,6 +38,7 @@ Route::group(['prefix'=>'test'], function(){
 	Route::group(['prefix'=>'route'], function(){
 		Route::get( '/', 'TestController@getRouteList');
 		Route::get( '/view', 'TestController@getRouteListInView');
+		Route::get('/prefixGroup', 'TestController@getRouteGroupByPrefix');
 	});
 
 	// REQUEST:
@@ -61,12 +62,11 @@ Route::group(['prefix'=>'test'], function(){
 
         Route::get('/setCookie/{method}', 'TestController@setCookie');
 
+		Route::get('/setCookieWithTime', 'TestController@setCookieWithTime');
+
+		route::get('/origGetCookie', 'TestController@origGetCookie');
+
         Route::get('/getCookie/{method}', 'TestController@getCookie');
-
-		Route::get('/setC', 'TestController@setC');
-
-		route::get('/getC', 'TestController@getC');
-
     });
 
 	// SECURITY:
@@ -118,9 +118,9 @@ Route::group(['prefix'=>'test'], function(){
 	// CSS:
 	Route::group(['prefix'=>'css'], function(){
 		Route::get('/side_bar_trans', 'TestController@sideBarTrans');
+		Route::get('/bs_side_bar_trans', 'TestController@bsSideBarTrans');
 		Route::get('/left_tabs', 'TestController@leftTabs');
 		Route::get('/grid', 'TestController@grid');
-		Route::get('/bs_side_bar_trans', 'TestController@bsSideBarTrans');
 	});
 
 	// FACEBOOK:
@@ -134,15 +134,13 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/regexSearch/{searchWord}', 'TestController@autoCompleteSearch');
 	});
 
-	// RDF/TRIPLE STORE
-    Route::get('/triplestore', 'TestController@tripleStore');
-    Route::get('/triplestore/dbpedia', 'TestController@dbpedia');
-    Route::get('/triplestore/qb', 'TestController@arc2QueryBuilder');
-    Route::get('/triplestore/qbList', 'TestController@qbList');
-
-	// TEST:
-	Route::get('/test/regex/{regex}', 'TestController@regex');
-
+	// RDF/TRIPLE STORE:
+	Route::group(['prefix' => 'triplestore'], function(){
+		Route::get('/', 'TestController@tripleStore');
+		Route::get('/dbpedia', 'TestController@dbpedia');
+		Route::get('/qb', 'TestController@arc2QueryBuilder');
+		Route::get('/qbList', 'TestController@qbList');
+	});
 
 });
 

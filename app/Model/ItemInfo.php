@@ -6,9 +6,23 @@ use App\Model\RootModel;
 
 class ItemInfo extends RootModel
 {
-	// set the table for model:
+	/**
+	 * set the table for model
+	 * @var string
+	 */
 	protected  $table = 'item_info';
 
+	/**
+	 * set the connection for multiple database
+	 * @var string
+	 */
+	protected $connection = 'mysql';
+
+	/**
+	 * INSERT INTO $table (`URI`, `rdf_type`, `rdfs_label`) VALUES ($values);
+	 * @param $values
+	 * @return string
+	 */
 	public function insertAll($values){
 		$this->URI = $values->uri;
 		$this->rdf_type = $values->type;

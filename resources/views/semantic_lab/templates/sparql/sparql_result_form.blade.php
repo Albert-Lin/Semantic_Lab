@@ -9,9 +9,8 @@
 <style>
     #sparqlResultBlock{
         display: none;
-    }
-    #sparqlResult{
-        margin-bottom: 80px;
+        padding-top: 50px;
+        padding-bottom: 50px;
     }
     #sparqlResult>.boxHeader{
         background-color: #f0ad4e;
@@ -27,6 +26,7 @@
         background-color: #f0ad4e;
     }
     #sparqlResultBody{
+        max-height: calc(100% - 65px);
         overflow-x: hidden;
         overflow-y: auto;
         font-size: 14px;

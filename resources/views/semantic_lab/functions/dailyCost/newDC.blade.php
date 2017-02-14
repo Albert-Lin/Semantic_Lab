@@ -10,7 +10,7 @@
 @extends('semantic_lab.personal')
 
 @section('contentBody')
-    @if(isset($data['funName']) &&  $data['funName'] === 'dailyCost/newDC')
+    {{--@if(isset($data['funName']) &&  $data['funName'] === 'dailyCost/newDC')--}}
 
         <style>
             #scForm{
@@ -61,5 +61,5 @@
         </script>
 
 
-    @endif
+    {{--@endif--}}
 @endsection

@@ -13,7 +13,7 @@ class CreateItemInfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_info', function(Blueprint $table){
+        Schema::connection('mysql')->create('item_info', function(Blueprint $table){
         	$table->increments('id');
 			$table->string('URI');
 			$table->string('rdf_type');

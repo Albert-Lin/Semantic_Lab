@@ -15,7 +15,7 @@ class CreateUserInfosTable extends Migration
     {
         // Create table with schema:
         // Blueprint object that may be used to define the new table ($table)
-        Schema::create('user_infos', function(Blueprint $table){
+        Schema::connection('mysql')->create('user_infos', function(Blueprint $table){
             $table->increments('id')->unique(); // function increments() used to create a auto-increments column
 			$table->string('URI')->unique();
             $table->string('name'); // function string() used to create a column with VARCHAR type

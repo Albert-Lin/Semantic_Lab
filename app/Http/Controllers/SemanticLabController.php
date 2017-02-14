@@ -15,31 +15,6 @@ use Illuminate\Http\Request;
 class SemanticLabController extends RootController
 {
     /**
-     * Render different VIEW for different main function
-     * @param Request $request
-     * @return $this
-     */
-    public function viewRoute(Request $request)
-    {
-        // 00. check session
-        $user = $this->getUserSession($request);
-
-        if(!isset($user)){
-            // 01. general view for non-sign in
-            $this->nonLoginData();
-        }
-        else{
-            // 02. personal view for sign in account
-            $this->renderView = 'semantic_lab/personal';
-            $this->setSimpleNav($user);
-        }
-
-        // 03. render view
-        return View($this->renderView)
-            ->with('data', $this->data);
-    }
-
-    /**
      * "POST" function for user login
      * @param Request $request
      * @return string
@@ -181,41 +156,6 @@ class SemanticLabController extends RootController
         return json_encode($result);
     }
 
-    /**
-     * Function for setting "simple-nav" of view
-     * @param $user
-     */
-    protected function setSimpleNav($user){
-        $navLeftFuns = [];
-        $navLeftFuns[] = ['funName'=>'Daily cost', 'URL'=>\Config::get('app.domainName').'dailyCost'];
-        $navLeftFuns[] = ['funName'=>'Data', 'URL'=>\Config::get('app.domainName').''];
-        $navLeftFuns[] = ['funName'=>'Learning', 'URL'=>\Config::get('app.domainName').''];
-        $navLeftFuns[] = ['funName'=>'Analysis', 'URL'=>\Config::get('app.domainName').''];
-        $navLeftFuns[] = ['funName'=>'Semantic', 'URL'=>\Config::get('app.domainName').''];
-        $navLeftFuns[] = ['funName'=>'Test', 'URL'=>\Config::get('app.domainName').'test/route/view'];
-        $this->nav['navLogoText'] = 'Semantic Lab';
-        $this->nav['userName'] = $user;
-        $this->nav['logoutURI'] = \Config::get('app.domainName').'logout';
-        $this->nav['navLeftFuns'] = $navLeftFuns;
-        $this->data['title'] = 'Semantic Lab';
-        $this->data['nav'] = $this->nav;
-        $this->data['domainURI'] = \Config::get('app.domainName');
-    }
 
-    /**
-     * Function for setting side bar sub-functions
-     */
-    protected function setSubFun(){}
-
-    /**
-     * Set message of "POST" function which needs to redirect to "{ domainURI }/"
-     * @return array
-     */
-    protected function redirectMessage(){
-        $message = [];
-        $message['title'] = 'Redirect';
-        $message['content'] = \Config::get('app.domainName');
-        return $message;
-    }
 
 }

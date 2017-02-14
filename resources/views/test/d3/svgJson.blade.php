@@ -7,22 +7,6 @@
  */
 
 ?>
-
-<!--<!doctype html>
-<html>
-    <head>
-        <title>{{ $title }}</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-        <script src="http://d3js.org/d3.v3.min.js"></script>
-        <script src="/js/test/d3/neo4j.js"></script>
-    </head>
-    <body onload="root()">
-
-    </body>
-</html>-->
-
-<!--<++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++=>-->
-
 <!doctype html>
 <html>
 	<head>

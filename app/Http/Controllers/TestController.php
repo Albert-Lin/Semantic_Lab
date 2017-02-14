@@ -26,24 +26,34 @@ use League\Flysystem\Exception;
  */
 class TestController extends Controller{
 
-	/*
+
+	// SIMPLE:
+	//=====================================================================================
+	/**
 	 * This is a most simple action of controller,
-	 * we do something here,
-	 * usually, the code in here mostly similar as pseudo code,
+	 *  we do something here,
+	 *  usually, the code in here mostly similar as pseudo code,
 	 *  and also, we might going to pass data by using View()->with('key', 'value');
+	 * @return \Illuminate\Http\Response
 	 */
 	public function index(){
 		// pass data to the mapping view:
-		Return View( 'test/index')
-					->with( 'title', 'Semantic Lab' )
-					->with( 'bodyMessage', ' Well done! This is the most simple action in controller.');
-	}
 
-	/*
+		// return data to view:
+		$data = [];
+		$data['title'] = 'Semantic Lab';
+		$data['bodyMessage'] = 'Well done! This is the most simple action in controller.';
+
+		Return response()
+				->view('test/index', $data);
+	}
+	/**
 	 * At pass, while passing request from url,
-	 * we always using ?key=value,
-	 * but now, because of route strategy,
-	 * we can pass request inner url path,
+	 * 	we always using ?key=value,
+	 * 	but now, because of route strategy,
+	 * 	we can pass request inner url path,
+	 * @param $category
+	 * @param $page
 	 */
 	public function beautyURL($category, $page){
 		echo "We get get category & page variables from Url path, and both of them are: <br>";
@@ -52,25 +62,35 @@ class TestController extends Controller{
 	}
 
 
-	/*
+	// VIEW:
+	//=====================================================================================
+	/**
 	 * VIEW & TEMPLATE:
+	 * @param $tempNum
+	 * @return \Illuminate\Http\Response
 	 */
 	public function viewTemp($tempNum){
 		if($tempNum < 3) {
-			return View('test/view/temp')
-				->with('title', 'Template ' . $tempNum);
+			Return response()
+				->view('test/view/temp', ['title' => 'Template ' . $tempNum]);
 		}
 	}
 
 
-	/*
-	 * MODEL
+	// MODEL
+	//=====================================================================================
+	/**
+	 * Show the note of create migrate file and Model by using php artisan command
+	 * @return \Illuminate\Http\Response
 	 */
 	public function modelNote(){
-	    return View('test/model/note')
-            -> with('title', 'Note for create model complete process');
+	    return response()
+				->view('test/model/note', [ 'title' => 'Note for create model complete process']);
     }
-
+	/**
+	 * query builder && Hash function
+	 * @param $action
+	 */
     public function queryBuilder($action){
 		if($action === 'insert'){
 			$values = new \stdClass();
@@ -104,7 +124,9 @@ class TestController extends Controller{
 
 		}
 	}
-
+	/**
+	 * Testing unique function of RootMadel
+	 */
 	public function unique(){
 		$model = new \App\Model\ItemInfo();
 		$uniqueData['URI'] = 'http://semanticlab.com/Headphones';
@@ -112,13 +134,13 @@ class TestController extends Controller{
 		var_dump($checkResult);
 	}
 
-	/*
-	 * ROUTE:
-	 */
-	/*
+
+	// ROUTE:
+	//=====================================================================================
+	/**
 	 * Get all the route in routes/api.php && routes/web.php.
 	 * Dont't forget to import(use) class for Route:
-	 * Illuminate\Support\Facades\Route 
+	 * ==> => Illuminate\Support\Facades\Route <= <==
 	 */
 	public function getRouteList(){
 
@@ -128,39 +150,63 @@ class TestController extends Controller{
 			echo $value->getPath()."<br>";
 		}
 	}
-
+	/**
+	 * get route list and show in VIEW with Bootstrape
+	 * @return \Illuminate\Http\Response
+	 */
 	public function getRouteListInView(){
 
 		$routeCollection = Route::getRoutes();
 		$routeList = [];
 		$index = 0;
 		foreach ($routeCollection as $value) {
-//						echo $value->getPath()."<br>";
 			$routeList[$index] = $value->getPath();
 			$index++;
 		}
 
-		return View('test/route/routeList')
-						->with('routeList', $routeList)
-						->with('title', 'Route List');
+		return response()
+				->view('test/route/routeList',
+					['routeList' => $routeList,'title' => 'Route List']);
+
 	}
 
-
-	/*
-	 * REQUEST:
+	/**
+	 * get route list also group by prefix
 	 */
-	/*
+	public function getRouteGroupByPrefix(){
+		$prefixList = [];
+		$routeCollection = Route::getRoutes();
+		foreach ($routeCollection as $key => $value) {
+			$uri = $value->getUri();
+			$prefix = $value->getPrefix();
+
+			if(!isset($prefixList[$prefix])){
+				$prefixList[$prefix] = [];
+				$prefixList[$prefix][] = $uri;
+			}
+			else{
+				$prefixList[$prefix][] = $uri;
+			}
+		}
+
+		var_dump($prefixList);
+	}
+
+	// REQUEST:
+	//=====================================================================================
+	/**
 	 * Test the request methods
+	 * @param Request $request
 	 */
-	public function request(){
-		return View('test/request')
-					->with('title', 'Request:');
+	public function request(Request $request){
+		var_dump($request);
 	}
-
-	/*
-	 * In this controller we show how to get the requests data.
-	 * Don't forget to import(use) class of Request:
-	 * Illuminate\Http\Request;
+	/**
+	 * In this function we show how to get the requests data.
+	 * 	Don't forget to import(use) class of Request:
+	 * 	 ==> => Illuminate\Http\Request; <= <==
+	 * @param Request $request
+	 * @param $type
 	 */
 	public function getReguest(Request $request, $type){
 		if($type == 0){
@@ -178,9 +224,11 @@ class TestController extends Controller{
 			echo $requests['password'];
 		}
 	}
-
-	/*
-	 * This controller show how to access variables in URL path
+	/**
+	 * This function show how to access variables in URL path
+	 * @param Request $request
+	 * @param $category
+	 * @param $page
 	 */
 	public function getUrlRequest(Request $request, $category, $page){
 		echo "We get get category & page variables from \"Request\", and both of them are: <br>";
@@ -188,11 +236,13 @@ class TestController extends Controller{
 		echo "Page: ".$request->page."<br>";
 	}
 
-	/*
-	 * SESSION:
-	 */
-	/*
-	 * This controller show how to set session
+
+	// SESSION: in Laravel session is part of Request
+	//=====================================================================================
+	/**
+	 * This function show how to set session
+	 * @param Request $request
+	 * @return \Illuminate\Http\Response
 	 */
 	public function setSession(Request $request){
 		// set the session by instance of Request
@@ -202,12 +252,13 @@ class TestController extends Controller{
 		session([ 'globalPassword' => 'G-love4451' ]);
 
 		// let's view the result
-		return View( 'test/session' )
-						->with( 'title', 'Session' );
+		return response()
+				->view('test/session', ['title' => 'Session']);
 	}
-
-	/*
-	 * This controller show how to get the session
+	/**
+	 * This function show how to get the session
+	 * @param Request $request
+	 * @param $type
 	 */
 	public function getSession(Request $request, $type){
 		if($type == 0){
@@ -233,9 +284,10 @@ class TestController extends Controller{
 			echo "Global Session: ".$gSession."<br>";
 		}
 	}
-
-	/*
+	/**
 	 * This controller show the methods to remove/delete the session
+	 * @param Request $request
+	 * @param $type
 	 */
 	public function deleteSession(Request $request, $type){
 		if($type == 0){
@@ -255,17 +307,20 @@ class TestController extends Controller{
 	}
 
 
-	/*
-	 * COOKIE:
+	// COOKIE: in Laravel cookie is SET by response
+	//=====================================================================================
+	/**
+	 * show the native PHP cookie data information
 	 */
-	/*
-	 * We have not find better than native php cookie function
-	 */
-
     public function viewCookie(){
         var_dump($_COOKIE);
     }
-
+	/**
+	 * set cookie by using response
+	 * @param Request $request
+	 * @param $method
+	 * @return mixed
+	 */
     public function setCookie(Request $request, $method){
     	$info = '';
         if($method === 'single'){
@@ -286,7 +341,33 @@ class TestController extends Controller{
         if($info !== null)
 		    return response('')->cookie($info['name'], $info['value'], $info['time'], $info['path']);
     }
-
+	/**
+	 * set cookie with live time
+	 * \Illuminate\Http\Response
+	 */
+	public function setCookieWithTime(){
+		$data = [];
+		$data['title'] = 'Semantic Lab';
+		$data['domainURI'] = \Config::get('app.domainName');
+		return response()
+			->view('semantic_lab/general', ['data'=>$data])
+			->cookie('re', 'val', 36400, '/');
+	}
+	/**
+	 * get cookie by using original method (request)
+	 * @param Request $request
+	 */
+	public function origGetCookie(Request $request){
+		$value = $request->cookie('re');
+		var_dump($value);
+		var_dump($_COOKIE);
+	}
+	/**
+	 * get cookie by using our method
+	 *  ==> => App\Utility\Cookie <= <==
+	 * @param Request $request
+	 * @param $method
+	 */
     public function getCookie(Request $request, $method){
         if($method === 'list'){
             $result = Cookie::getNameList();
@@ -302,28 +383,14 @@ class TestController extends Controller{
         }
     }
 
-    public function setC(){
-    	$data = [];
-		$data['title'] = 'Semantic Lab';
-		$data['domainURI'] = \Config::get('app.domainName');
-    	return response()
-			->view('semantic_lab/general', ['data'=>$data])
-			->cookie('re', 'val', 36400, '/');
-	}
 
-	public function getC(Request $request){
-		$value = $request->cookie('re');
-		var_dump($value);
-		var_dump($_COOKIE);
-	}
-
-
-	/*
-	 * SECURITY
-	 */
-	/*
-	 * Hashing function, don't forget adding using namespace as below for used:
-	 * use Illuminate\Support\Facades\Hash;
+	// SECURITY
+	//=====================================================================================
+	/**
+	 * HASH:
+	 * This function show how to use hash function and check hash variable
+	 *   ==> => Illuminate\Support\Facades\Hash <= <==
+	 * @param $data
 	 */
 	public function hashing($data){
 
@@ -336,7 +403,10 @@ class TestController extends Controller{
 			echo "check: ".$checkHash."<br>";
 		}
 	}
-
+	/**
+	 * This function is an example of combine both HASH and MODEL
+	 * @param $user
+	 */
 	public function dbHashCheck($user){
 		$password = "z/ m06";
 		$model = new UserInfo();
@@ -355,18 +425,24 @@ class TestController extends Controller{
 			echo "account error";
 		}
 	}
-	/*
-	 * Validation
+	/**
+	 * VALIDATION:
 	 * more Laravel validation rules:
 	 * https://laravel.com/docs/5.3/validation#available-validation-rules
 	 * The rule "unique:{db table name}" means the given variable must "exist" and unique in table
+	 * @return \Illuminate\Http\Response
 	 */
 	public function valiData(){
-		return View('test/security/validation/valiForm')
-			->with('title', 'VALIDATION FORM')
-			->with('domainName', \Config::get('app.domainName'));
+		return response()
+				->view('test/security/validation/valiForm', [
+					'title' => 'VALIDATION FORM',
+					'domainName' => \Config::get('app.domainName')
+				]);
 	}
-
+	/**
+	 * This data show the validation method of Controller
+	 * @param Request $request
+	 */
 	public function valiProcess(Request $request){
 		$this->validate($request, [
 			'username' => 'required|min:6|max:20',
@@ -377,10 +453,10 @@ class TestController extends Controller{
 		echo "= w =";
 	}
 
-	/*
-	 * API:
-	 */
-	/*
+
+	// API
+	//=====================================================================================
+	/**
 	 * This is a function to call API with curl method
 	 */
 	public function callAPI(){
@@ -395,8 +471,7 @@ class TestController extends Controller{
 		else
 			echo "ERROR FOR ACCESS TOKEN";
 	}
-
-	/*
+	/**
 	 * This is an API function for return a token,
 	 * also the route forthis function is set in /route/api.php
 	 * @return \stdClass $jsonData
@@ -409,85 +484,113 @@ class TestController extends Controller{
 		return $jsonData;
 	}
 
-	/*
-	 * Processing P5.js
+
+	// Processing P5:
+	//=====================================================================================
+	/**
+	 * function to enter P5 project:
+	 * @return \Illuminate\Http\Response
 	 */
 	public function p5(){
-		return View('test/p5/index')
-				->with('title', 'P5');
+		return response()->view('test/p5/index', ['title' => 'P5']);
 	}
-
+	/**
+	 * This function will show linked Data VIEW created with P5
+	 * @return $this
+	 */
 	public function p5Linked(){
-		return View('test/p5/linked')
-				->with('title', 'P5');
+		return response()->view('test/p5/linked', ['title' => 'P5']);
 	}
 
-	/*
-	 * D3:
+
+	// D3:
+	//=====================================================================================
+	/**
+	 * D3 example form web
+	 * @return \Illuminate\Http\Response
 	 */
 	public function d3(){
-		return View('test/d3/index')
-				->with('title', 'D3');
+		return response()->view('test/d3/index', ['title' => 'D3']);
 	}
-
+	/**
+	 *  D3 SVG example form web
+	 * @return \Illuminate\Http\Response
+	 */
 	public function d3Svg(){
-		return View('test/d3/svg')
-				->with('title', 'D3 SVG');
+		return response()->view('test/d3/svg', ['title' => 'D3 SVG']);
 	}
-
+	/**
+	 * D3 SVG example with accessing JSON data
+	 * @return \Illuminate\Http\Response
+	 */
 	public function d3SvgJson(){
-		return View('test/d3/svgJson')
-				->with('title', 'D3 SVG JSON');
+		return response()->view('test/d3/svgJson', ['title' => 'D3 SVG JSON']);
 	}
-	
+	/**
+	 * * D3 SVG path example
+	 * @return $this
+	 */
 	public function path(){
 			return View('test/d3/svg_path')
 						->with('title', 'SVG PATH');
 	}
 
-	/*
-	 * NEO4J:
+
+	// NEO4J:
+	//=====================================================================================
+	/**
+	 * simple Neo4J project
+	 * @return \Illuminate\Http\Response
 	 */
 	public function  neo4j(){
-		return View('test/neo4j/index')
-				->with('title', 'NEO4j JS');
+		return response()->view('test/neo4j/index', ['title' => 'NEO4j JS']);
 	}
-
+	/**
+	 * Neo4J project with visualization (using d3)
+	 * @return \Illuminate\Http\Response
+	 */
 	public function vis(){
-		return View('test/neo4j/visualization')
-				->with('title', 'Visualization');
+		return response()->view('test/neo4j/visualization', ['title' => 'Visualization']);
 	}
-	
+	/**
+	 * Neo4J project which JS design based on MVC framework
+	 * @return \Illuminate\Http\Response
+	 */
 	public function visMVC(){
-		return View('test/neo4j/vis_mvc')
-				->with('title', 'VIS MVC');
+		return response()->view('test/neo4j/vis_mvc', ['title' => 'VIS MVC']);
 	}
 
 
-	/*
-	 * GOOGLE MAP:
+	// GOOGLE MAP:
+	//=====================================================================================
+	/**
+	 * Simple Googe map
+	 * @return \Illuminate\Http\Response
 	 */
 	public function gmap(){
-		return View('test/google/map/index')
-				->with('title', 'Google Map');
+		return response()->view('test/google/map/index', ['title' => 'Google Map']);
 	}
-
-	public function googleMap(){
-		return View('test/google/map/index_class')
-				->with('title', 'Google Map');
-	}
-
-	public function googleCarMap(){
-		return View('test/google/map/car/car')
-				->with('title', 'Google Car Map');
-	}
-
-
-	/*
-	 * EXCUTE EXTERNAL FILE :
+	/**
+	 * The project show phone record on Google map
+	 * @return \Illuminate\Http\Response
 	 */
-	/*
+	public function googleMap(){
+		return response()->view('test/google/map/index_class', ['title' => 'Google Map']);
+	}
+	/**
+	 * The project show car record on Google map
+	 * @return \Illuminate\Http\Response
+	 */
+	public function googleCarMap(){
+		return response()->view('test/google/map/car/car', ['title' => 'Google Car Map']);
+	}
+
+
+	// EXCUTE EXTERNAL FILE :
+	//=====================================================================================
+	/**
 	 * This is a function to excute external file.
+	 * @param $type
 	 */
 	public function exe($type){
 		if($type == "exec"){
@@ -523,33 +626,43 @@ class TestController extends Controller{
 	}
 
 
-	/*
-	 * CSS:
+	// CSS :
+	//=====================================================================================
+	/**
+	 * a side bar layout with setting transition
+	 * @return \Illuminate\Http\Response
 	 */
 	public function sideBarTrans(){
-		return View('test/css/side_bar_trans')
-					->with('title', 'CSS TRANSITION');
+		return response()->view('test/css/side_bar_trans', ['title' => 'CSS TRANSITION']);
 	}
-	
-	public function leftTabs(){
-			return View('test/css/left_tabs')
-						->with('title', 'CSS LEFT TABS');
-	}
-
-	public function grid(){
-		return View('test/css/grid')
-			->with('title', 'CSS GRID');
-	}
-
+	/**
+	 * a side bar layout with setting transition AND Bootstrap
+	 * @return \Illuminate\Http\Response
+	 */
 	public function bsSideBarTrans(){
-        return View('test/css/bs_side_bar_trans')
-            ->with('title', 'BS Side Bar Trans');
-    }
+		return response()->view('test/css/bs_side_bar_trans', ['title' => 'BS Side Bar Trans']);
+	}
+	/**
+	 * a vertical nav(tab, phill) as side bar
+	 * @return \Illuminate\Http\Response
+	 */
+	public function leftTabs(){
+		return response()->view('test/css/left_tabs', ['title' => 'CSS LEFT TABS']);
+	}
+	/**
+	 * Bootstrap grid system:
+	 * @return \Illuminate\Http\Response
+	 */
+	public function grid(){
+		return response()->view('test/css/grid', ['title' => 'CSS GRID']);
+	}
 
 
-    /*
-     * FACEBOOK
-     */
+	// FACEBOOK V2.8 :
+	//=====================================================================================
+	/**
+	 * This function show how to create a Facebook object and generate a login link
+	 */
     public function facebook(){
         $fb = new Facebook([
             'app_id' => '368249613535369',
@@ -565,7 +678,9 @@ class TestController extends Controller{
 		header('Location: '.$loginUrl);
 		exit();
     }
-
+	/**
+	 * This function is a Facebook login page
+	 */
     public function fbLogin(){
 
 		$fb = new Facebook([
@@ -643,7 +758,16 @@ class TestController extends Controller{
 		$this->createPost($accessToken);
 
     }
-
+	/**
+	 * This function select all friends information by using API:
+	 *  ==> => taggable_friends <= <==
+	 *  however the friend id we get is only used for tagging friend,
+	 *  it's not truly id of personal
+	 * @param $fb
+	 * @param $accessToken
+	 * @param null $after
+	 * @return array
+	 */
     private function friendsRecursive($fb, $accessToken, $after = null){
         $allFriends = [];
         $response = "";
@@ -680,7 +804,10 @@ class TestController extends Controller{
 
         return $allFriends;
     }
-
+	/**
+	 * This function is for creating a Facebook post, how ever it doesn't work.
+	 * @param $accessToken
+	 */
     private function createPost($accessToken){
 
 		$fb = new Facebook([
@@ -709,8 +836,11 @@ class TestController extends Controller{
 	}
 
 
-	/*
-	 * UTILITY:
+	// UTILITY :
+	//=====================================================================================
+	/**
+	 * This function is a regex search which usually used as auto-complete search
+	 * @param $searchWord
 	 */
 	public function autoCompleteSearch($searchWord){
 		$array = [];
@@ -732,27 +862,32 @@ class TestController extends Controller{
 	}
 
 
-	/*
-	 * RDF/TRIPLE STORE
+	// RDF/TRIPLE STORE :
+	//=====================================================================================
+	/**
+	 * Create a TripleStore object, if table(s) doesn't exist before,
+	 * 	it will auto create all tables that ARC2 needs.
 	 */
 	public function tripleStore(){
 	    $tripleStore = new TripleStore();
     }
-
+	/**
+	 * Query DBpedia, the sparql is a string
+	 */
     public function dbpedia(){
 	    $query = 'SELECT DISTINCT ?p ?o '.
         'WHERE{ '.
         '  dbr:Dirk_Nowitzki ?p ?o.'.
         '}';
 
-//		$query = 'SELECT DISTINCT WHERE{}';
-
 	    $tripleStore = new TripleStore('dbpedia');
 		$result = $tripleStore->get($query);
 
 	    var_dump($result);
     }
-
+	/**
+	 * Query DBpedia, the sparql is create by query builder functions of TripleStore
+	 */
     public function arc2QueryBuilder(){
         $tripleStore = new TripleStore('dbpedia');
         $result = $tripleStore->select(["?s", "?p", "?o"], true)->where([
@@ -763,7 +898,9 @@ class TestController extends Controller{
 
         var_dump($result);
     }
-
+	/**
+	 * Query DBpedia by query builder and show result in lines
+	 */
     public function qbList(){
         $tripleStore = new TripleStore('dbpedia');
         $selectKey = ['?s', '?p', '?o'];
@@ -787,58 +924,5 @@ class TestController extends Controller{
             echo $RDF;
         }
     }
-
-
-    /*
-     * TEST
-     */
-    public function regex($regex){
-
-        $languageDir = $this->getLanguageDir('en-US');
-        $regex = str_replace('/', '\/', $regex);
-        $result = $this->scanDirFiles($languageDir, $regex);
-        foreach($result as $key => $file){
-            echo $file."<br>";
-        }
-
-    }
-
-    private function scanDirFiles($path, $regex){
-
-        $fileList = [];
-        $fileIndex = 0;
-        if(is_dir($path)){
-            $allDir = scandir($path);
-            foreach($allDir as $key => $dir){
-                $subDirPath = $path.'/'.$dir;
-                $subDirPath = str_replace('\\', '/', $subDirPath);
-
-                if($dir !== '.' && $dir !== '..') {
-                    if (is_dir($subDirPath)) {
-                        $allFile = $this->scanDirFiles($subDirPath, $regex);
-                        foreach($allFile as $subKey => $file){
-                            $fileList[$fileIndex] = $file;
-                            $fileIndex++;
-                        }
-                    }
-                    else if (is_file($subDirPath)) {
-                        if (preg_match('/'.$regex.'/', $subDirPath)) {
-                                $fileList[$fileIndex] = $subDirPath;
-                                $fileIndex++;
-                        }
-                    }
-                }
-            }
-        }
-
-        return $fileList;
-
-    }
-
-    private function getLanguageDir($language){
-        return 'D:\Desktop\yii\message\en'.'/'.$language;
-    }
-
-
 
 }

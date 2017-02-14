@@ -171,7 +171,7 @@ class TripleStore
 		$result = $this->TripleStore->query($query);
 
         if($sparql !== null){
-			if(strpos('?', $sparql) !== false){
+			if(preg_match('/\.*?.*/', $sparql)){
 				$this->selects = $result['result']['variables'];
 			}
 		}

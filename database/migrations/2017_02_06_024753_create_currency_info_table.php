@@ -13,7 +13,7 @@ class CreateCurrencyInfoTable extends Migration
      */
     public function up()
     {
-		Schema::create('currency_info', function(Blueprint $table){
+		Schema::connection('mysql')->create('currency_info', function(Blueprint $table){
 			$table->increments('id')->unique();
 			$table->string('URI')->unique();
 			$table->string('rdf_type');

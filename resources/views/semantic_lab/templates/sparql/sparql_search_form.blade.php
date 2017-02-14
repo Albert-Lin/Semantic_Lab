@@ -69,21 +69,14 @@ WHERE
 </div>
 
 <script>
-
-    function setHeight(){
-        var headerHeight = $('#sparqlResult .boxHeader').css('height');
-        var cssHeight = 'calc(100% - '+headerHeight+')';
-        $('.sparqlTBBlock').css('height', cssHeight);
-    }
-
     $(function(){
 
         $( document ).ajaxStart(function() {
-            $('.inputError').css('display', 'block');
+            $('#sparqlSearch .inputError').css('display', 'block');
         });
 
         $( document ).ajaxStop(function() {
-            $('.inputError').css('display', 'none');
+            $('#sparqlSearch .inputError').css('display', 'none');
         });
 
         $('#sparqlBtn').on('click', function(){
@@ -115,7 +108,6 @@ WHERE
 
                         $('#sparqlResultBody').html(table);
                         $('#sparqlResultBlock').css('display', 'block');
-                        setHeight();
                     }
                 }
             };

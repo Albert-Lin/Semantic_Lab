@@ -80,11 +80,13 @@
         }
 
         .layoutBox>.boxHeader{
+            height: 65px;
             padding-top: 20px;
             padding-right: 15px;
             padding-bottom: 20px;
             padding-left: 15px;
             background-color: #5b88de;
+            font-size: 18px;
         }
 
         .layoutBox>.boxBody{
