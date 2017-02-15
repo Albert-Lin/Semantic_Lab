@@ -685,6 +685,10 @@ class TestController extends Controller{
 		return response()->view('test/css/grid', ['title' => 'CSS GRID']);
 	}
 
+	public function verNavTransLayout(){
+	    return response()->view('tamplate/verticalNav-transLayout');
+    }
+
 
 	// FACEBOOK V2.8 :
 	//=====================================================================================

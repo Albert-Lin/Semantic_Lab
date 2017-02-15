@@ -122,7 +122,8 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/side_bar_trans', 'TestController@sideBarTrans');
 		Route::get('/bs_side_bar_trans', 'TestController@bsSideBarTrans');
 		Route::get('/left_tabs', 'TestController@leftTabs');
-		Route::get('/grid', 'TestController@grid');
+        Route::get('/grid', 'TestController@grid');
+        Route::get('/verNavTransLayout', 'TestController@verNavTransLayout');
 	});
 
 	// FACEBOOK:
