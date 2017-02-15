@@ -109,6 +109,7 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/', 'TestController@gmap');
 		Route::get('/class', 'TestController@googleMap');
 		Route::get('/car', 'TestController@googleCarMap');
+		Route::get('/phoneRecord', 'TestController@phoneRecordMap');
 	});
 
 	// EXECUTE EXTERNAL FILE:
@@ -160,7 +161,7 @@ Route::group(['prefix' => ''], function(){
 	});
 
     Route::group(['prefix'=>'sparql'], function(){
-        Route::post('/select', 'SparqlController@select');
+		Route::post('/select', 'SparqlController@select');
     });
 
 });

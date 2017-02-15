@@ -39,4 +39,34 @@ class Utility
 		return $result;
 	}
 
+	public static function regexsSearch($regexs, $value, $andOr = 'and'){
+		$result = true;
+		if(is_array($regexs)){
+			foreach($regexs as $key => $regex){
+				if(isset($value) && preg_match($regex, $value)){
+					if($andOr === 'or'){
+						$result = true;
+						break;
+					}
+				}
+				else{
+					if($andOr === 'and'){
+						$result = false;
+						break;
+					}
+					else if($andOr === 'or'){
+						$result = false;
+					}
+				}
+			}
+		}
+		else{
+			if(!isset($value) || !preg_match($regexs, $value)){
+				$result = false;
+			}
+		}
+
+		return $result;
+	}
+
 }

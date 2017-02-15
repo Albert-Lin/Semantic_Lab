@@ -34,9 +34,9 @@
             #funBody{
                 height: 100%;
                 padding: 0;
-                background-color: #4a3155;
-                opacity: 1;
-                color: #ffffff;
+                background-color: #ccbbee;
+                opacity: 0.7;
+                color: #2e3436;
             }
         #contentBlock{
             width: 100%;

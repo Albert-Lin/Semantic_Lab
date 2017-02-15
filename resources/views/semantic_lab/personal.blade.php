@@ -18,8 +18,9 @@
             border: 0;
             border-left: 10px;
             line-height: 40px;
-            color: #ffffff;
+            color: #2e3436;
             font-size: 16px;
+            font-weight: 600;
         }
         #funBody>.list-group>.btn{
             text-align: left;

@@ -109,6 +109,9 @@ WHERE
                         $('#sparqlResultBody').html(table);
                         $('#sparqlResultBlock').css('display', 'block');
                     }
+                    else if(message.title === 'Error'){
+						messageBox(message);
+                    }
                 }
             };
             var ajaxObject = new AjaxObject('sparql', 'select', passData);

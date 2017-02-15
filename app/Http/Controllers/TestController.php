@@ -190,7 +190,10 @@ class TestController extends Controller{
 
 		var_dump($prefixList);
 	}
-
+	/**
+	 * get group routes with better VIEW
+	 * @return \Illuminate\Http\Response
+	 */
 	public function routeGroupView(){
 	    $prefixList = [];
 	    $routeCotroller = Route::getRoutes();
@@ -600,6 +603,14 @@ class TestController extends Controller{
 	 */
 	public function googleCarMap(){
 		return response()->view('test/google/map/car/car', ['title' => 'Google Car Map']);
+	}
+	/**
+	 * The online project about Phone Record
+	 * @return \Illuminate\Http\Response
+	 */
+	public function phoneRecordMap(){
+		return response()
+				->view('test/google/map/phoneRecord/index');
 	}
 
 
