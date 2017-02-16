@@ -16,7 +16,11 @@ function GoogleMap(){
 		this.map = new google.maps.Map(document.getElementById(domId), {
 			zoom: 14,
 			center: new google.maps.LatLng(lat , lng),
-			mapTypeId: 'roadmap'
+			mapTypeId: 'roadmap',
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+                position: google.maps.ControlPosition.TOP_CENTER
+            },
 		});
 	};
 

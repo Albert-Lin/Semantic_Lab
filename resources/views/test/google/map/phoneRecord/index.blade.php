@@ -17,8 +17,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4KGAZ9H0TBoWEN0c6R5u60Nt7s5cijwo&callback=setUp" async defer></script>
     <script src="http://semanticlab.com/js/test/Google_Map/GoogleMap.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4KGAZ9H0TBoWEN0c6R5u60Nt7s5cijwo" async defer>	</script>
 
     <style>
 
@@ -159,46 +159,30 @@
 	var showPhones = [];
 	var googleMap = {};
 
+	function setUp(){
+        $.getJSON( "../../js/test/Debugdata.json", function( data ) {
+            var phoneNumList = '';
+            var colorUnit = (313/data.length);
+            for(var i = 0; i < data.length; i++){
+                var phoneNum = data[i].監察號碼;
+                var color = colorUnit*i;
+                var tr = '<tr> ' +
+                    '<td><input type="checkbox" class="listItem" value="'+phoneNum+'"></td>' +
+                    '<td>'+phoneNum+'</td> <td style="background-color: hsla('+color+', 100%, 75%, 1);"></td>' +
+                    '</tr>';
+                phoneNumList += tr;
+
+                data[i].color = 'hsla('+color+', 100%, 75%, 1)';
+                phoneObjects.push(data[i]);
+            }
+            $('#phoneNumTB').html(phoneNumList);
+
+            googleMap = new GoogleMap();
+            googleMap.initilization('mainContent', phoneObjects[0].紀錄[0].緯度, phoneObjects[0].紀錄[0].經度);
+        });
+    }
+
 	$(function(){
-
-		$.getJSON( "../../js/test/Debugdata.json", function( data ) {
-			var phoneNumList = '';
-			var colorUnit = (313/data.length);
-			for(var i = 0; i < data.length; i++){
-				var phoneNum = data[i].監察號碼;
-				var color = colorUnit*i;
-				var tr = '<tr> ' +
-					'<td><input type="checkbox" class="listItem" value="'+phoneNum+'"></td>' +
-					'<td>'+phoneNum+'</td> <td style="background-color: hsla('+color+', 100%, 75%, 1);"></td>' +
-					'</tr>';
-				phoneNumList += tr;
-
-				data[i].color = 'hsla('+color+', 100%, 75%, 1)';
-				phoneObjects.push(data[i]);
-			}
-			$('#phoneNumTB').html(phoneNumList);
-
-			$('.listItem').on('click', function(){
-				var checked = $(this).prop('checked');
-				if(checked === true){
-					var allChecked = true;
-					$('.listItem').each(function(){
-						if($(this).prop('checked') === false){
-							allChecked = false;
-						}
-					});
-					if(allChecked === true){
-						$('#checkAll').prop('checked', true);
-					}
-				}
-				else if(checked === false){
-					$('#checkAll').prop('checked', '');
-				}
-			});
-
-			googleMap = new GoogleMap();
-			googleMap.initilization('mainContent', phoneObjects[0].紀錄[0].緯度, phoneObjects[0].紀錄[0].經度);
-		});
 
 		$('.funBtn').on('click', function(event){
 			var clickId = event.target.id;
@@ -209,7 +193,7 @@
 				mainContent.removeClass('col-md-12');
 				mainContent.addClass('col-md-offset-3');
 				mainContent.addClass('col-md-9');
-				mainContent.css('padding-left', '0');
+				mainContent.css('padding-left', '');
 
 				$('#'+clickFun).css('background-color', '');
 				$(this).css('background-color', '#9d9d9d');
@@ -224,6 +208,7 @@
 				mainContent.removeClass('col-md-9');
 				mainContent.addClass('col-md-12');
 				mainContent.css('padding-left', '65px');
+//                mainContent.css('margin-left', '65px');
 
 				clickFun = undefined;
 				$(this).css('background-color', '');
@@ -248,6 +233,24 @@
 
 		$('#submitBtn').on('click', function(){
 			googleMap.resetCenter('24.2501232', '120.7317551');
+        });
+
+        $('.listItem').on('click', function(){
+            var checked = $(this).prop('checked');
+            if(checked === true){
+                var allChecked = true;
+                $('.listItem').each(function(){
+                    if($(this).prop('checked') === false){
+                        allChecked = false;
+                    }
+                });
+                if(allChecked === true){
+                    $('#checkAll').prop('checked', true);
+                }
+            }
+            else if(checked === false){
+                $('#checkAll').prop('checked', '');
+            }
         });
 	});
 
