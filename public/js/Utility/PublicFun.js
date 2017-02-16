@@ -62,3 +62,41 @@ function keyValuesTable(object, info){
 	table += '</tbody></table>';
 	return table;
 }
+
+/**
+ *
+ * @param array
+ * @param propName
+ * @param invers
+ * @returns {*}
+ */
+function sortData(array, propName, invers){
+	var newArray;
+	if(typeof invers === 'undefined'){
+		// small -> large
+		newArray = array.slice().sort(function(a, b){
+			return a[propName] - b[propName];
+			if(a[propName] < b[propName]){
+				return -1;
+			}
+			if(a[propName] > b[propName]){
+				return 1;
+			}
+			return 0;
+		});
+	}
+	else{
+		// large -> small
+		newArray = array.slice().sort(function(a, b){
+			if(b[propName] < a[propName]){
+				return -1;
+			}
+			if(b[propName] > a[propName]){
+				return 1;
+			}
+			return 0;
+		});
+	}
+
+	return newArray;
+}
