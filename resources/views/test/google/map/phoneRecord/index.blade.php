@@ -162,6 +162,7 @@
 	var lastContent = undefined;
 	var clickFun = undefined;
 	var phones = [];
+	var phoneMap = [];
 	var showPhones = [];
 	var googleMap = {};
     var groupInfo = {
@@ -170,12 +171,18 @@
     		var group = [];
     		var recordArray = entity.getPropValue(condiction.propName);
     		for(var i = 0; i < recordArray.length; i++){
-    			var phoneCallStart = parseInt(recordArray[condiction.subPropName]);
+    			var phoneCallStart = recordArray[i][condiction.subPropName];
     			if(condiction.lowerBound < phoneCallStart &&
                     phoneCallStart <= condiction.upperBound){
-    				group.push(recordArray.origIndex);
+    				group.push(recordArray[i].origIndex);
+
+                    console.log(condiction.lowerBound);
+                    console.log(phoneCallStart);
+                    console.log(condiction.upperBound);
+                    console.log("---------------------------");
                 }
             }
+            console.log(group);
             return group;
         }
     };
@@ -211,8 +218,8 @@
 
                 data[i].color = 'hsla('+color+', 100%, 75%, 1)';
                 phones.push(new Entity(data[i]));
+                phoneMap[phoneNum] = i;
                 phones[i].specialFun(recordInfo.setMillSec.params, recordInfo.setMillSec.fun);
-
             }
             $('#phoneNumTB').html(phoneNumList);
 
@@ -312,8 +319,8 @@
 
 		$('#submitBtn').on('click', function(){
             var showing = true;
-			var searchStratTime = (new Date(Date.parse($('#startTime').val()))).getTime();
-			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime();
+			var searchStratTime = (new Date(Date.parse($('#startTime').val()))).getTime()-(8*3600000);
+			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime()-(8*3600000);
             var timeUnit = $('input[name=unit]:checked').val();
 
 			if(isNaN(searchStratTime) && isNaN(searchStopTime)){
@@ -327,10 +334,16 @@
             }
 
             if(showing === true){
-				groupInfo.data = groupByTime(searchStratTime, searchStopTime, timeUnit, '紀錄', '通話起始日期');
+				groupInfo.condictions = groupByTime(searchStratTime, searchStopTime, timeUnit, '紀錄', 'millSec');
 				$('.listItem').each(function(){
-					console.log($(this).prop('checked'));
-					console.log($(this).val());
+                    if($(this).prop('checked') == true){
+                        var phoneIndex = phoneMap[$(this).val()];
+                        phones[phoneIndex].groupElements(groupInfo.condictions, groupInfo.fun);
+                        showPhones.push(phones[phoneIndex].groupList);
+                    }
+                    else{
+                        showPhones.push([]);
+                    }
 				});
             }
 
