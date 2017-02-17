@@ -100,3 +100,12 @@ function sortData(array, propName, invers){
 
 	return newArray;
 }
+
+function sortDataIndex(array, sortedPropName, indexPropName, invers){
+	var indexArray = [];
+	var sortResult = sortData(array, propName, invers);
+	for(var i = 0; i < sortResult.length; i++){
+		indexArray.push(sortResult[i][indexPropName]);
+	}
+	return indexArray;
+}

@@ -13,12 +13,14 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>通聯地圖</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC4KGAZ9H0TBoWEN0c6R5u60Nt7s5cijwo&callback=setUp" async defer></script>
-    <script src="http://semanticlab.com/js/test/Google_Map/GoogleMap.js"></script>
+    <script src="http://semanticlab.com/js/Utility/GoogleMap.js"></script>
+    <script src="http://semanticlab.com/js/Utility/Entity.js"></script>
+    <script src="http://semanticlab.com/js/Utility/PublicFun.js"></script>
 
     <style>
 
@@ -91,7 +93,7 @@
 
         .funHead{
             height: 65px;
-            background-color: #4b6d85;
+            background-color: #8bade5;
             color: #ffffff;
             line-height: 65px;
             text-align: center;
@@ -113,16 +115,20 @@
             }
                 .optHead{
                     padding: 5px;
-                    background-color: #4b6d85;
+                    background-color: #8bade5;
                     color: #ffffff;
-                    border-top-right-radius: 25px;
-                    border-bottom-right-radius: 25px;
+                    border-top-right-radius: 15px;
+                    border-bottom-right-radius: 15px;
                 }
                 .optBody{
                     padding: 10px;
                     font-size: 16px;
                     color: #122b40;
                 }
+                    .optBody .form-group .col-md-2{
+                        padding-left: 5px;
+                        padding-right: 5px;
+                    }
                 .optBlock table{
                     margin-top: 10px;
                 }
@@ -155,9 +161,40 @@
 
 	var lastContent = undefined;
 	var clickFun = undefined;
-	var phoneObjects = [];
+	var phones = [];
 	var showPhones = [];
 	var googleMap = {};
+    var groupInfo = {
+    	condictions: [],
+        fun: function(condiction, entity){
+    		var group = [];
+    		var recordArray = entity.getPropValue(condiction.propName);
+    		for(var i = 0; i < recordArray.length; i++){
+    			var phoneCallStart = parseInt(recordArray[condiction.subPropName]);
+    			if(condiction.lowerBound < phoneCallStart &&
+                    phoneCallStart <= condiction.upperBound){
+    				group.push(recordArray.origIndex);
+                }
+            }
+            return group;
+        }
+    };
+    var recordInfo = {
+    	setMillSec: {
+    	    params: {
+    	    	propName: '紀錄',
+    	    	subPropName: '通話起始日期'
+            },
+            fun: function(pramas, entity){
+    	    	var recordArray = entity.getPropValue(pramas.propName);
+    	    	for(var i = 0; i < recordArray.length; i++){
+    	    		var startTime = recordArray[i][pramas.subPropName];
+    	    		var millSec = (new Date(Date.parse(startTime))).getTime();
+					recordArray[i].millSec = millSec;
+                }
+            }
+        }
+	};
 
 	function setUp(){
         $.getJSON( "../../js/test/Debugdata.json", function( data ) {
@@ -173,13 +210,37 @@
                 phoneNumList += tr;
 
                 data[i].color = 'hsla('+color+', 100%, 75%, 1)';
-                phoneObjects.push(data[i]);
+                phones.push(new Entity(data[i]));
+                phones[i].specialFun(recordInfo.setMillSec.params, recordInfo.setMillSec.fun);
+
             }
             $('#phoneNumTB').html(phoneNumList);
 
             googleMap = new GoogleMap();
-            googleMap.initilization('mainContent', phoneObjects[0].紀錄[0].緯度, phoneObjects[0].紀錄[0].經度);
+			var defLat = phones[0].getElementValue('紀錄', 0)['緯度'];
+			var defLng = phones[0].getElementValue('紀錄', 0)['經度'];
+            googleMap.initilization('mainContent', defLat, defLng);
         });
+    }
+
+    function groupByTime(startTime, stopTime, unit, propName, subPropName){
+		console.log(startTime);
+		console.log(stopTime);
+		var numGroup = Math.floor(Math.abs(parseInt(stopTime)-parseInt(startTime)+parseInt(unit))/unit);
+		var group = [];
+		for(var i = 0; i < numGroup; i++){
+			var condition = {
+				lowerBound: startTime + i*unit,
+				upperBound: startTime + (i+1)*unit,
+				propName: propName,
+				subPropName: subPropName
+            };
+			if(i === (numGroup-1)){
+				condition.upperBound = stopTime;
+            }
+			group.push(condition);
+        }
+        return group;
     }
 
 	$(function(){
@@ -231,10 +292,6 @@
 			});
 		});
 
-		$('#submitBtn').on('click', function(){
-			googleMap.resetCenter('24.2501232', '120.7317551');
-        });
-
         $('.listItem').on('click', function(){
             var checked = $(this).prop('checked');
             if(checked === true){
@@ -252,6 +309,34 @@
                 $('#checkAll').prop('checked', '');
             }
         });
+
+		$('#submitBtn').on('click', function(){
+            var showing = true;
+			var searchStratTime = (new Date(Date.parse($('#startTime').val()))).getTime();
+			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime();
+            var timeUnit = $('input[name=unit]:checked').val();
+
+			if(isNaN(searchStratTime) && isNaN(searchStopTime)){
+				$('#timeValid').css('display', 'block');
+				showing = false;
+            }
+
+            if(timeUnit === undefined){
+				$('#unitValid').css('display', 'block');
+				showing = false;
+            }
+
+            if(showing === true){
+				groupInfo.data = groupByTime(searchStratTime, searchStopTime, timeUnit, '紀錄', '通話起始日期');
+				$('.listItem').each(function(){
+					console.log($(this).prop('checked'));
+					console.log($(this).val());
+				});
+            }
+
+		});
+
+
 	});
 
 
@@ -269,34 +354,34 @@
                     <div class="funBody">
                         <div class="optBlock">
                             <div class="row box0">
-                                <div class="optHead col-md-8">分析時間</div>
+                                <div class="optHead col-md-5">分析時間</div>
                             </div>
                             <div class="optBody form-horizontal box0">
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">開始</label>
-                                    <div class="col-md-9"><input id="startTime" class="form-control input-sm" type="datetime-local" required/></div>
+                                    <div class="col-md-2 control-label">開始</div>
+                                    <div class="col-md-10"><input id="startTime" class="form-control input-sm" type="datetime-local" required/></div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label">結束</label>
-                                    <div class="col-md-9"><input id="stopTime" class="form-control input-sm" type="datetime-local" required/></div>
+                                    <div class="col-md-2 control-label">結束</div>
+                                    <div class="col-md-10"><input id="stopTime" class="form-control input-sm" type="datetime-local" required/></div>
                                 </div>
                             </div>
                             <div id="timeValid" class="optValid">* 請輸入正確的分析時間</div>
                         </div>
                         <div class="optBlock">
                             <div class="row box0">
-                                <div class="optHead col-md-8">分析單位</div>
+                                <div class="optHead col-md-5">分析單位</div>
                             </div>
                             <div class="optBody form">
-                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="10">10分鐘</label>
-                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="60">1小時</label>
-                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="1440">1天</label>
+                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="600000">10分鐘</label>
+                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="3600000">1小時</label>
+                                <label class="radio-inline"><input type="radio" class="unit" name="unit" value="86400000">1天</label>
                             </div>
                             <div id="unitValid" class="optValid">* 請選擇分析單位</div>
                         </div>
                         <div class="optBlock">
                             <div class="row box0">
-                                <div class="optHead col-md-8">監察號碼</div>
+                                <div class="optHead col-md-5">監察號碼</div>
                             </div>
                             <table class="table table-striped table-condensed optBody">
                                 <thead>
@@ -310,7 +395,7 @@
                             </table>
                         </div>
                         <div class="optBlock">
-                            <div class="optBody">
+                            <div class="optBody row box0">
                                 <div id="submitBtn" class="btn">送出</div>
                             </div>
                         </div>
