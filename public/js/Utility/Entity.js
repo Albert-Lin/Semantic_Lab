@@ -108,10 +108,17 @@ function Entity(data) {
 
 	this.groupElements = function(conditions, fun){
 		var num = conditions.length;
+		var none_empty = false;
 		for(var i = 0; i < num; i++){
 			var condition = conditions[i];
-			this.groupList.push(fun(condition, this));
+			var result = fun(condition, this);
+			this.groupList.push(result);
+			if(result.length > 0 ){
+				none_empty = true;
+			}
 		}
+
+		return none_empty;
 	};
 
 	this.specialFun = function(funParam, fun){
