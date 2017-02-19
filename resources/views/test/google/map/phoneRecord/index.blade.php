@@ -176,16 +176,16 @@
             animation-duration: 0.75s;
         }
         #regexSearchBtn{
-            display: inline-block;
             background-color: #ffffff;
-            box-shadow: -1px 1px 5px 2px rgba(100, 100, 100, 0.8);
-            border-radius: 100px;
+            border-radius: 50px;
+            display: table;
+            margin: 0 auto;
+            border-color: #2a88bd;
+            width: 50%;
+            height: 50%;
         }
         #regexSearchBtn:hover{
-            box-shadow: -1px 1px 6px 1px rgba(100, 100, 100, 0.8), 0 0 40px 0 rgba(80, 80, 80, 0.3);
-        }
-        #regexSearchBtn:active{
-            box-shadow: -1px 1px 6px 1px rgba(100, 100, 100, 0.8), 0 0 40px 0 rgba(255, 10, 10, 0.3);
+            background-color: #98cbe8;
         }
 
         #phoneList{
@@ -204,7 +204,6 @@
             height: 60px;
             position: absolute;
             z-index: 5;
-            /*background-color: #ff4444;*/
             padding-top: 16px;
             padding-bottom: 16px;
         }
@@ -320,7 +319,7 @@
     }
 
     function groupByTime(startTime, stopTime, unit, propName, subPropName){
-		var numGroup = Math.floor(Math.abs(parseInt(stopTime)-parseInt(startTime)+parseInt(unit))/unit);
+		var numGroup = Math.floor(Math.abs(parseInt(stopTime)-parseInt(startTime))/unit); //+parseInt(unit)
 		var group = [];
 		for(var i = 0; i < numGroup; i++){
 			var condition = {
@@ -341,8 +340,8 @@
 		var currentTime = new Date(new Date().getTime()+(8*3600000)).toISOString().replace(/\..*Z/gi, '');
 		$('#startTime').val(currentTime);
 		$('#stopTime').val(currentTime);
-		$('#lowerBound').html(currentTime.replace(/T/gi, ' '));
-		$('#upperBound').html(currentTime.replace(/T/gi, ' '));
+        $('#lowerBound').html(currentTime.replace(/T/gi, ' '));
+        $('#upperBound').html(currentTime.replace(/T/gi, ' '));
 
 		$('.funBtn').on('click', function(event){
 			var clickId = event.target.id;
@@ -410,11 +409,13 @@
 
 		$('#submitBtn').on('click', function(){
             var showing = true;
-			var searchStratTime = (new Date(Date.parse($('#startTime').val()))).getTime()-(8*3600000);
-			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime()-(8*3600000);
+			var searchStartTime = (new Date(Date.parse($('#startTime').val()))).getTime();//-(8*3600000)
+			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime();//-(8*3600000)
+            $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
+            $('#upperBound').html($('#stopTime').val().replace(/T/gi, ' '));
             var timeUnit = $('input[name=unit]:checked').val();
 
-			if(isNaN(searchStratTime) && isNaN(searchStopTime)){
+			if(isNaN(searchStartTime) && isNaN(searchStopTime)){
 				$('#timeValid').css('display', 'block');
 				showing = false;
             }
@@ -428,7 +429,7 @@
 				showPhones = [];
 				nonEmptyMap = [];
 				groupInfo.condictions = [];
-				groupInfo.condictions = groupByTime(searchStratTime, searchStopTime, timeUnit, '紀錄', 'millSec');
+				groupInfo.condictions = groupByTime(searchStartTime, searchStopTime, timeUnit, '紀錄', 'millSec');
 				var selected = false;
 				$('.listItem').each(function(){
                     if($(this).prop('checked') == true){
@@ -452,21 +453,25 @@
                 else{
 					var trs = '';
 					$('.optValid').css('display', '');
-                    $('#unitBar').prop('max', groupInfo.condictions.length);
+                    $('#unitBar').prop('max', (groupInfo.condictions.length-1));
 					for(var i = 0; i < showPhones.length; i++){
 						if(nonEmptyMap[i] === true){
-							var phone = phones[i];console.log(phone);
+							var phone = phones[i];
 							var phoneNum = phone.getPropValue('監察號碼');
 							for(var j = 0; j < showPhones[i].length; j++){
-								var tr = '<tr unitId="'+j+'">';
-								for(var k =0; k < showPhones[i][j].length; k++){
-									var record = phone.getElementValue('紀錄', showPhones[i][j][k]);
-									tr += '<td>'+phoneNum+'</td>' +
-										'<td>'+record['非監察號碼']+'</td>' +
-										'<td>'+record['通話起始日期']+'</td>';
+							    if(showPhones[i][j].length > 0){
+
+							        for(var k = 0; k < showPhones[i][j].length; k++){
+                                        var record = phone.getElementValue('紀錄', showPhones[i][j][k]);
+							            var tr = '<tr unitId="'+j+'">';
+                                        tr += '<td>'+phoneNum+'</td>' +
+	    									'<td>'+record['非監察號碼']+'</td>' +
+		    								'<td>'+record['通話起始日期']+'</td>';
+                                        tr += '</tr>';
+                                        trs += tr;
+                                    }
+
                                 }
-								tr += '</tr>';
-								trs += tr;
 							}
                         }
                     }
@@ -491,10 +496,30 @@
         });
 
 		$('#unitBar').on('change', function(){
-			var lBoundTime = new Date().toISOString(groupInfo.condictions[$(this).val()].lowerBound).replace(/\..*Z/gi, '');
-			var uBoundTime = new Date().toISOString(groupInfo.condictions[$(this).val()].upperBound).replace(/\..*Z/gi, '');
-			$('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
-			$('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+		    var index = $(this).val();
+		    if(index > -1){
+                var lBoundTime = new Date(groupInfo.condictions[index].lowerBound).toISOString().replace(/\..*Z/gi, '');
+                var uBoundTime = new Date(groupInfo.condictions[index].upperBound).toISOString().replace(/\..*Z/gi, '');
+                $('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
+                $('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+
+                $('#recordTB tr').each(function(){
+                    if($(this).attr('unitId') !== index){
+                        $(this).css('display', 'none');
+                    }
+                    else{
+                        $(this).css('display', '');
+                    }
+                });
+            }
+            else{
+                $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
+                $('#upperBound').html($('#stopTime').val().replace(/T/gi, ' '));
+
+                $('#recordTB tr').each(function(){
+                    $(this).css('display', '');
+                });
+            }
         });
 
 	});
@@ -568,7 +593,9 @@
                         <div class="optBlock searchBlock">
                             <div class="optBody row box0">
                                 <input id="regexSearch" class="box0 col-md-10 is-empty" />
-                                <div id="regexSearchBtn" class="btn btn-lg col-md-2 glyphicon glyphicon-search "></div>
+                                <div class="col-md-2">
+                                    <div id="regexSearchBtn" class="btn glyphicon glyphicon-search "></div>
+                                </div>
                             </div>
                         </div>
                         <div class="optBlock">
@@ -596,7 +623,7 @@
                     <div id="lowerBound" class="col-md-6"></div>
                     <div id="upperBound" class="col-md-6"></div>
                 </div>
-                <input id="unitBar" type="range" value="0" min="0" max="0">
+                <input id="unitBar" type="range" value="-1" min="-1" max="0">
             </div>
             <div id="mainContent" class="col-md-12 h100"></div>
         </div>
