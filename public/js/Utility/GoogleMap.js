@@ -14,7 +14,7 @@ function GoogleMap(){
 		insLabelColor: '#000000',
 		insLabelSize: '16px',
 		outsScale: 24,
-		outsOpacity: 0.55,
+		outsOpacity: 0.9,
 		outsLabelX: 0,
 		outsLabelY: 2,
 		outsLabelSize: '16px'
@@ -28,7 +28,7 @@ function GoogleMap(){
 		insLabelColor: '#000000',
 		insLabelSize: '16px',
 		outsScale: 10,
-		outsOpacity: 0.55,
+		outsOpacity: 0.9,
 		outsLabelX: 0,
 		outsLabelY: 6,
 		outsLabelSize: '16px'
@@ -55,6 +55,7 @@ function GoogleMap(){
 		});
 	};
 
+
 	/**
 	 * calling setCenter api of Google Map
 	 * @param lat
@@ -64,9 +65,6 @@ function GoogleMap(){
 		this.map.setCenter(new google.maps.LatLng(lat , lng));
 	};
 
-	this.resetCenterLatLng = function(googleLatLng){
-		this.map.setCenter(googleLatLng);
-	};
 
 	/**
 	 * this function will create a object with google.maps.Marker needed properties.
@@ -104,10 +102,11 @@ function GoogleMap(){
 		};
 	};
 
+
 	/**
 	 * this function will create two shapeMarkers,
 	 *  the small one is inside the big one, also,
-	 *  we push both of them into markerList
+	 *  we push both of them into markerInfoList
 	 * @param type
 	 * @param lat
 	 * @param lng
@@ -116,51 +115,51 @@ function GoogleMap(){
 	 * @param outsLabel
 	 * @param trIndex
 	 */
-	this.addShapeMarker = function(type, lat, lng, insLabel, outsColor, outsLabel, trIndex){
+	this.addShapeMarker = function(type, lat, lng, insLabel, outsColor, outsLabel, outsLabelColor, trIndex, eventObject){
 		var info = this.circleMarkerInfo;
 		var googleShape = google.maps.SymbolPath.CIRCLE;
 		var insideMarker;
 		var outsideMarker;
-		var outMarker;
-		var inMarker;
 		if(type === 'triangle'){
 			info = this.triangleMarkerInfo;
 			googleShape = google.maps.SymbolPath.FORWARD_OPEN_ARROW;
 		}
 
-		insideMarker = this.shapeMarker(googleShape, lat, lng,
-			info.insScale, info.insColor, info.insOpacity,
-			info.insLabelX, info.insLabelY, this.map, insLabel,
-			info.insLabelColor, info.insLabelSize);
+		insideMarker = new google.maps.Marker(
+			this.shapeMarker(googleShape, lat, lng,
+				info.insScale, info.insColor, info.insOpacity,
+				info.insLabelX, info.insLabelY, null, insLabel,
+				info.insLabelColor, info.insLabelSize)
+		);
 
-		outsideMarker = this.shapeMarker(googleShape, lat, lng,
-			info.outsScale, outsColor, info.outsOpacity,
-			info.outsLabelX, info.outsLabelY, this.map, outsLabel,
-			outsColor, info.outsLabelSize);
+		outsideMarker = new google.maps.Marker(
+			this.shapeMarker(googleShape, lat, lng,
+				info.outsScale, outsColor, info.outsOpacity,
+				info.outsLabelX, info.outsLabelY, null, outsLabel,
+				outsLabelColor, info.outsLabelSize)
+		);
+		this.addMarkerEvent('click', outsideMarker, eventObject.params, eventObject.fun, trIndex);
 
 		this.markerList.push({
 			insideMarker: insideMarker,
 			outsideMarker: outsideMarker,
-			trIndex: trIndex
+            trIndex: trIndex,
+			lat: lat,
+			lng: lng
 		});
+
 	};
+
 
 	this.addImageMarker = function(){};
 
-	this.drawMarkers = function(indexArray, eventParams, eventFun, infoWindow){
+
+	this.drawMarkers = function(indexArray){
 		for(var i = 0; i < indexArray.length; i++){
 			var index = indexArray[i];
-			var outsideMarker = new google.maps.Marker(this.markerList[index].outsideMarker);
-			var insideMarker = new google.maps.Marker(this.markerList[index].insideMarker);
-			this.resetCenterLatLng(this.markerList[index].outsideMarker.position);
-			// if(typeof infoWindow !== 'undefined'){
-			// 	this.infoWindowList.push(new google.maps.InfoWindow(this.infoContentList[index]));
-			// 	this.addMarkerEvent('click', outsideMarker, eventParams, eventFun, index);
-			// }
-			// else{
-			// 	this.addMarkerEvent('click', outsideMarker, eventParams, eventFun);
-			// }
-
+            this.markerList[index].insideMarker.setMap(this.map);
+            this.markerList[index].outsideMarker.setMap(this.map);
+            this.resetCenter(this.markerList[index].lat, this.markerList[index].lng);
 		}
 	};
 
@@ -174,9 +173,34 @@ function GoogleMap(){
 			fun(googleMap, params);
 
 			if(typeof infoWindowIndex !== 'undefined'){
-				googleMap.infoWindowList[infoWindowIndex].open(googleMap.map, marker);
+				// googleMap.infoWindowList[infoWindowIndex].open(googleMap.map, marker);
 			}
 		});
+	};
+
+
+	this.clearMarkers = function(indexArray, all){
+		if(typeof all !== 'undefined'){
+            for(var i = 0; i < this.markerList.length; i++){
+                this.markerList[i].outsideMarker.setMap(null);
+                this.markerList[i].insideMarker.setMap(null);
+            }
+		}
+		else{
+			for(var i = 0; i < indexArray.length; i++){
+				var index = indexArray[i];
+                this.markerList[index].outsideMarker.setMap(null);
+                this.markerList[index].insideMarker.setMap(null);
+			}
+		}
+	};
+
+
+	this.clearAll = function(){
+        this.clearMarkers([], true);
+        this.markerList = [];
+        this.infoContentList = [];
+        this.infoWindowList = [];
 	};
 
 

@@ -290,6 +290,36 @@
             }
         }
 	};
+    var drawAllMarkers = true;
+
+    function markerClickEvent(googleMap, params){
+        $('#recordTB tr').each(function(){
+            $(this).css('background-color', '');
+        });
+
+        $('#recordTB tr[orderIndex='+params.orderId+']').css('display', '');
+        $('#recordTB tr[orderIndex='+params.orderId+']').css('background-color', params.color);
+    }
+
+    function phoneItemCheckbox(){
+        $('.listItem').on('click', function(){
+            var checked = $(this).prop('checked');
+            if(checked === true){
+                var allChecked = true;
+                $('.listItem').each(function(){
+                    if($(this).prop('checked') === false){
+                        allChecked = false;
+                    }
+                });
+                if(allChecked === true){
+                    $('#checkAll').prop('checked', true);
+                }
+            }
+            else if(checked === false){
+                $('#checkAll').prop('checked', '');
+            }
+        });
+    }
 
 	function setUp(){
         $.getJSON( "../../js/test/data.json", function( data ) {
@@ -304,12 +334,14 @@
                     '</tr>';
                 phoneNumList += tr;
 
-                data[i].color = 'hsla('+color+', 100%, 45%, 1)';
+                data[i].color = 'hsla('+color+', 100%, 70%, 1)';
+                data[i].labelColor = 'hsla('+color+', 100%, 45%, 1)';
                 phones.push(new Entity(data[i]));
                 phoneMap[phoneNum] = i;
                 phones[i].specialFun(recordInfo.setMillSec.params, recordInfo.setMillSec.fun);
             }
             $('#phoneNumTB').html(phoneNumList);
+            phoneItemCheckbox();
 
             googleMap = new GoogleMap();
 			var defLat = phones[0].getElementValue('紀錄', 0)['緯度'];
@@ -342,6 +374,7 @@
 		var lastPhoneIndex;
 		var phone;
 		var phoneColor;
+		var phoneLabelColor;
 
 		$('#recordTB tr').each(function(){
 
@@ -352,13 +385,23 @@
 				var record;
 				var recordStartTime;
 				var timeUnit = $('input[name=unit]:checked').val();
+				var markerEventInfo = {
+                    params: {
+                        orderId: '',
+                        color: ''
+                    },
+				    fun: markerClickEvent
+                };
 				if(phoneIndex !== lastPhoneIndex) {
 					phone = phones[phoneIndex];
 					phoneColor = phone.getPropValue('color');
+                    phoneLabelColor = phone.getPropValue('labelColor');
 				}
                 recordIndex = $(this).attr('recordIndex');
                 orderIndex = $(this).attr('orderIndex');
                 record = phone.getElementValue('紀錄', recordIndex);
+                markerEventInfo.params.orderId = orderIndex;
+                markerEventInfo.params.color = phoneColor;
 
                 if(timeUnit === '600000' || timeUnit === '3600000'){
 					recordStartTime = getDateInfo(record['millSec'],undefined, undefined, undefined, true, true, undefined);
@@ -368,35 +411,47 @@
                 }
 
                 if(recordIndex === '0'){
-                	googleMap.addShapeMarker('triangle', record['緯度'], record['經度'], recordStartTime, phone.getPropValue('color'), record['非監察號碼'], orderIndex);
+                	googleMap.addShapeMarker('triangle', record['緯度'], record['經度'],
+                        recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
+                        phoneLabelColor, orderIndex, markerEventInfo);
                 }
                 else{
-					googleMap.addShapeMarker('circle', record['緯度'], record['經度'], recordStartTime, phone.getPropValue('color'), record['非監察號碼'], orderIndex);
+					googleMap.addShapeMarker('circle', record['緯度'], record['經度'],
+                        recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
+                        phoneLabelColor, orderIndex, markerEventInfo);
                 }
 
 				trOrderList.push(orderIndex);
 			}
 		});
 
-		for(var i = 0; i <= groupInfo.condictions.length; i++){
-			setTimeout(function(index){
+        drawAllMarkers = true;
+        drawUnitMarkers(0, drawUnitMarkers);
+    }
 
-				if(index !== groupInfo.condictions.length){
-					var recordList = [];
-					$('#recordTB tr[unitId='+index+']').each(function(){
-						recordList.push($(this).attr('orderIndex'));
-					});
-					googleMap.drawMarkers(recordList);
-					$('#unitBar').prop('value', index);
-					$('#unitBar').change();
+    function drawUnitMarkers(unitId, callback){
+        setTimeout(function(){
+            if(unitId !== groupInfo.condictions.length){
+                var recordList = [];
+                $('#recordTB tr[unitId='+unitId+']').each(function(){
+                    recordList.push($(this).attr('orderIndex'));
+                });
+                googleMap.drawMarkers(recordList);
+                $('#unitBar').prop('value', unitId);
+                $('#unitBar').change();
+                unitId++;
+
+                if(typeof callback !== 'undefined' && isFunction(callback) === true){
+                    callback(unitId, callback);
                 }
-                else{
-					$('#unitBar').prop('value', '-1');
-					$('#unitBar').change();
-				}
+            }
+            else{
+                $('#unitBar').prop('value', '-1');
+                $('#unitBar').change();
+                drawAllMarkers = false;
+            }
+        }, 1000);
 
-            }, (i*1000), i);
-        }
     }
 
 	$(function(){
@@ -452,24 +507,6 @@
 			});
 		});
 
-        $('.listItem').on('click', function(){
-            var checked = $(this).prop('checked');
-            if(checked === true){
-                var allChecked = true;
-                $('.listItem').each(function(){
-                    if($(this).prop('checked') === false){
-                        allChecked = false;
-                    }
-                });
-                if(allChecked === true){
-                    $('#checkAll').prop('checked', true);
-                }
-            }
-            else if(checked === false){
-                $('#checkAll').prop('checked', '');
-            }
-        });
-
 		$('#submitBtn').on('click', function(){
             var showing = true;
 			var searchStartTime = (new Date(Date.parse($('#startTime').val()))).getTime();//-(8*3600000)
@@ -495,7 +532,7 @@
 				groupInfo.condictions = groupByTime(searchStartTime, searchStopTime, timeUnit, '紀錄', 'millSec');
 				var selected = false;
 				$('.listItem').each(function(){
-                    if($(this).prop('checked') == true){
+                    if($(this).prop('checked') === true){
                         var phoneIndex = phoneMap[$(this).val()];
                         var nonEmpty;
 						phones[phoneIndex].groupList = [];
@@ -505,10 +542,11 @@
                         selected = true;
                     }
                     else{
+                        nonEmptyMap.push(false);
                         showPhones.push([]);
                     }
 				});
-
+				
 				if(selected === false){
 					showPhones = [];
                     $('#listValid').css('display', 'block');
@@ -544,7 +582,7 @@
 
                     $('#recordTB').html(trs);
                     $('#funBtn1').click();
-
+                    googleMap.clearAll();
 					drawGoogleMapMarker();
 
                 }
@@ -566,6 +604,7 @@
 
 		$('#unitBar').on('change', function(){
 		    var index = $(this).val();
+		    var trList = [];
 		    if(index > -1){
                 var lBoundTime = new Date(groupInfo.condictions[index].lowerBound).toISOString().replace(/\..*Z/gi, '');
                 var uBoundTime = new Date(groupInfo.condictions[index].upperBound).toISOString().replace(/\..*Z/gi, '');
@@ -578,8 +617,14 @@
                     }
                     else{
                         $(this).css('display', '');
+                        trList.push($(this).attr('orderIndex'));
                     }
                 });
+
+                if(drawAllMarkers === false){
+                    googleMap.clearMarkers([], true);
+                    googleMap.drawMarkers(trList);
+                }
             }
             else{
                 $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
@@ -587,7 +632,13 @@
 
                 $('#recordTB tr').each(function(){
                     $(this).css('display', '');
+                    trList.push($(this).attr('orderIndex'));
                 });
+
+                if(drawAllMarkers === false){
+                    googleMap.clearMarkers([], true);
+                    googleMap.drawMarkers(trList);
+                }
             }
         });
 
