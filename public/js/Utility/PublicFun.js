@@ -109,3 +109,65 @@ function sortDataIndex(array, sortedPropName, indexPropName, invers){
 	}
 	return indexArray;
 }
+
+function getDateInfo(millseconds, year, month, date, hour, min, sec){
+	var date = new Date(millseconds);
+	var result = '';
+
+	if(typeof year !== 'undefined'){
+		result = date.getFullYear();
+	}
+
+	if(typeof month !== 'undefined'){
+		if(result.length > 0){
+			result += '/'+(date.getMonth()+1).toString();
+		}
+		else{
+			result += (date.getMonth()+1).toString();
+		}
+	}
+
+	if(typeof date !== 'undefined'){
+		if(result.length > 0){
+			if(typeof year !== 'undefined' &&　typeof month === 'undefined'){
+				result += '/';
+			}
+			result += '/'+(date.getDate()).toString();
+		}
+		else{
+			result += (date.getDate()).toString();
+		}
+	}
+
+	if(typeof hour !== 'undefined'){
+		if(result.length > 0){
+			result += ' '+(date.getHours()+1).toString();
+		}
+		else{
+			result += (date.getHours()+1).toString();
+		}
+	}
+
+	if(typeof min !== 'undefined'){
+		if(result.length > 0){
+			result += ':'+(date.getMinutes()+1).toString();
+		}
+		else{
+			result += (date.getMinutes()+1).toString();
+		}
+	}
+
+	if(typeof sec !== 'undefined'){
+		if(result.length > 0){
+			if(typeof hour !== 'undefined' &&　typeof min === 'undefined'){
+				result += ':';
+			}
+			result += ':'+(date.getSeconds()+1).toString();
+		}
+		else{
+			result += (date.getSeconds()+1).toString();
+		}
+	}
+
+	return result;
+}

@@ -300,11 +300,11 @@
                 var color = colorUnit*i;
                 var tr = '<tr> ' +
                     '<td><input type="checkbox" class="listItem" value="'+phoneNum+'"></td>' +
-                    '<td>'+phoneNum+'</td> <td style="background-color: hsla('+color+', 100%, 75%, 1);"></td>' +
+                    '<td>'+phoneNum+'</td> <td style="background-color: hsla('+color+', 100%, 70%, 1);"></td>' +
                     '</tr>';
                 phoneNumList += tr;
 
-                data[i].color = 'hsla('+color+', 100%, 75%, 1)';
+                data[i].color = 'hsla('+color+', 100%, 45%, 1)';
                 phones.push(new Entity(data[i]));
                 phoneMap[phoneNum] = i;
                 phones[i].specialFun(recordInfo.setMillSec.params, recordInfo.setMillSec.fun);
@@ -334,6 +334,69 @@
 			group.push(condition);
         }
         return group;
+    }
+
+    function drawGoogleMapMarker(){
+
+    	var trOrderList = [];
+		var lastPhoneIndex;
+		var phone;
+		var phoneColor;
+
+		$('#recordTB tr').each(function(){
+
+			if($(this).css('display') !== 'none'){
+				var phoneIndex = phoneMap[$(this).attr('phone')];
+				var recordIndex;
+				var orderIndex;
+				var record;
+				var recordStartTime;
+				var timeUnit = $('input[name=unit]:checked').val();
+				if(phoneIndex !== lastPhoneIndex) {
+					phone = phones[phoneIndex];
+					phoneColor = phone.getPropValue('color');
+				}
+                recordIndex = $(this).attr('recordIndex');
+                orderIndex = $(this).attr('orderIndex');
+                record = phone.getElementValue('紀錄', recordIndex);
+
+                if(timeUnit === '600000' || timeUnit === '3600000'){
+					recordStartTime = getDateInfo(record['millSec'],undefined, undefined, undefined, true, true, undefined);
+                }
+                else if(timeUnit === '86400000'){
+					recordStartTime = getDateInfo(record['millSec'],undefined, true, true, undefined, undefined, undefined);
+                }
+
+                if(recordIndex === '0'){
+                	googleMap.addShapeMarker('triangle', record['緯度'], record['經度'], recordStartTime, phone.getPropValue('color'), record['非監察號碼'], orderIndex);
+                }
+                else{
+					googleMap.addShapeMarker('circle', record['緯度'], record['經度'], recordStartTime, phone.getPropValue('color'), record['非監察號碼'], orderIndex);
+                }
+
+				trOrderList.push(orderIndex);
+			}
+		});
+
+		for(var i = 0; i <= groupInfo.condictions.length; i++){
+			setTimeout(function(index){
+
+				if(index !== groupInfo.condictions.length){
+					var recordList = [];
+					$('#recordTB tr[unitId='+index+']').each(function(){
+						recordList.push($(this).attr('orderIndex'));
+					});
+					googleMap.drawMarkers(recordList);
+					$('#unitBar').prop('value', index);
+					$('#unitBar').change();
+                }
+                else{
+					$('#unitBar').prop('value', '-1');
+					$('#unitBar').change();
+				}
+
+            }, (i*1000), i);
+        }
     }
 
 	$(function(){
@@ -452,6 +515,7 @@
                 }
                 else{
 					var trs = '';
+					var index = 0;
 					$('.optValid').css('display', '');
                     $('#unitBar').prop('max', (groupInfo.condictions.length-1));
 					for(var i = 0; i < showPhones.length; i++){
@@ -462,13 +526,15 @@
 							    if(showPhones[i][j].length > 0){
 
 							        for(var k = 0; k < showPhones[i][j].length; k++){
-                                        var record = phone.getElementValue('紀錄', showPhones[i][j][k]);
-							            var tr = '<tr unitId="'+j+'">';
+							        	var recordIndex = showPhones[i][j][k];
+                                        var record = phone.getElementValue('紀錄', recordIndex);
+							            var tr = '<tr phone="'+phoneNum+'" recordIndex="'+recordIndex+'" orderIndex="'+index+'" unitId="'+j+'">';
                                         tr += '<td>'+phoneNum+'</td>' +
 	    									'<td>'+record['非監察號碼']+'</td>' +
 		    								'<td>'+record['通話起始日期']+'</td>';
                                         tr += '</tr>';
                                         trs += tr;
+                                        index++;
                                     }
 
                                 }
@@ -478,6 +544,9 @@
 
                     $('#recordTB').html(trs);
                     $('#funBtn1').click();
+
+					drawGoogleMapMarker();
+
                 }
             }
 
