@@ -14,7 +14,7 @@ function GoogleMap(){
 		insLabelColor: '#000000',
 		insLabelSize: '16px',
 		outsScale: 24,
-		outsOpacity: 0.9,
+		outsOpacity: 0.7,
 		outsLabelX: 0,
 		outsLabelY: 2,
 		outsLabelSize: '16px'
@@ -24,11 +24,11 @@ function GoogleMap(){
 		insColor: '#FFFFFF',
 		insOpacity: 0.0,
 		insLabelX: 0,
-		insLabelY: 2,
+		insLabelY: 3,
 		insLabelColor: '#000000',
 		insLabelSize: '16px',
 		outsScale: 10,
-		outsOpacity: 0.9,
+		outsOpacity: 0.6,
 		outsLabelX: 0,
 		outsLabelY: 6,
 		outsLabelSize: '16px'
@@ -36,6 +36,7 @@ function GoogleMap(){
 	this.markerList = [];
 	this.infoContentList = [];
 	this.infoWindowList = [];
+	this.polylineList = [];
 
 	/**
 	 * Initilization of Map object
@@ -83,10 +84,17 @@ function GoogleMap(){
 	 * @returns {{position: google.maps.LatLng, icon: {path: *, scale: *, fillColor: *, fillOpacity: *, strokeWeight: number, labelOrigin: Point}, map: *, label: {text: *, color: *, fontSize: *}}}
 	 */
 	this.shapeMarker = function(symbolPath, lat, lng, scale, color, opacity, labelX, labelY, map, label, labelColor, labelSize){
+
+		var anchor = new google.maps.Point(0, 0);
+		if(symbolPath === google.maps.SymbolPath.FORWARD_OPEN_ARROW){
+			anchor = new google.maps.Point(0, 4);
+		}
+
 		return {
 			position: new google.maps.LatLng(lat, lng),
 			icon: {
 				path: symbolPath,
+				anchor: anchor,
 				scale: scale,
 				fillColor: color,
 				fillOpacity: opacity,
@@ -102,7 +110,6 @@ function GoogleMap(){
 		};
 	};
 
-
 	/**
 	 * this function will create two shapeMarkers,
 	 *  the small one is inside the big one, also,
@@ -113,7 +120,9 @@ function GoogleMap(){
 	 * @param insLabel
 	 * @param outsColor
 	 * @param outsLabel
+	 * @param outsLabelColor
 	 * @param trIndex
+	 * @param eventObject
 	 */
 	this.addShapeMarker = function(type, lat, lng, insLabel, outsColor, outsLabel, outsLabelColor, trIndex, eventObject){
 		var info = this.circleMarkerInfo;
@@ -154,12 +163,20 @@ function GoogleMap(){
 	this.addImageMarker = function(){};
 
 
-	this.drawMarkers = function(indexArray){
-		for(var i = 0; i < indexArray.length; i++){
-			var index = indexArray[i];
-            this.markerList[index].insideMarker.setMap(this.map);
-            this.markerList[index].outsideMarker.setMap(this.map);
-            this.resetCenter(this.markerList[index].lat, this.markerList[index].lng);
+	// this.drawMarkers = function(indexArray){
+	// 	for(var i = 0; i < indexArray.length; i++){
+	// 		var index = indexArray[i];
+	// 		this.markerList[index].insideMarker.setMap(this.map);
+	// 		this.markerList[index].outsideMarker.setMap(this.map);
+	// 		this.resetCenter(this.markerList[index].lat, this.markerList[index].lng);
+	// 	}
+	// };
+
+	this.drawMarkers = function(index, resetCenter){
+		this.markerList[index].insideMarker.setMap(this.map);
+		this.markerList[index].outsideMarker.setMap(this.map);
+		if(typeof resetCenter !== 'undefined'){
+			this.resetCenter(this.markerList[index].lat, this.markerList[index].lng);
 		}
 	};
 
@@ -196,11 +213,49 @@ function GoogleMap(){
 	};
 
 
+
+
+	this.polyline = function(pathInfo, color){
+		return new google.maps.Polyline({
+			path: pathInfo,
+			geodesic: true,
+			strokeColor: color,
+			strokeOpacity: 1.0,
+			strokeWeight: 3
+		});
+	};
+
+	this.addPolyline = function(index, startLatLng, endLatLng, color){
+		var pathInfo = [startLatLng, endLatLng];
+		this.polylineList[index] = this.polyline(pathInfo, color);
+	};
+
+	this.drawPolyline = function(index){
+		console.log(index);
+		this.polylineList[index].setMap(this.map);
+	};
+
+	this.clearPolylines = function(index, all){
+		if(typeof all !== 'undefined'){
+			// for(var i = 0; i < this.polylineList.length; i++){
+			// 	this.polylineList[i].setMap(null);
+			// }
+			for(var key in this.polylineList){
+				this.polylineList[key].setMap(null);
+			}
+		}
+		else{
+			this.polylineList[index].setMap(null);
+		}
+	};
+
 	this.clearAll = function(){
         this.clearMarkers([], true);
         this.markerList = [];
         this.infoContentList = [];
         this.infoWindowList = [];
+        this.clearPolylines(-1, true);
+		this.polylineList = [];
 	};
 
 

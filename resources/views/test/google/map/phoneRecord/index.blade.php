@@ -247,6 +247,25 @@
             border-radius: 10px;
         }
 
+        #palyerBlock{
+            top: calc(100% - 70px);
+            height: 60px;
+            position: absolute;
+            z-index: 5;
+            padding: 15px;
+        }
+
+        #animationPlayer{
+            border-style: solid;
+            border-width: 2px;
+            border-radius: 20px;
+            border-color: #ff4444;
+        }
+
+        #animationPlayer:hover, #animationPlayer:active{
+            background-color: #ff4444;
+        }
+
     </style>
 
 </head>
@@ -291,6 +310,7 @@
         }
 	};
     var drawAllMarkers = true;
+    var animationProcess;
 
     function markerClickEvent(googleMap, params){
         $('#recordTB tr').each(function(){
@@ -328,6 +348,7 @@
             for(var i = 0; i < data.length; i++){
                 var phoneNum = data[i].監察號碼;
                 var color = colorUnit*i;
+                var phoneRecords;
                 var tr = '<tr> ' +
                     '<td><input type="checkbox" class="listItem" value="'+phoneNum+'"></td>' +
                     '<td>'+phoneNum+'</td> <td style="background-color: hsla('+color+', 100%, 70%, 1);"></td>' +
@@ -339,6 +360,10 @@
                 phones.push(new Entity(data[i]));
                 phoneMap[phoneNum] = i;
                 phones[i].specialFun(recordInfo.setMillSec.params, recordInfo.setMillSec.fun);
+				phoneRecords = phones[i].getPropValue('紀錄');
+				phoneRecords = sortData(phoneRecords, 'millSec');
+				phoneRecords = phones[i].setArrayElementIndex(phoneRecords);
+				phones[i].setPropValue('紀錄', phoneRecords);
             }
             $('#phoneNumTB').html(phoneNumList);
             phoneItemCheckbox();
@@ -416,42 +441,81 @@
                         phoneLabelColor, orderIndex, markerEventInfo);
                 }
                 else{
+
+					var lastRecord = phone.getElementValue('紀錄', (recordIndex-1));
+                    var end = { lat: parseFloat(record['緯度']), lng:  parseFloat(record['經度']) };
+                    var start = { lat: parseFloat(lastRecord['緯度']), lng:  parseFloat(lastRecord['經度']) };
+                    var polyLineId = $(this).attr('phone')+"_"+recordIndex;
+                    // add Marker
 					googleMap.addShapeMarker('circle', record['緯度'], record['經度'],
                         recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
                         phoneLabelColor, orderIndex, markerEventInfo);
+
+					// add polyline
+					googleMap.addPolyline(polyLineId, start, end, phoneColor); console.log(polyLineId);
                 }
 
 				trOrderList.push(orderIndex);
 			}
 		});
 
-        drawAllMarkers = true;
-        drawUnitMarkers(0, drawUnitMarkers);
+        drawAllMarkers = false;
+		$('#recordTB tr').each(function(){
+			$(this).css('display', '');
+			if(drawAllMarkers === false){
+				if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
+					googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+				}
+				googleMap.drawMarkers($(this).attr('orderIndex'));
+			}
+		});
     }
 
-    function drawUnitMarkers(unitId, callback){
-        setTimeout(function(){
+    function drawAllUnitMarkers(unitId, callback, breakTime, resetCenter){
+		animationProcess = setTimeout(function(){
             if(unitId !== groupInfo.condictions.length){
                 var recordList = [];
                 $('#recordTB tr[unitId='+unitId+']').each(function(){
-                    recordList.push($(this).attr('orderIndex'));
+                    var orderIndex = $(this).attr('orderIndex');
+                    if($(this).attr('recordIndex') !== '0' && orderIndex !== '0'){
+						googleMap.drawPolyline($(this).attr('phone')+"_"+orderIndex);
+                    }
+                    googleMap.drawMarkers(orderIndex,resetCenter);
                 });
-                googleMap.drawMarkers(recordList);
                 $('#unitBar').prop('value', unitId);
                 $('#unitBar').change();
                 unitId++;
 
                 if(typeof callback !== 'undefined' && isFunction(callback) === true){
-                    callback(unitId, callback);
+					callback(unitId, callback, breakTime, resetCenter);
                 }
             }
             else{
                 $('#unitBar').prop('value', '-1');
                 $('#unitBar').change();
                 drawAllMarkers = false;
+				$('#animationPlayer').attr('status', 'stop');
+				$('#animationPlayer').html('<span class="glyphicon glyphicon-play"></span>');
             }
-        }, 1000);
+        }, breakTime);
+    }
 
+    function drawSingleUnitMarker(unitId, callback, breakTime, resetCenter){
+		animationProcess = setTimeout(function(){
+			if(unitId !== groupInfo.condictions.length) {
+				$("#unitBar").val(unitId);
+				$("#unitBar").change();
+				unitId++;
+				callback(unitId, callback, breakTime, resetCenter);
+			}
+			else{
+				$('#unitBar').prop('value', '-1');
+				$('#unitBar').change();
+				drawAllMarkers = false;
+				$('#animationPlayer').attr('status', 'stop');
+				$('#animationPlayer').html('<span class="glyphicon glyphicon-play"></span>');
+            }
+        }, breakTime);
     }
 
 	$(function(){
@@ -604,12 +668,16 @@
 
 		$('#unitBar').on('change', function(){
 		    var index = $(this).val();
-		    var trList = [];
 		    if(index > -1){
                 var lBoundTime = new Date(groupInfo.condictions[index].lowerBound).toISOString().replace(/\..*Z/gi, '');
                 var uBoundTime = new Date(groupInfo.condictions[index].upperBound).toISOString().replace(/\..*Z/gi, '');
                 $('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
                 $('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+
+				if(drawAllMarkers === false){
+					googleMap.clearMarkers([], true);
+					googleMap.clearPolylines(-1, true);
+				}
 
                 $('#recordTB tr').each(function(){
                     if($(this).attr('unitId') !== index){
@@ -617,28 +685,72 @@
                     }
                     else{
                         $(this).css('display', '');
-                        trList.push($(this).attr('orderIndex'));
+//						if(drawAllMarkers === false){
+						if(drawAllMarkers === false) {
+							var phoneIndex = phoneMap[$(this).attr('phone')];
+							var showUnit = showPhones[phoneIndex][index];
+							var currentRecordIndex = $(this).attr('recordIndex');
+							var lastRecordIndex = -1;
+							for (var i = 0; i < showUnit.length; i++) {
+								if (showUnit[i].toString() === currentRecordIndex) {
+									break;
+								}
+								lastRecordIndex = showUnit[i];
+							}
+							if (lastRecordIndex !== -1 && currentRecordIndex !== '0') {
+								googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+							}
+						}
+						else{
+							if($(this).attr('orderIndex') !== '0'){
+								googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+                            }
+                        }
+                        googleMap.drawMarkers($(this).attr('orderIndex'));
+//						}
                     }
                 });
-
-                if(drawAllMarkers === false){
-                    googleMap.clearMarkers([], true);
-                    googleMap.drawMarkers(trList);
-                }
             }
             else{
                 $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
                 $('#upperBound').html($('#stopTime').val().replace(/T/gi, ' '));
 
+				if(drawAllMarkers === false){
+					googleMap.clearMarkers([], true);
+					googleMap.clearPolylines(-1, true);
+				}
+
                 $('#recordTB tr').each(function(){
                     $(this).css('display', '');
-                    trList.push($(this).attr('orderIndex'));
+//					if(drawAllMarkers === false){
+						if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
+							googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+                        }
+						googleMap.drawMarkers($(this).attr('orderIndex'));
+//					}
                 });
 
-                if(drawAllMarkers === false){
-                    googleMap.clearMarkers([], true);
-                    googleMap.drawMarkers(trList);
+
+            }
+        });
+
+		$('#animationPlayer').on('click', function(){
+			if($('#animationPlayer').attr('status') === 'stop'){
+				var nextUnitId = parseInt($('#unitBar').val())+1; console.log(nextUnitId);
+				drawAllMarkers = true;
+				if(nextUnitId.toString() === '0'){
+					googleMap.clearMarkers([], true);
+					googleMap.clearPolylines(-1, true);
                 }
+				animationProcess = drawSingleUnitMarker(nextUnitId, drawSingleUnitMarker, 1000, true);
+				$('#animationPlayer').attr('status', 'play');
+				$('#animationPlayer').html('<span class="glyphicon glyphicon-stop"></span>');
+            }
+            else{
+				clearTimeout(animationProcess);
+				drawAllMarkers = false;
+				$('#animationPlayer').attr('status', 'stop');
+				$('#animationPlayer').html('<span class="glyphicon glyphicon-play"></span>');
             }
         });
 
@@ -744,6 +856,17 @@
                     <div id="upperBound" class="col-md-6"></div>
                 </div>
                 <input id="unitBar" type="range" value="-1" min="-1" max="0">
+            </div>
+            <div id="palyerBlock" class="col-md-offset-9 col-md-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div id="animationPlayer" status="stop" class="btn"><span class="glyphicon glyphicon-play"></span></div>
+                    </div>
+                    <div class="col-md-3">
+
+                    </div>
+
+                </div>
             </div>
             <div id="mainContent" class="col-md-12 h100"></div>
         </div>
