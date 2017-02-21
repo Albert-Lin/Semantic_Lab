@@ -122,7 +122,8 @@ function Entity(data) {
 	};
 
 	this.specialFun = function(funParam, fun){
-		fun(funParam, this);
+		var result = fun(funParam, this);
+        return result;
 	};
 
 	this.init(data);

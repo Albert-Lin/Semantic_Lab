@@ -266,6 +266,11 @@
             background-color: #ff4444;
         }
 
+        .infoWindow{
+            overflow-x: hidden;
+            word-wrap: break-word;
+        }
+
     </style>
 
 </head>
@@ -309,6 +314,26 @@
             }
         }
 	};
+    var markerContent = {
+        params: {
+            propName: '紀錄',
+            index: ''
+        },
+        fun: function(params, entity){
+            var propName = params.propName;
+            var index = params.index;
+            var record = entity.getElementValue(propName, index);
+            var content = '<table class="table table-striped table-striped"><tbody>';
+            for(var key in record){
+                if(key !== 'origIndex' && key !== 'millSec'){
+                    content += '<tr class="row"><td class="col-md-3">'+key+'</td><td class="col-md-9 infoWindow">'+record[key]+'</td></tr>';
+                }
+            }
+            content += '</tbody></table><br>';
+
+            return content;
+        }
+    };
     var drawAllMarkers = true;
     var animationProcess;
 
@@ -395,14 +420,12 @@
 
     function drawGoogleMapMarker(){
 
-    	var trOrderList = [];
 		var lastPhoneIndex;
 		var phone;
 		var phoneColor;
 		var phoneLabelColor;
 
 		$('#recordTB tr').each(function(){
-
 			if($(this).css('display') !== 'none'){
 				var phoneIndex = phoneMap[$(this).attr('phone')];
 				var recordIndex;
@@ -417,6 +440,8 @@
                     },
 				    fun: markerClickEvent
                 };
+				var markerInfoContent;
+
 				if(phoneIndex !== lastPhoneIndex) {
 					phone = phones[phoneIndex];
 					phoneColor = phone.getPropValue('color');
@@ -435,10 +460,14 @@
 					recordStartTime = getDateInfo(record['millSec'],undefined, true, true, undefined, undefined, undefined);
                 }
 
+                markerContent.params.index = recordIndex;
+                markerInfoContent = phone.specialFun(markerContent.params, markerContent.fun);
+                googleMap.addInfoWindow(recordIndex, markerInfoContent);
+
                 if(recordIndex === '0'){
                 	googleMap.addShapeMarker('triangle', record['緯度'], record['經度'],
                         recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
-                        phoneLabelColor, orderIndex, markerEventInfo);
+                        phoneLabelColor, orderIndex, markerEventInfo, true);
                 }
                 else{
 
@@ -449,13 +478,11 @@
                     // add Marker
 					googleMap.addShapeMarker('circle', record['緯度'], record['經度'],
                         recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
-                        phoneLabelColor, orderIndex, markerEventInfo);
+                        phoneLabelColor, orderIndex, markerEventInfo, true);
 
 					// add polyline
-					googleMap.addPolyline(polyLineId, start, end, phoneColor); console.log(polyLineId);
+					googleMap.addPolyline(polyLineId, start, end, phoneColor);
                 }
-
-				trOrderList.push(orderIndex);
 			}
 		});
 
@@ -469,6 +496,14 @@
 				googleMap.drawMarkers($(this).attr('orderIndex'));
 			}
 		});
+    }
+
+    function tableRecordEvent(){
+        $('#phoneList tbody tr').on('click', function(){
+            var orderIndex = $(this).attr('orderIndex');
+            var marker = googleMap.markerList[orderIndex].outsideMarker;
+            google.maps.event.trigger(marker, 'click');
+        });
     }
 
     function drawAllUnitMarkers(unitId, callback, breakTime, resetCenter){
@@ -518,12 +553,19 @@
         }, breakTime);
     }
 
+    function setRangeBound(lowerMillSec, upperMillSec){
+        var lBoundTime = new Date(lowerMillSec).toISOString().replace(/\..*Z/gi, '');
+        var uBoundTime = new Date(upperMillSec).toISOString().replace(/\..*Z/gi, '');
+        $('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
+        $('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+    }
+
 	$(function(){
-		var currentTime = new Date(new Date().getTime()+(8*3600000)).toISOString().replace(/\..*Z/gi, '');
-		$('#startTime').val(currentTime);
-		$('#stopTime').val(currentTime);
-        $('#lowerBound').html(currentTime.replace(/T/gi, ' '));
-        $('#upperBound').html(currentTime.replace(/T/gi, ' '));
+
+        var currentMillSec = new Date().getTime()+(8*3600000);
+        $('#startTime').val(new Date(currentMillSec).toISOString().replace(/\..*Z/gi, ''));
+        $('#stopTime').val(new Date(currentMillSec).toISOString().replace(/\..*Z/gi, ''));
+        setRangeBound(currentMillSec, currentMillSec);
 
 		$('.funBtn').on('click', function(event){
 			var clickId = event.target.id;
@@ -648,7 +690,7 @@
                     $('#funBtn1').click();
                     googleMap.clearAll();
 					drawGoogleMapMarker();
-
+                    tableRecordEvent();
                 }
             }
 
@@ -669,10 +711,7 @@
 		$('#unitBar').on('change', function(){
 		    var index = $(this).val();
 		    if(index > -1){
-                var lBoundTime = new Date(groupInfo.condictions[index].lowerBound).toISOString().replace(/\..*Z/gi, '');
-                var uBoundTime = new Date(groupInfo.condictions[index].upperBound).toISOString().replace(/\..*Z/gi, '');
-                $('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
-                $('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+                setRangeBound(groupInfo.condictions[index].lowerBound, groupInfo.condictions[index].upperBound);
 
 				if(drawAllMarkers === false){
 					googleMap.clearMarkers([], true);
@@ -685,7 +724,8 @@
                     }
                     else{
                         $(this).css('display', '');
-//						if(drawAllMarkers === false){
+                        var phoneNum = $(this).attr('phone');
+                        var orderIndex = $(this).attr('orderIndex');
 						if(drawAllMarkers === false) {
 							var phoneIndex = phoneMap[$(this).attr('phone')];
 							var showUnit = showPhones[phoneIndex][index];
@@ -698,22 +738,20 @@
 								lastRecordIndex = showUnit[i];
 							}
 							if (lastRecordIndex !== -1 && currentRecordIndex !== '0') {
-								googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+								googleMap.drawPolyline(phoneNum+"_"+orderIndex);
 							}
 						}
 						else{
-							if($(this).attr('orderIndex') !== '0'){
-								googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+							if(orderIndex !== '0'){
+								googleMap.drawPolyline(phoneNum+"_"+orderIndex);
                             }
                         }
-                        googleMap.drawMarkers($(this).attr('orderIndex'));
-//						}
+                        googleMap.drawMarkers(orderIndex);
                     }
                 });
             }
             else{
-                $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
-                $('#upperBound').html($('#stopTime').val().replace(/T/gi, ' '));
+                setRangeBound(currentMillSec, currentMillSec);
 
 				if(drawAllMarkers === false){
 					googleMap.clearMarkers([], true);
@@ -722,12 +760,10 @@
 
                 $('#recordTB tr').each(function(){
                     $(this).css('display', '');
-//					if(drawAllMarkers === false){
-						if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
-							googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
-                        }
-						googleMap.drawMarkers($(this).attr('orderIndex'));
-//					}
+                    if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
+                        googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+                    }
+                    googleMap.drawMarkers($(this).attr('orderIndex'));
                 });
 
 
@@ -744,7 +780,7 @@
                 }
 				animationProcess = drawSingleUnitMarker(nextUnitId, drawSingleUnitMarker, 1000, true);
 				$('#animationPlayer').attr('status', 'play');
-				$('#animationPlayer').html('<span class="glyphicon glyphicon-stop"></span>');
+				$('#animationPlayer').html('<span class="glyphicon glyphicon-pause"></span>');
             }
             else{
 				clearTimeout(animationProcess);

@@ -34,8 +34,9 @@ function GoogleMap(){
 		outsLabelSize: '16px'
 	};
 	this.markerList = [];
-	this.infoContentList = [];
+	// this.infoContentList = [];
 	this.infoWindowList = [];
+	this.infoWindowContentList = [];
 	this.polylineList = [];
 
 	/**
@@ -124,7 +125,7 @@ function GoogleMap(){
 	 * @param trIndex
 	 * @param eventObject
 	 */
-	this.addShapeMarker = function(type, lat, lng, insLabel, outsColor, outsLabel, outsLabelColor, trIndex, eventObject){
+	this.addShapeMarker = function(type, lat, lng, insLabel, outsColor, outsLabel, outsLabelColor, trIndex, eventObject, resetCenter){
 		var info = this.circleMarkerInfo;
 		var googleShape = google.maps.SymbolPath.CIRCLE;
 		var insideMarker;
@@ -147,7 +148,7 @@ function GoogleMap(){
 				info.outsLabelX, info.outsLabelY, null, outsLabel,
 				outsLabelColor, info.outsLabelSize)
 		);
-		this.addMarkerEvent('click', outsideMarker, eventObject.params, eventObject.fun, trIndex);
+		this.addMarkerEvent('click', outsideMarker, eventObject.params, eventObject.fun, trIndex, resetCenter);
 
 		this.markerList.push({
 			insideMarker: insideMarker,
@@ -180,21 +181,20 @@ function GoogleMap(){
 		}
 	};
 
-	this.addInfoWindow = function(content){
-		this.infoContentList.push({content: content});
-	};
-
-	this.addMarkerEvent = function(action, marker, params, fun, infoWindowIndex){
+	this.addMarkerEvent = function(action, marker, params, fun, infoWindowIndex, resetCenter){
 		var googleMap = this;
 		marker.addListener(action, function(){
 			fun(googleMap, params);
 
 			if(typeof infoWindowIndex !== 'undefined'){
-				// googleMap.infoWindowList[infoWindowIndex].open(googleMap.map, marker);
+				googleMap.infoWindowList[infoWindowIndex].open(googleMap.map, marker);
+			}
+
+			if(typeof resetCenter !== 'undefined'){
+				googleMap.resetCenter(googleMap.markerList[infoWindowIndex].lat, googleMap.markerList[infoWindowIndex].lng);
 			}
 		});
 	};
-
 
 	this.clearMarkers = function(indexArray, all){
 		if(typeof all !== 'undefined'){
@@ -211,9 +211,6 @@ function GoogleMap(){
 			}
 		}
 	};
-
-
-
 
 	this.polyline = function(pathInfo, color){
 		return new google.maps.Polyline({
@@ -249,10 +246,19 @@ function GoogleMap(){
 		}
 	};
 
+    this.addInfoWindow = function(index, content){
+        this.infoWindowContentList[index] = {content: content, maxWidth: 600};
+        this.infoWindowList[index] = new google.maps.InfoWindow({content: content});
+    };
+
+    this.setInfoWindow = function(index, content){
+    	this.addInfoWindow(index, content);
+	};
+
 	this.clearAll = function(){
         this.clearMarkers([], true);
         this.markerList = [];
-        this.infoContentList = [];
+        this.infoWindowContentList = [];
         this.infoWindowList = [];
         this.clearPolylines(-1, true);
 		this.polylineList = [];
