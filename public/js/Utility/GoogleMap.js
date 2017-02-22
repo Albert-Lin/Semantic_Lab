@@ -228,7 +228,6 @@ function GoogleMap(){
 	};
 
 	this.drawPolyline = function(index){
-		console.log(index);
 		this.polylineList[index].setMap(this.map);
 	};
 
@@ -246,9 +245,26 @@ function GoogleMap(){
 		}
 	};
 
-    this.addInfoWindow = function(index, content){
-        this.infoWindowContentList[index] = {content: content, maxWidth: 600};
+    this.addInfoWindow = function(index, content, events){
+        this.infoWindowContentList[index] = {content: content, maxWidth: 800};
         this.infoWindowList[index] = new google.maps.InfoWindow({content: content});
+
+        for(var i = 0; i < events.length; i++){
+        	var action = events[i].action;
+        	var params = events[i].params;
+        	var fun = events[i].fun;
+
+			(function(googleMap, action, fun, params){
+				google.maps.event.addListener(googleMap.infoWindowList[index], action, function(){
+					fun(googleMap, params);
+				});
+			}(this, action, fun, params));
+
+		}
+
+		// google.maps.event.addListener(this.infoWindowList[index], 'closeclick', function(){
+		// 	events.closeClickFun(this, events.closeClickParams);
+		// });
     };
 
     this.setInfoWindow = function(index, content){

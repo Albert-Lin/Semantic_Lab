@@ -266,6 +266,10 @@
             background-color: #ff4444;
         }
 
+        .infoWindowTB{
+            box-shadow: 0 10px 20px 0 rgba(150, 150, 150, 0.5);
+        }
+
         .infoWindow{
             overflow-x: hidden;
             word-wrap: break-word;
@@ -322,11 +326,12 @@
         fun: function(params, entity){
             var propName = params.propName;
             var index = params.index;
+            var color = entity.getPropValue('color');
             var record = entity.getElementValue(propName, index);
-            var content = '<table class="table table-striped table-striped"><tbody>';
+            var content = '<table class="table table-striped table-bordered infoWindowTB" style="border-left: 6px solid '+color+';"><tbody>';
             for(var key in record){
                 if(key !== 'origIndex' && key !== 'millSec'){
-                    content += '<tr class="row"><td class="col-md-3">'+key+'</td><td class="col-md-9 infoWindow">'+record[key]+'</td></tr>';
+                    content += '<tr class="row"><td class="col-md-4">'+key+'</td><td class="col-md-8 infoWindow">'+record[key]+'</td></tr>';
                 }
             }
             content += '</tbody></table><br>';
@@ -334,18 +339,79 @@
             return content;
         }
     };
+    var markerEvent = {
+    	clickFun: function(googleMap, params){
+
+            var markerList = googleMap.markerList;
+            var unitsContents = [];
+            var orderId = params.orderId;
+            var tr = $('#recordTB tr[orderIndex='+orderId+']');
+            var unitId = tr.attr('unitId');
+            var position = markerList[orderId].lat+"_"+markerList[orderId].lng;
+            var unitBarValue = $('#unitBar').val();
+            var windowContent = '';
+
+            for(var i = 0; i < groupInfo.condictions.length; i++){
+				unitsContents.push('');
+            }
+
+            $('#recordTB tr').each(function(){
+				$(this).css('background-color', '');
+			});
+
+            $('#recordTB tr').each(function(){
+            	var trOrderId = $(this).attr('orderIndex');
+            	var trUnitId = $(this).attr('unitId');
+            	if(cleared === false){
+            		var maxUnit = unitBarValue;
+            		if(unitBarValue === '-1'){
+					maxUnit = groupInfo.condictions.length-1;
+				}
+                    if(trUnitId <= maxUnit){
+						var trPosition = markerList[trOrderId].lat+"_"+markerList[trOrderId].lng;
+						if(trPosition === position){
+							var color = phones[phoneMap[$(this).attr('phone')]].getPropValue('color');
+                            unitsContents[trUnitId] += googleMap.infoWindowContentList[trOrderId].content+"<hr>";
+							$('#recordTB tr[orderIndex='+trOrderId+']').css('background-color', color);
+                        }
+                    }
+                }
+                else{
+                    if(trUnitId === unitBarValue){
+						var trPosition = markerList[trOrderId].lat+"_"+markerList[trOrderId].lng;
+						if(trPosition === position) {
+							var color = phones[phoneMap[$(this).attr('phone')]].getPropValue('color');
+							unitsContents[trUnitId] += googleMap.infoWindowContentList[trOrderId].content + "<hr>";
+							$('#recordTB tr[orderIndex='+trOrderId+']').css('background-color', params.color);
+						}
+                    }
+                }
+            });
+
+            for(var i = 0; i < unitsContents.length; i++){
+            	if(unitsContents[i].length > 0){
+					var unit = i+1;
+					windowContent += '<h4>區間'+unit+':</h4>'+unitsContents[i];
+                }
+            }
+
+            googleMap.infoWindowList[orderId].setContent(windowContent);
+
+        }
+    };
+    var infoWindowEvent = {
+    	closeClickFun: function(googleMap, params){
+			$('#recordTB tr').each(function(){
+				$(this).css('background-color', '');
+			});
+
+			googleMap.infoWindowList[params.orderId].setContent(googleMap.infoWindowContentList[params.orderId].content);
+        }
+    };
     var drawAllMarkers = true;
+    var cleared = false;
     var animationProcess;
-
-    function markerClickEvent(googleMap, params){
-        $('#recordTB tr').each(function(){
-            $(this).css('background-color', '');
-        });
-
-        $('#recordTB tr[orderIndex='+params.orderId+']').css('display', '');
-        $('#recordTB tr[orderIndex='+params.orderId+']').css('background-color', params.color);
-    }
-
+    
     function phoneItemCheckbox(){
         $('.listItem').on('click', function(){
             var checked = $(this).prop('checked');
@@ -438,7 +504,7 @@
                         orderId: '',
                         color: ''
                     },
-				    fun: markerClickEvent
+				    fun: markerEvent.clickFun
                 };
 				var markerInfoContent;
 
@@ -462,7 +528,34 @@
 
                 markerContent.params.index = recordIndex;
                 markerInfoContent = phone.specialFun(markerContent.params, markerContent.fun);
-                googleMap.addInfoWindow(recordIndex, markerInfoContent);
+				var closeClick = {
+					closeClickParams: {
+						orderId: ''
+                    },
+					closeClickFun: infoWindowEvent.closeClickFun
+                };
+
+				var infoWinEvents = [
+                    {
+                    	action: 'closeclick',
+                        params: {
+							orderId: orderIndex
+                        },
+                        fun: infoWindowEvent.closeClickFun
+                    },
+                    {
+                    	action: 'content_changed',
+                        params: {
+                    		message: 'Showing all information of records which has same position.'
+                        },
+                        fun: function(googleMap, params){
+                    		console.log(params.message);
+                        }
+                    }
+                ];
+
+				closeClick.closeClickParams.orderId = orderIndex;
+                googleMap.addInfoWindow(orderIndex, markerInfoContent, infoWinEvents);
 
                 if(recordIndex === '0'){
                 	googleMap.addShapeMarker('triangle', record['緯度'], record['經度'],
@@ -491,7 +584,7 @@
 			$(this).css('display', '');
 			if(drawAllMarkers === false){
 				if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
-					googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+					googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('recordIndex'));
 				}
 				googleMap.drawMarkers($(this).attr('orderIndex'));
 			}
@@ -511,9 +604,10 @@
             if(unitId !== groupInfo.condictions.length){
                 var recordList = [];
                 $('#recordTB tr[unitId='+unitId+']').each(function(){
-                    var orderIndex = $(this).attr('orderIndex');
-                    if($(this).attr('recordIndex') !== '0' && orderIndex !== '0'){
-						googleMap.drawPolyline($(this).attr('phone')+"_"+orderIndex);
+					var orderIndex = $(this).attr('orderIndex');
+					var recordIndex = $(this).attr('recordIndex');
+                    if(recordIndex !== '0' && orderIndex !== '0'){
+						googleMap.drawPolyline($(this).attr('phone')+"_"+recordIndex);
                     }
                     googleMap.drawMarkers(orderIndex,resetCenter);
                 });
@@ -615,8 +709,8 @@
 
 		$('#submitBtn').on('click', function(){
             var showing = true;
-			var searchStartTime = (new Date(Date.parse($('#startTime').val()))).getTime();//-(8*3600000)
-			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime();//-(8*3600000)
+			var searchStartTime = (new Date(Date.parse($('#startTime').val()))).getTime()-(8*3600000);//-(8*3600000)
+			var searchStopTime = (new Date(Date.parse($('#stopTime').val()))).getTime()-(8*3600000);//-(8*3600000)
             $('#lowerBound').html($('#startTime').val().replace(/T/gi, ' '));
             $('#upperBound').html($('#stopTime').val().replace(/T/gi, ' '));
             var timeUnit = $('input[name=unit]:checked').val();
@@ -714,6 +808,7 @@
                 setRangeBound(groupInfo.condictions[index].lowerBound, groupInfo.condictions[index].upperBound);
 
 				if(drawAllMarkers === false){
+					cleared = true;
 					googleMap.clearMarkers([], true);
 					googleMap.clearPolylines(-1, true);
 				}
@@ -726,10 +821,10 @@
                         $(this).css('display', '');
                         var phoneNum = $(this).attr('phone');
                         var orderIndex = $(this).attr('orderIndex');
+						var currentRecordIndex = $(this).attr('recordIndex');
 						if(drawAllMarkers === false) {
 							var phoneIndex = phoneMap[$(this).attr('phone')];
 							var showUnit = showPhones[phoneIndex][index];
-							var currentRecordIndex = $(this).attr('recordIndex');
 							var lastRecordIndex = -1;
 							for (var i = 0; i < showUnit.length; i++) {
 								if (showUnit[i].toString() === currentRecordIndex) {
@@ -737,13 +832,13 @@
 								}
 								lastRecordIndex = showUnit[i];
 							}
-							if (lastRecordIndex !== -1 && currentRecordIndex !== '0') {
-								googleMap.drawPolyline(phoneNum+"_"+orderIndex);
+							if (lastRecordIndex !== -1 && currentRecordIndex !== '0' && orderIndex !== '0') {
+								googleMap.drawPolyline(phoneNum+"_"+currentRecordIndex);
 							}
 						}
 						else{
-							if(orderIndex !== '0'){
-								googleMap.drawPolyline(phoneNum+"_"+orderIndex);
+							if(orderIndex !== '0' && currentRecordIndex !== '0'){
+								googleMap.drawPolyline(phoneNum+"_"+currentRecordIndex);
                             }
                         }
                         googleMap.drawMarkers(orderIndex);
@@ -753,15 +848,16 @@
             else{
                 setRangeBound(currentMillSec, currentMillSec);
 
-				if(drawAllMarkers === false){
-					googleMap.clearMarkers([], true);
-					googleMap.clearPolylines(-1, true);
-				}
+				cleared = false;
+//				if(drawAllMarkers === false){
+//					googleMap.clearMarkers([], true);
+//					googleMap.clearPolylines(-1, true);
+//				}
 
                 $('#recordTB tr').each(function(){
                     $(this).css('display', '');
                     if($(this).attr('recordIndex') !== '0' && $(this).attr('orderIndex') !== '0'){
-                        googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('orderIndex'));
+                        googleMap.drawPolyline($(this).attr('phone')+"_"+$(this).attr('recordIndex'));
                     }
                     googleMap.drawMarkers($(this).attr('orderIndex'));
                 });
@@ -771,8 +867,9 @@
         });
 
 		$('#animationPlayer').on('click', function(){
+			cleared = false;
 			if($('#animationPlayer').attr('status') === 'stop'){
-				var nextUnitId = parseInt($('#unitBar').val())+1; console.log(nextUnitId);
+				var nextUnitId = parseInt($('#unitBar').val())+1;
 				drawAllMarkers = true;
 				if(nextUnitId.toString() === '0'){
 					googleMap.clearMarkers([], true);
