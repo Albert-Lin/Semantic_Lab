@@ -5,6 +5,29 @@
 
 // FUNCTIONS FOR GET/SET DATA FROM/INTO DB, ENTITY INSTANCE AND JSON DATA
 
+var groupInfo = {
+    conditions: [],
+    fun: function(condition, entity){
+        var group = [];
+        var recordArray = entity.getPropValue(condition.propInfo.propName);
+        for(var i = 0; i < recordArray.length; i++){
+            var startTime = recordArray[i][condition.propInfo.subPropName];
+            if(condition.index === 0){
+                if(condition.lowerBound <= startTime &&
+                startTime <= condition.upperBound){
+                    group.push(recordArray[i].origIndex);
+                }
+            }
+			else{
+				if(condition.lowerBound < startTime &&
+					startTime <= condition.upperBound){
+					group.push(recordArray[i].origIndex);
+				}
+			}
+        }
+    }
+};
+
 function loadJsonData(jsonDataFile, funObject){
 
     $.getJSON(jsonDataFile, function(data){
@@ -71,9 +94,20 @@ function setLatLngMap(){
     }
 }
 
-function googleMapSetUp(){
-    var lat = phones[0].getElementValue('紀錄', 0)['緯度'];
-    var lng = phones[0].getElementValue('紀錄', 0)['經度'];
-    googleMap = new GoogleMap();
-    googleMap.initilization('mainContent', lat, lng);
+function setGroupConditions(startTime, stopTime, timeUnit, info){
+	var numGroup = Math.floor(Math.abs(parseInt(stopTime)-parseInt(startTime))/timeUnit);
+	var group = [];
+	for(var i = 0; i < numGroup; i++){
+		var condition = {
+			lowerBound: startTime + i*timeUnit,
+			upperBound: startTime + (i+1)*timeUnit,
+            index: i,
+            propInfo: info
+		};
+		if(i === (numGroup-1)){
+			condition.upperBound = stopTime;
+		}
+		group.push(condition);
+	}
+	return group;
 }
