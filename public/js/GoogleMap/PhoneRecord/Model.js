@@ -28,14 +28,15 @@ var groupInfo = {
     }
 };
 
-function loadJsonData(jsonDataFile, funObject){
+function loadJsonData(jsonDataFile, funObject, phones){
 
     $.getJSON(jsonDataFile, function(data){
-        funObject.fun(data);
+        funObject.fun(data, phones);
+        console.log(phones);
     });
 }
 
-function dataPreprocess(){
+function dataPreprocess(phones){
     var colorUnit = (313/phones.length);
     for(var i = 0; i < phones.length; i++){
         var phone = phones[i];
@@ -61,9 +62,12 @@ function dataPreprocess(){
         // reset the records back to entity
         phone.setPropValue('紀錄', sortedRecord);
     }
+    return phones;
 }
 
-function getMillSecRange(){
+function getMillSecRange(phones){
+    var minMillSec = 0;
+    var maxMillSec = 0;
     for(var i = 0; i < phones.length; i++){
         var recordArray = phones[i].getPropValue('紀錄');
         var lastIndex = recordArray.length-1;
@@ -80,18 +84,26 @@ function getMillSecRange(){
             }
         }
     }
+    return {
+        minMillSec: minMillSec,
+        maxMillSec: maxMillSec
+    };
 }
 
-function setLatLngMap(){
+function setLatLngMap(phones, latlngMap){
     for(var i = 0; i < phones.length; i++){
         var phoneNum = phones[i].getPropValue('監察號碼');
         var recordArray = phones[i].getPropValue('紀錄');
         for(var j = 0; j < recordArray.length; j++){
             var index = phoneNum+"_"+j;
             var latlng = recordArray[j]['緯度']+"_"+recordArray[j]['經度'];
+            if(latlngMap[latlng] === undefined){
+                latlngMap[latlng] = [];
+            }
             latlngMap[latlng].push(index);
         }
     }
+    return latlngMap;
 }
 
 function setGroupConditions(startTime, stopTime, timeUnit, info){
@@ -110,4 +122,8 @@ function setGroupConditions(startTime, stopTime, timeUnit, info){
 		group.push(condition);
 	}
 	return group;
+}
+
+function getGroupInfo(){
+    return groupInfo;
 }

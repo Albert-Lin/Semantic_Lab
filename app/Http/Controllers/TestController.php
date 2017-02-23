@@ -604,14 +604,22 @@ class TestController extends Controller{
 	public function googleCarMap(){
 		return response()->view('test/google/map/car/car', ['title' => 'Google Car Map']);
 	}
-	/**
-	 * The online project about Phone Record
-	 * @return \Illuminate\Http\Response
-	 */
-	public function phoneRecordMap(){
-		return response()
-				->view('test/google/map/phoneRecord/index');
-	}
+    /**
+     * The online project about Phone Record
+     * @return \Illuminate\Http\Response
+     */
+    public function phoneRecordMap(){
+        return response()
+            ->view('test/google/map/phoneRecord/index');
+    }
+    /**
+     * The online project about Phone Record which try to using MVC framework
+     * @return \Illuminate\Http\Response
+     */
+    public function phoneRecordMVCMap(){
+        return response()
+            ->view('test/google/map/phoneRecord/mvc');
+    }
 
 
 	// EXCUTE EXTERNAL FILE :

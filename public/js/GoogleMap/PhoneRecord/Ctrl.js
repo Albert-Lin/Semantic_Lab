@@ -8,10 +8,11 @@
 // 01. LOAD JSON FILE:
 var rowDataProcess = {
     params: {},
-    fun: function(data){
+    fun: function(data, phones){
         for(var i = 0; i < data.length; i++){
             phones.push(data[i]);
         }
+        console.log(phones);
     }
 };
 var googleMap;
@@ -24,23 +25,38 @@ var minMillSec;
 var maxMillSec;
 
 function setUp(){
+	var millsecInfo;
 	var defLat;
 	var defLng;
+
     // MODEL
-    loadJsonData("../../js/test/data.json", rowDataProcess);
-    dataPreprocess();
-    getMillSecRange();
-    setLatLngMap();
-    // VIEW
-	setCheckBoxTB(phones, ['監察號碼', 'color'], 'phoneNumTB');
-	defLat = phones[0].getElementValue('紀錄', 0)['緯度'];
-	defLng = phones[0].getElementValue('紀錄', 0)['經度'];
-    googleMapSetUp(defLat, defLng);
+    $.getJSON("../../js/test/data.json", function(data){
+        for(var i = 0; i < data.length; i++){
+            phones.push(new Entity(data[i]));
+        }
+
+        phones = dataPreprocess(phones);
+
+        millsecInfo = getMillSecRange(phones, minMillSec, maxMillSec);
+        minMillSec = millsecInfo.minMillSec;
+        maxMillSec = millsecInfo.maxMillSec;
+
+        setTimeInput(minMillSec, maxMillSec);
+        setRangeBound(minMillSec, maxMillSec);
+        latlngMap = setLatLngMap(phones, latlngMap);
+        // VIEW
+        setCheckBoxTB(phones, ['監察號碼', 'color'], 'phoneNumTB');
+        defLat = phones[0].getElementValue('紀錄', 0)['緯度'];
+        defLng = phones[0].getElementValue('紀錄', 0)['經度'];
+        googleMapSetUp(defLat, defLng);
+    });
+
 }
 
 function setShowingEntity(groupData, selectList){
     var trs = '';
     var orderIndex = 0;
+    var groupInfo = getGroupInfo();
     showPhones = [];
 	nonEmptyMap = [];
 	groupInfo.condictions = setGroupConditions(groupData.startTime, groupData.stopTime, groupData.timeUnit, {propName: '紀錄', subPropName: 'millSec'});
@@ -191,14 +207,32 @@ function getPhoneColor(phoneNum){
     return phones[index].getPropValue('color');
 }
 
-$(function(){
-    setTimeInput(minMillSec, maxMillSec);
-    setRangeBound(minMillSec, maxMillSec);
+function getUnitBound(index){
+	return {
+		lowerBound: groupInfo.condictions[index].lowerBound,
+		upperBound: groupInfo.condictions[index].upperBound
+	}
+}
 
+function getPhoneIndex(phoneNum){
+	return phoneMap[phoneNum];
+}
+
+function getShowPhoneUnit(phoneIndex, unitIndex){
+	return showPhones[phoneIndex][unitIndex];
+}
+
+$(function(){
 	setFunButClickEvent();
 
 	setCheckAllClickEvent();
 
 	setSubmitBtnClickEvent();
+
+	setSortBtnClickEvent();
+
+    setUnitBarChangeEvent();
+
+	setAnimationBtnClickEvent();
 
 });

@@ -66,7 +66,14 @@ function Entity(data) {
 
 	this.setPropValue = function(propName, value){
 		var propIndex = this.propNameMap[propName];
-		this.propValues[propIndex] = value;
+		if(propIndex === undefined){
+            this.propNames.push(propName);
+            this.propValues.push(value);
+            this.propNameMap[propName] = this.propNames.length-1;
+		}
+		else{
+            this.propValues[propIndex] = value;
+		}
 	};
 
 	this.getElementValue = function(propName, index){

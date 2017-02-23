@@ -109,7 +109,8 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/', 'TestController@gmap');
 		Route::get('/class', 'TestController@googleMap');
 		Route::get('/car', 'TestController@googleCarMap');
-		Route::get('/phoneRecord', 'TestController@phoneRecordMap');
+        Route::get('/phoneRecord', 'TestController@phoneRecordMap');
+        Route::get('/phoneRecordMVC', 'TestController@phoneRecordMVCMap');
 	});
 
 	// EXECUTE EXTERNAL FILE:

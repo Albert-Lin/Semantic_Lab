@@ -44,6 +44,7 @@ function setFunButClickEvent(){
     });
 }
 
+
 // FUNCTION CONTENT 0
 function setTimeInput(startMillSec, stopMillSec){
     $('#startTime').val(new Date(startMillSec+(8*3600000)).toISOString().replace(/\..*Z/gi, ''));
@@ -57,19 +58,31 @@ function getTimeInputValue(){
     };
 }
 
+function getTimeInputMillSec(){
+    var timeInput = getTimeInputValue();
+    var startTime = (new Date(Date.parse( timeInput.startTimeVal ))).getTime()-(8*3600000);
+    var stopTime = (new Date(Date.parse( timeInput.stopTimeVal ))).getTime()-(8*3600000);
+    return {
+        startTimeVal: startTime,
+        stopTimeVal: stopTime
+    };
+}
+
 function setCheckAllClickEvent(){
-	var checked = $(this).prop('checked');
-	$('.listItem').each(function(){
-		if(checked === true){
-			if($(this).prop('checked') === false){
-				$(this).click();
-			}
-		}
-		else if(checked === false){
-			if($(this).prop('checked') === true){
-				$(this).click();
-			}
-		}
+    $('#checkAll').on('click', function(){
+        var checked = $(this).prop('checked');
+        $('.listItem').each(function(){
+            if(checked === true){
+                if($(this).prop('checked') === false){
+                    $(this).click();
+                }
+            }
+            else if(checked === false){
+                if($(this).prop('checked') === true){
+                    $(this).click();
+                }
+            }
+        });
 	});
 }
 
@@ -100,7 +113,12 @@ function setCheckBoxTB(entityArray, propNameArray, domId){
 		var tr = '<tr>';
 		tr += '<td><input type="checkbox" class="listItem" value="' + entity.getPropValue(propNameArray[0]) + '"></td>';
 		for (var j = 0; j < propNameArray.length; j++) {
-			tr += '<td>' + entity.getPropValue(propNameArray[j]) + '</td>'
+			if(propNameArray[j] === 'color'){
+                tr += '<td style="background-color:'+entity.getPropValue('color')+'"></td>';
+			}
+			else{
+                tr += '<td>' + entity.getPropValue(propNameArray[j]) + '</td>';
+			}
 		}
 		tr += '</tr>';
 		tableContent += tr;
@@ -112,9 +130,9 @@ function setCheckBoxTB(entityArray, propNameArray, domId){
 function setSubmitBtnClickEvent(){
 	$('#submitBtn').on('click', function(){
 		var submit = true;
-		var timeInput = getTimeInputValue();
-		var startTime = (new Date(Date.parse( timeInput.startTimeVal ))).getTime()-(8*3600000);
-		var stopTime = (new Date(Date.parse( timeInput.stopTimeVal ))).getTime()-(8*3600000);
+		var inputTimeMillSec = getTimeInputMillSec();
+		var startTime = inputTimeMillSec.startTimeVal;
+		var stopTime = inputTimeMillSec.stopTimeVal;
 		var timeUnit = $('input[name=unit]:checked').val();
 		var selectList = [];
 		setRangeBound(startTime, stopTime);
@@ -182,7 +200,21 @@ function setSubmitBtnClickEvent(){
 
 
 // FUNCTION CONTENT 1
-function setRecordTR(recordObject){
+function setSortBtnClickEvent(){
+    $('.sortBtn').on('click', function(){
+        var current = $(this).html();
+        $('.sortBtn').each(function(){
+            $(this).html('▲');
+        });
+
+        if(current === '▲'){
+            $(this).html('▼');
+        }
+        console.log($(this).attr('propNAme'));
+    });
+}
+
+function setRecordTR(recordObject){console.log('???');
 	var tr = '<tr';
 	var td = '';
 
@@ -317,12 +349,63 @@ function drawAllMarkers_in_once(){
 	});
 }
 
+
 // RANGE SLIDER
 function setRangeBound(lowerMillSec, upperMillSec){
 	var lBoundTime = new Date(lowerMillSec+(8*3600000)).toISOString().replace(/\..*Z/gi, '');
 	var uBoundTime = new Date(upperMillSec+(8*3600000)).toISOString().replace(/\..*Z/gi, '');
 	$('#lowerBound').html(lBoundTime.replace(/T/gi, ' '));
 	$('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
+}
+
+function setUnitBarChangeEvent(){
+	$('#unitBar').on('change', function(){
+		var unitIndex = $(this).val();
+		if(unitIndex > -1){
+			var bound = getUnitBound();
+            setRangeBound(bound.lowerBound, bound.upperBound);
+
+            // clear all markers
+            if(drawAllMarkers === false){
+                cleared = true;
+                clearMarkerPolyline();
+            }
+
+            $('#recordTB tr').each(function(){
+                if($(this).attr('unitId') !== index){
+                    $(this).css('display', 'none');
+                }
+                else{
+                    $(this).css('display', '');
+                    var phoneNum = $(this).attr('phone');
+                    var orderIndex = $(this).attr('orderIndex');
+                    var currentRecordIndex = $(this).attr('recordIndex');
+
+                    if(drawAllMarkers === false){
+						var phoneIndex = getPhoneIndex(phoneNum);
+						var showUnit = getShowPhoneUnit(phoneIndex, unitIndex);
+                        var indexOfUnit = showUnit.indexOf(parseInt(currentRecordIndex));
+						if(indexOfUnit !== -1 && indexOfUnit !== 0 &&
+							currentRecordIndex !== '0' && orderIndex !== '0'){
+                            googleMap.drawPolyline(phoneNum+"_"+currentRecordIndex);
+						}
+					}
+					else{
+                        if(orderIndex !== '0' && currentRecordIndex !== '0'){
+                            googleMap.drawPolyline(phoneNum+"_"+currentRecordIndex);
+                        }
+					}
+                    googleMap.drawMarkers(orderIndex);
+				}
+			});
+		}
+		else{
+            var inputTimeMillSec = getTimeInputMillSec();
+            setRangeBound(inputTimeMillSec.startTimeVal, inputTimeMillSec.stopTimeVal);
+            cleared = false;
+            drawAllMarkers_in_once();
+		}
+	});
 }
 
 function setAnimationBtnClickEvent(){
