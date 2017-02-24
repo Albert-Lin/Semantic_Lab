@@ -38,6 +38,7 @@ function loadJsonData(jsonDataFile, funObject, phones){
 
 function dataPreprocess(phones){
     var colorUnit = (313/phones.length);
+	var phoneMap = getPhoneMap();
     for(var i = 0; i < phones.length; i++){
         var phone = phones[i];
         var phoneNum = phone.getPropValue('監察號碼');

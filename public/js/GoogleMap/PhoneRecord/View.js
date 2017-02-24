@@ -246,6 +246,28 @@ function recordEvent(){
 	});
 }
 
+function setRegexSearchBtnClickEvent(){
+	$('#regexSearchBtn').on('click', function(){
+		var pattern = $(this).val();
+		var trList = [];
+		var hiddenOrderIndexList = [];
+		$('#phoneList tbody tr').each(function(){
+			trList.push({
+				phoneNum: $(this).prop('phone'),
+				recordIndex: $(this).prop('recordIndex'),
+				orderIndex: $(this).prop('orderIndex')
+			});
+		});
+		hiddenOrderIndexList = phoneRegexSearch(pattern, trList);
+		for(var i = 0; i < hiddenOrderIndexList.length; i++){
+			var orderIndex = hiddenOrderIndexList[i];
+			$('#phoneList tbody tr[orderIndex='+orderIndex+']').each(function(){
+				$(this).css('display', 'none');
+			});
+		}
+	});
+}
+
 
 // GOOGLE MAP
 function googleMapSetUp(lat, lng){
