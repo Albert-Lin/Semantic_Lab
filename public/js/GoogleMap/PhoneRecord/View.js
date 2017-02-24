@@ -214,7 +214,7 @@ function setSortBtnClickEvent(){
     });
 }
 
-function setRecordTR(recordObject){console.log('???');
+function setRecordTR(recordObject){
 	var tr = '<tr';
 	var td = '';
 
@@ -278,6 +278,7 @@ function markerClickEvent(googleMap, params){
 	var unitBarValue = $('#unitBar').val();
 	var maxUnit = unitBarValue;
 	var windowContent = '';
+	var latlngMap = getLatLngMap();
 
 	if(latlngMap[position].length > 1){
 		// duplicate position marker showing on map
@@ -296,7 +297,7 @@ function markerClickEvent(googleMap, params){
 				maxUnit = $('#unitBar').prop('max');
 			}
 			for(var i = 0; i <= maxUnit; i++){
-				$('#recordTB tr[united='+i+']').each(function(){
+				$('#recordTB tr[unitId='+i+']').each(function(){
 					var markMapIndex = $(this).attr('phone')+"_"+$(this).attr('recordIndex');
 					if(latlngMap[position].indexOf(markMapIndex) !== -1){
 					    var trOrderId = $(this).attr('orderIndex');
@@ -358,11 +359,15 @@ function setRangeBound(lowerMillSec, upperMillSec){
 	$('#upperBound').html(uBoundTime.replace(/T/gi, ' '));
 }
 
+function setRangeMaxVal(value){
+	$('#unitBar').prop('max', value-1);
+}
+
 function setUnitBarChangeEvent(){
 	$('#unitBar').on('change', function(){
 		var unitIndex = $(this).val();
 		if(unitIndex > -1){
-			var bound = getUnitBound();
+			var bound = getUnitBound(unitIndex);
             setRangeBound(bound.lowerBound, bound.upperBound);
 
             // clear all markers
@@ -372,7 +377,7 @@ function setUnitBarChangeEvent(){
             }
 
             $('#recordTB tr').each(function(){
-                if($(this).attr('unitId') !== index){
+                if($(this).attr('unitId') !== unitIndex){
                     $(this).css('display', 'none');
                 }
                 else{

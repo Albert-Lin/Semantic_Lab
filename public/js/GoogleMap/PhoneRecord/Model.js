@@ -7,34 +7,33 @@
 
 var groupInfo = {
     conditions: [],
-    fun: function(condition, entity){
+    fun: function(conditions, entity){
         var group = [];
-        var recordArray = entity.getPropValue(condition.propInfo.propName);
+        var recordArray = entity.getPropValue(conditions.propInfo.propName);
         for(var i = 0; i < recordArray.length; i++){
-            var startTime = recordArray[i][condition.propInfo.subPropName];
-            if(condition.index === 0){
-                if(condition.lowerBound <= startTime &&
-                startTime <= condition.upperBound){
+            var startTime = recordArray[i][conditions.propInfo.subPropName];
+            if(conditions.index === 0){
+                if(conditions.lowerBound <= startTime &&
+                startTime <= conditions.upperBound){
                     group.push(recordArray[i].origIndex);
                 }
             }
 			else{
-				if(condition.lowerBound < startTime &&
-					startTime <= condition.upperBound){
+				if(conditions.lowerBound < startTime &&
+					startTime <= conditions.upperBound){
 					group.push(recordArray[i].origIndex);
 				}
 			}
         }
+        return group;
     }
 };
 
-function loadJsonData(jsonDataFile, funObject, phones){
-
-    $.getJSON(jsonDataFile, function(data){
-        funObject.fun(data, phones);
-        console.log(phones);
-    });
-}
+// function loadJsonData(jsonDataFile, funObject, phones){
+//     $.getJSON(jsonDataFile, function(data){
+//         funObject.fun(data, phones);
+//     });
+// }
 
 function dataPreprocess(phones){
     var colorUnit = (313/phones.length);
@@ -107,7 +106,11 @@ function setLatLngMap(phones, latlngMap){
 }
 
 function setGroupConditions(startTime, stopTime, timeUnit, info){
-	var numGroup = Math.floor(Math.abs(parseInt(stopTime)-parseInt(startTime))/timeUnit);
+	var absNum = Math.abs(parseInt(stopTime)-parseInt(startTime))/timeUnit;
+	var numGroup = Math.floor(absNum);
+	if(absNum !== numGroup){
+		numGroup++;
+	}
 	var group = [];
 	for(var i = 0; i < numGroup; i++){
 		var condition = {
