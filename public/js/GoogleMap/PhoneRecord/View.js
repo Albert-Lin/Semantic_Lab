@@ -248,23 +248,36 @@ function recordEvent(){
 
 function setRegexSearchBtnClickEvent(){
 	$('#regexSearchBtn').on('click', function(){
-		var pattern = $(this).val();
+		var pattern = $('#regexSearch').val();
 		var trList = [];
 		var hiddenOrderIndexList = [];
 		$('#phoneList tbody tr').each(function(){
-			trList.push({
-				phoneNum: $(this).prop('phone'),
-				recordIndex: $(this).prop('recordIndex'),
-				orderIndex: $(this).prop('orderIndex')
-			});
+			if($(this).css('display') !== 'none'){
+				trList.push({
+					phoneNum: $(this).attr('phone'),
+					recordIndex: $(this).attr('recordIndex'),
+					orderIndex: $(this).attr('orderIndex')
+				});
+			}
 		});
 		hiddenOrderIndexList = phoneRegexSearch(pattern, trList);
 		for(var i = 0; i < hiddenOrderIndexList.length; i++){
 			var orderIndex = hiddenOrderIndexList[i];
 			$('#phoneList tbody tr[orderIndex='+orderIndex+']').each(function(){
 				$(this).css('display', 'none');
+				$(this).attr('search', 'true');
 			});
 		}
+	});
+}
+
+function setClearSearchBtnClickEvent(){
+	$('#clearSearchBtn').on('click', function(){
+		$('#regexSearch').val('');
+		$('#phoneList tbody tr[search=true]').each(function(){
+			$(this).css('display', '');
+			$(this).attr('search', '');
+		});
 	});
 }
 
@@ -387,6 +400,7 @@ function setRangeMaxVal(value){
 
 function setUnitBarChangeEvent(){
 	$('#unitBar').on('change', function(){
+		$('#clearSearchBtn').click();
 		var unitIndex = $(this).val();
 		if(unitIndex > -1){
 			var bound = getUnitBound(unitIndex);

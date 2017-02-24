@@ -214,7 +214,7 @@ function getUnitBound(index){
 	return {
 		lowerBound: groupInfo.conditions[index].lowerBound,
 		upperBound: groupInfo.conditions[index].upperBound
-	}
+	};
 }
 
 function getPhoneIndex(phoneNum){
@@ -237,9 +237,9 @@ function phoneRegexSearch(regexPattern, trDataList){
 	var regex = new RegExp('.*'+regexPattern+'.*');
 	var hiddenTrOrderIndex = [];
 	for(var i = 0; i < trDataList.length; i++){
-		var phoneIndex = phoneMap[trDataList.phoneNum];
+		var phoneIndex = phoneMap[trDataList[i].phoneNum];
 		var phone = phones[phoneIndex];
-		var record = phone.getEelementValue('紀錄', trDataList.recordIndex);
+		var record = phone.getElementValue('紀錄', trDataList[i].recordIndex);
 		var match = false;
 
 		// check all properties of record if match regex pattern
@@ -250,10 +250,10 @@ function phoneRegexSearch(regexPattern, trDataList){
 			}
 		}
 		if(match === false){
-			hiddenTrOrderIndex.push(trDataList.orderIndex);
+			hiddenTrOrderIndex.push(trDataList[i].orderIndex);
 		}
 	}
-	
+
 	return hiddenTrOrderIndex;
 }
 
@@ -263,6 +263,10 @@ $(function(){
 	setCheckAllClickEvent();
 
 	setSubmitBtnClickEvent();
+
+setRegexSearchBtnClickEvent();
+
+setClearSearchBtnClickEvent();
 
 	setSortBtnClickEvent();
 
