@@ -12,7 +12,6 @@ var rowDataProcess = {
         for(var i = 0; i < data.length; i++){
             phones.push(data[i]);
         }
-        console.log(phones);
     }
 };
 var googleMap;
@@ -59,7 +58,9 @@ function setShowingEntity(groupData, selectList){
     var groupInfo = getGroupInfo();
     showPhones = [];
 	nonEmptyMap = [];
-	groupInfo.condictions = setGroupConditions(groupData.startTime, groupData.stopTime, groupData.timeUnit, {propName: '紀錄', subPropName: 'millSec'});
+	groupInfo.conditions = setGroupConditions(groupData.startTime, groupData.stopTime, groupData.timeUnit, {propName: '紀錄', subPropName: 'millSec'});
+
+	setRangeMaxVal(groupInfo.conditions.length);
 
 	for(var i = 0; i < phones.length; i++){
 	    var phone = phones[i];
@@ -78,6 +79,7 @@ function setShowingEntity(groupData, selectList){
     for(var i = 0; i < phones.length; i++){
 	    if(nonEmptyMap[i] === true){
 	        var phone = phones[i];
+			var phoneNum = phone.getPropValue('監察號碼');
 	        for(var j = 0; j < showPhones[i].length; j++){
 	            var recordIndexGroup = showPhones[i][j];
 	            if(recordIndexGroup.length > 0){
@@ -172,7 +174,7 @@ function setGoogleMap(trInfoList, timeUnit){
 			},
 			fun: markerClickEvent
 		};
-        if(trInfoList[i].recordIndex === 0){
+        if(trInfoList[i].recordIndex === '0'){
 			googleMap.addShapeMarker('triangle', record['緯度'], record['經度'],
 				recordStartTime, phone.getPropValue('color'), record['非監察號碼'],
 				phoneLabelColor, trInfoList[i].orderIndex, markerEventInfo, true);
@@ -208,14 +210,19 @@ function getPhoneColor(phoneNum){
 }
 
 function getUnitBound(index){
+	var groupInfo = getGroupInfo();
 	return {
-		lowerBound: groupInfo.condictions[index].lowerBound,
-		upperBound: groupInfo.condictions[index].upperBound
+		lowerBound: groupInfo.conditions[index].lowerBound,
+		upperBound: groupInfo.conditions[index].upperBound
 	}
 }
 
 function getPhoneIndex(phoneNum){
 	return phoneMap[phoneNum];
+}
+
+function getLatLngMap(){
+	return latlngMap;
 }
 
 function getShowPhoneUnit(phoneIndex, unitIndex){
