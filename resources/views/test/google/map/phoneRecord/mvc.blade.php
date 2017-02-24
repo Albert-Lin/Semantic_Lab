@@ -181,7 +181,7 @@
             animation-name: changeBorderColor;
             animation-duration: 0.75s;
         }
-        #regexSearchBtn{
+        #regexSearchBtn, #clearSearchBtn{
             background-color: #ffffff;
             border-radius: 50px;
             display: table;
@@ -190,7 +190,7 @@
             width: 50%;
             height: 50%;
         }
-        #regexSearchBtn:hover{
+        #regexSearchBtn:hover, #clearSearchBtn:hover{
             background-color: #98cbe8;
         }
 
@@ -199,9 +199,10 @@
         }
 
         .sortBtn{
-            height: 5px;
-            width: 5px;
+            height: 15px;
+            width: 15px;
             font-size: 5px;
+				padding: 0px;
         }
 
 
@@ -349,9 +350,12 @@
                     <div class="funBody">
                         <div class="optBlock searchBlock">
                             <div class="optBody row box0">
-                                <input id="regexSearch" class="box0 col-md-10 is-empty" />
+                                <input id="regexSearch" class="box0 col-md-8 is-empty" />
                                 <div class="col-md-2">
                                     <div id="regexSearchBtn" class="btn glyphicon glyphicon-search "></div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div id="clearSearchBtn" class="btn glyphicon glyphicon-trash "></div>
                                 </div>
                             </div>
                         </div>

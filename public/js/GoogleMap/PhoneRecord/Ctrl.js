@@ -214,7 +214,7 @@ function getUnitBound(index){
 	return {
 		lowerBound: groupInfo.conditions[index].lowerBound,
 		upperBound: groupInfo.conditions[index].upperBound
-	}
+	};
 }
 
 function getPhoneIndex(phoneNum){
@@ -229,12 +229,44 @@ function getShowPhoneUnit(phoneIndex, unitIndex){
 	return showPhones[phoneIndex][unitIndex];
 }
 
+function getPhoneMap(){
+	return phoneMap;
+}
+
+function phoneRegexSearch(regexPattern, trDataList){
+	var regex = new RegExp('.*'+regexPattern+'.*');
+	var hiddenTrOrderIndex = [];
+	for(var i = 0; i < trDataList.length; i++){
+		var phoneIndex = phoneMap[trDataList[i].phoneNum];
+		var phone = phones[phoneIndex];
+		var record = phone.getElementValue('紀錄', trDataList[i].recordIndex);
+		var match = false;
+
+		// check all properties of record if match regex pattern
+		for(var key in record){
+			if(regex.test( record[key] ) === true){
+				match = true;
+				break;
+			}
+		}
+		if(match === false){
+			hiddenTrOrderIndex.push(trDataList[i].orderIndex);
+		}
+	}
+
+	return hiddenTrOrderIndex;
+}
+
 $(function(){
 	setFunButClickEvent();
 
 	setCheckAllClickEvent();
 
 	setSubmitBtnClickEvent();
+
+setRegexSearchBtnClickEvent();
+
+setClearSearchBtnClickEvent();
 
 	setSortBtnClickEvent();
 
