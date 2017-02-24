@@ -578,7 +578,7 @@
                 }
 			}
 		});
-
+//stop and draw all marker
         drawAllMarkers = false;
 		$('#recordTB tr').each(function(){
 			$(this).css('display', '');
