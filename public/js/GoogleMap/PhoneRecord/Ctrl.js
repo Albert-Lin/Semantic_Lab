@@ -264,9 +264,9 @@ $(function(){
 
 	setSubmitBtnClickEvent();
 
-setRegexSearchBtnClickEvent();
+    setRegexSearchBtnClickEvent();
 
-setClearSearchBtnClickEvent();
+    setClearSearchBtnClickEvent();
 
 	setSortBtnClickEvent();
 

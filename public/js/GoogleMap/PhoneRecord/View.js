@@ -345,19 +345,19 @@ function markerClickEvent(googleMap, params){
 		}
 		else{
 		    // only current unit
-            $('#recordTB tr[united='+unitBarValue+']').each(function(){
+            $('#recordTB tr[unitId='+unitBarValue+']').each(function(){
 				var markMapIndex = $(this).attr('phone')+"_"+$(this).attr('recordIndex');
 				if(latlngMap[position].indexOf(markMapIndex) !== -1){
 					var trOrderId = $(this).attr('orderIndex');
 					var color = getPhoneColor($(this).attr('phone'));
-					unitsContents[i] += googleMap.infoWindowContentList[trOrderId].content+"<hr>";
+					unitsContents[unitBarValue] += googleMap.infoWindowContentList[trOrderId].content+"<hr>";
 					$(this).css('background-color', color);
 				}
             });
 		}
 
-        // rest content of InfoWindow
-		for(var i = 0; i < unitsContents.length; i++){
+        // reset content of InfoWindow
+		for(var i = 0; i < unitsContents.length; i++){console.log(i);
 			if(unitsContents[i].length > 0){
 				var unit = i+1;
 				windowContent += '<h4>區間'+unit+':</h4>'+unitsContents[i];
