@@ -364,9 +364,9 @@
                                 <table id="phoneList" class="table-striped table-condensed col-md-12">
                                     <thead>
                                     <tr>
-                                        <th>監察號碼<span class="btn sortBtn" style="float: right" propName="監察號碼">▲</span></th>
-                                        <th>非察監號碼<span class="btn sortBtn" style="float: right" propName="非察監號碼">▲</span></th>
-                                        <th>通話起始日期-時間<span class="btn sortBtn" style="float: right" propName="通話起始日期">▲</span></th>
+                                        <th>監察號碼<span class="btn sortBtn" style="float: right" propName="監察號碼" index="0">▼</span></th>
+                                        <th>非察監號碼<span class="btn sortBtn" style="float: right" propName="非察監號碼" index="1">▼</span></th>
+                                        <th>通話起始日期-時間<span class="btn sortBtn" style="float: right" propName="通話起始日期" index="2">▼</span></th>
                                     </tr>
                                     </thead>
                                     <tbody id="recordTB"></tbody>

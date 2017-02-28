@@ -203,14 +203,44 @@ function setSubmitBtnClickEvent(){
 function setSortBtnClickEvent(){
     $('.sortBtn').on('click', function(){
         var current = $(this).html();
+        var propIndex = $(this).attr('index');
+        var propValue = [];
+        var tr = [];
+
         $('.sortBtn').each(function(){
-            $(this).html('▲');
+            $(this).html('▼');
         });
 
-        if(current === '▲'){
-            $(this).html('▼');
+        if(current === '▼'){
+            $(this).html('▲');
         }
-        console.log($(this).attr('propNAme'));
+
+
+        $('#recordTB tr').each(function(){
+        	var orderIndex = $(this).attr('orderIndex');
+			tr[orderIndex] = $(this);
+        	propValue.push({
+        		orderIndex: orderIndex,
+				sortValue: $(this).children('td')[propIndex].childNodes[0].nodeValue,
+			});
+		});
+
+        if($(this).html() === '▼'){
+			propValue = sortData(propValue, 'sortValue');
+		}
+		else{
+			propValue = sortData(propValue, 'sortValue', true);
+		}
+
+		$('#recordTB').html('');
+
+        for(var i = 0; i < propValue.length; i++){
+        	var orderIndex = propValue[i].orderIndex;
+        	console.log();
+			$('#recordTB').append(tr[orderIndex]);
+		}
+
+		recordEvent();
     });
 }
 

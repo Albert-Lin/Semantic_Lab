@@ -103,7 +103,7 @@ function sortData(array, propName, invers){
 
 function sortDataIndex(array, sortedPropName, indexPropName, invers){
 	var indexArray = [];
-	var sortResult = sortData(array, propName, invers);
+	var sortResult = sortData(array, sortedPropName, invers);
 	for(var i = 0; i < sortResult.length; i++){
 		indexArray.push(sortResult[i][indexPropName]);
 	}
