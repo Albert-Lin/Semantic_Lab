@@ -218,10 +218,14 @@ function setSortBtnClickEvent(){
 
         $('#recordTB tr').each(function(){
         	var orderIndex = $(this).attr('orderIndex');
+			var value = $(this).children('td')[propIndex].childNodes[0].nodeValue;
+			if(propIndex === '2'){
+				value = new Date($(this).children('td')[propIndex].childNodes[0].nodeValue).getTime();
+			}
 			tr[orderIndex] = $(this);
         	propValue.push({
         		orderIndex: orderIndex,
-				sortValue: $(this).children('td')[propIndex].childNodes[0].nodeValue,
+				sortValue: value
 			});
 		});
 
@@ -236,7 +240,6 @@ function setSortBtnClickEvent(){
 
         for(var i = 0; i < propValue.length; i++){
         	var orderIndex = propValue[i].orderIndex;
-        	console.log();
 			$('#recordTB').append(tr[orderIndex]);
 		}
 
@@ -387,7 +390,7 @@ function markerClickEvent(googleMap, params){
 		}
 
         // reset content of InfoWindow
-		for(var i = 0; i < unitsContents.length; i++){console.log(i);
+		for(var i = 0; i < unitsContents.length; i++){
 			if(unitsContents[i].length > 0){
 				var unit = i+1;
 				windowContent += '<h4>區間'+unit+':</h4>'+unitsContents[i];

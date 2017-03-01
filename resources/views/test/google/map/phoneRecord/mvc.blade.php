@@ -25,7 +25,7 @@
 
     <script src="http://semanticlab.com/js/GoogleMap/PhoneRecord/Ctrl.js"></script>
     <script src="http://semanticlab.com/js/GoogleMap/PhoneRecord/Model.js"></script>
-
+   <script src="http://semanticlab.com/js/GoogleMap/PhoneRecord/View.js"></script>
 
 
     <style>
@@ -90,7 +90,7 @@
             color: #ffbb00;
             line-height: 65px;
             text-align: center;
-            vertical-align: center;
+            vertical-align: middle;
         }
         .funBtn:hover{ background-color: #9d9d9d; }
         .funBtn:active{ background-color: #2e3436; }
@@ -103,7 +103,7 @@
             color: #ffffff;
             line-height: 65px;
             text-align: center;
-            vertical-align: center;
+            vertical-align: middle;
         }
 
         .funBody{
@@ -283,7 +283,7 @@
         }
 
     </style>
-    <script src="http://semanticlab.com/js/GoogleMap/PhoneRecord/View.js"></script>
+
 </head>
 <body>
 

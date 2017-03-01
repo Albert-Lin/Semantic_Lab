@@ -57,7 +57,6 @@ function GoogleMap(){
 		});
 	};
 
-
 	/**
 	 * calling setCenter api of Google Map
 	 * @param lat
@@ -67,7 +66,21 @@ function GoogleMap(){
 		this.map.setCenter(new google.maps.LatLng(lat , lng));
 	};
 
+/**
+	* Reset and clear all data of current object
+	* @returns {undefined}
+	*/
+	this.clearAll = function(){
+     this.clearMarkers([], true);
+     this.markerList = [];
+     this.infoWindowContentList = [];
+     this.infoWindowList = [];
+     this.clearPolylines(-1, true);
+		this.polylineList = [];
+	};
 
+// MARKER:
+//-------------------------------------------------------------------------------------------------------------
 	/**
 	 * this function will create a object with google.maps.Marker needed properties.
 	 * @param symbolPath
@@ -160,18 +173,7 @@ function GoogleMap(){
 
 	};
 
-
 	this.addImageMarker = function(){};
-
-
-	// this.drawMarkers = function(indexArray){
-	// 	for(var i = 0; i < indexArray.length; i++){
-	// 		var index = indexArray[i];
-	// 		this.markerList[index].insideMarker.setMap(this.map);
-	// 		this.markerList[index].outsideMarker.setMap(this.map);
-	// 		this.resetCenter(this.markerList[index].lat, this.markerList[index].lng);
-	// 	}
-	// };
 
 	this.drawMarkers = function(index, resetCenter){
 		this.markerList[index].insideMarker.setMap(this.map);
@@ -212,6 +214,10 @@ function GoogleMap(){
 		}
 	};
 
+
+// POLYLINE:
+//-------------------------------------------------------------------------------------------------------------
+
 	this.polyline = function(pathInfo, color){
 		return new google.maps.Polyline({
 			path: pathInfo,
@@ -245,7 +251,11 @@ function GoogleMap(){
 		}
 	};
 
-    this.addInfoWindow = function(index, content, events){
+
+// MARKER:
+//-------------------------------------------------------------------------------------------------------------
+
+	this.addInfoWindow = function(index, content, events){
         this.infoWindowContentList[index] = {content: content, maxWidth: 800};
         this.infoWindowList[index] = new google.maps.InfoWindow({content: content});
 
@@ -267,19 +277,7 @@ function GoogleMap(){
 		// });
     };
 
-    this.setInfoWindow = function(index, content){
+	this.setInfoWindow = function(index, content){
     	this.addInfoWindow(index, content);
 	};
-
-	this.clearAll = function(){
-        this.clearMarkers([], true);
-        this.markerList = [];
-        this.infoWindowContentList = [];
-        this.infoWindowList = [];
-        this.clearPolylines(-1, true);
-		this.polylineList = [];
-	};
-
-
-
 }
