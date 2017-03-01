@@ -145,6 +145,11 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/qb', 'TestController@arc2QueryBuilder');
 		Route::get('/qbList', 'TestController@qbList');
 	});
+	
+	// VUE JS:
+	Route::group(['prefix' => 'vue'],	function(){
+		Route::get('vue-test',	'TestController@vueTest');
+	});
 
 });
 

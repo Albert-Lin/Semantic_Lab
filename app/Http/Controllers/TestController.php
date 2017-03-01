@@ -965,4 +965,10 @@ class TestController extends Controller{
         }
     }
 
+
+	// VUE JS :
+	//=====================================================================================
+	public function vueTest(){
+		return response()->view('test/vue-js/vue-js-test', ['title'=>'VUE JS !!']);
+	}
 }
