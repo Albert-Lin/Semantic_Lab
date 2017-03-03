@@ -50,14 +50,15 @@
         margin: 0;
     }
     .container{
-        padding: 5px;
+        background-color: #ffffff;
+        padding: 20px 5px 0 5px;
+        margin: 0 5px 0 5px;
+        box-shadow: 0 4px 20px 0 rgba(60, 32, 64, 0.5);
     }
     .block{
-        background-color: #ffffff;
         line-height: 100%;
         text-align: center;
         vertical-align: middle;
-        box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
         word-break: break-all;
     }
 </style>
