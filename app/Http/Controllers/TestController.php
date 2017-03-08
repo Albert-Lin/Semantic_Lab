@@ -971,4 +971,29 @@ class TestController extends Controller{
 	public function vueTest(){
 		return response()->view('test/vue-js/vue-js-test', ['title'=>'VUE JS !!']);
 	}
+
+	public function vueCtrl(){
+		$object = [];
+		$object['components'] = [];
+		for($i = 0; $i < 10; $i++){
+			$object['components'][$i] = 'component_'.$i;
+		}
+		$object['params'] = [];
+		for($i = 0; $i < 10; $i++){
+			$object['params'][$i] = 'params_'.$i;
+		}
+
+		$obj = new \stdClass();
+		$obj->components = new \stdClass();
+		for($i = 0; $i < 10; $i++){
+			$obj->components->$i = 'comp_'.$i;
+		}
+		$obj->params = new \stdClass();
+		for($i = 0; $i < 5; $i++){
+			$obj->params->$i = 'param_'.$i;
+		}
+
+
+		return response()->view('test/vue-js/vue-js-ctrl', ['data' => json_encode($object)]);
+	}
 }

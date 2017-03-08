@@ -149,6 +149,7 @@ Route::group(['prefix'=>'test'], function(){
 	// VUE JS:
 	Route::group(['prefix' => 'vue'],	function(){
 		Route::get('vue-test',	'TestController@vueTest');
+		Route::get('vue-ctrl', 'TestController@vueCtrl');
 	});
 
 });
