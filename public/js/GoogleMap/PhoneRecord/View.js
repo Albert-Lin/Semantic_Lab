@@ -332,6 +332,7 @@ function getInfoWindowContent(record, hiddenPropName, color){
 			content += '<tr class="row"><td class="col-md-4">'+key+'</td><td class="col-md-8 infoWindow">'+record[key]+'</td></tr>';
         }
     }
+	content += '</tbody></table>';
 
     return content;
 }
