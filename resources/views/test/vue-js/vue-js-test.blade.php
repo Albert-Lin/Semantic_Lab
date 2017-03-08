@@ -77,12 +77,42 @@
 
 		DATA-BINDING TEMPLATE (TWB)
 		<div id="bindingTempTWBCont">
-			<binding_temp_twb v-model="element"></binding_temp_twb>
+			<binding_temp_twb v-bind:input-text="element"></binding_temp_twb>
 			<div> @{{ element }} </div>
 		</div>
 		<template id="binding_temp_twb_dom">
 			<input type="text" v-model="inputText" />
 		</template>
+		<br><hr><br>
+
+		COMPUTED EXAMPLE:
+		<div id="computeExample">
+			<div>original price: @{{ origPrice }} </div>
+			<div>discount: @{{ discount }} </div>
+			<div>new price: @{{ newPrice }}</div>
+		</div>
+		<br><hr><br>
+
+		COMPUTED ACCESSOR AND MUTATOR:
+		<div id="computedGS">
+			<div> @{{ firstName }}</div>
+			<div> @{{ lastName }}</div>
+			<div> @{{ fullName }}</div>
+		</div>
+		<br><hr><br>
+
+		METHOD EXAMPLE:
+		<div id="methodExample">
+			<div v-for="score in scores">score: @{{ score }}</div>
+			<div>total score: @{{ totalScore() }}</div>
+		</div>
+		<br><hr><br>
+
+		WATCH EXAMPLE:
+		<div id="watchExample">
+			<input type="text" v-model="input" />
+			<div v-for="ele in output"> @{{ ele }}</div>
+		</div>
 		<br><hr><br>
 
 	</body>
@@ -156,6 +186,94 @@
 			}
 		});
 
+		var computeExample = new Vue({
+			el: '#computeExample',
+			data: {
+				// pure data:
+				origPrice: 10,
+				discount: 0.7
+			},
+			computed: {
+				// the result after calculate pure data or some other data
+				newPrice: function(){
+					var newPrice = this.origPrice * this.discount;
+					return newPrice;
+				}
+			}
+		});
+
+		var computedGetSet = new Vue({
+			el: '#computedGS',
+			data: {
+				firstName: 'Albert',
+				lastName: 'Lin'
+			},
+			computed: {
+				// there is no way to change value of property in computed object directly,
+				// change the value of property in data object is only way to update object property,
+				// therefore, we should using mutator function of property in computed object to update property in data object
+				fullName: {
+					get: function(){
+						return this.firstName+" "+this.lastName;
+					},
+					set: function(newFullName){
+						var words = newFullName.split(' ');
+						if(words.length === 2){
+							this.firstName = words[0];
+							this.lastName = words[1];
+						}
+						else{
+							console.error("full name should be two words");
+						}
+					}
+				}
+			}
+		});
+
+		var methodExample = new Vue({
+			el: '#methodExample',
+			data: {
+				scores: [10, 20, 30, 40, 50]
+			},
+			methods: {
+				totalScore: function(){
+					var totalScore = 0;
+					for(var i = 0; i < this.scores.length; i++){
+						totalScore += this.scores[i];
+					}
+					return totalScore;
+				}
+			}
+		});
+
+		var watchExample = new Vue({
+			el: '#watchExample',
+			data: {
+				input: '',
+				output: [],
+				dataArray: ['dirk', 'dirk41', 'irk']
+			},
+			watch: {
+				// all the props in watch object should match to the prop in data object,
+				// the prop of watch object is a listener function for value of data object prop changed.
+				input: function(regexPattern){
+					this.output = [];
+					this.regexSearch();
+				}
+			},
+			methods: {
+				regexSearch: function(){
+					if(this.input.length > 0){
+						var pattern = new RegExp(this.input);
+						for(var i = 0; i < this.dataArray.length; i++){
+							if( pattern.test(this.dataArray[i]) ){
+								this.output.push(this.dataArray[i]);
+							}
+						}
+					}
+				}
+			}
+		});
 
 </script>
 
