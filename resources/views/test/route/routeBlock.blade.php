@@ -50,30 +50,35 @@
         margin: 0;
     }
     .container{
-        padding: 5px;
+        background-color: #ffffff;
+        padding: 20px 5px 0 5px;
+        margin: 0 5px 0 5px;
+        box-shadow: 0 4px 20px 0 rgba(60, 32, 64, 0.5);
+        transition: 0.2s;
+    }
+    .container:hover{
+        transform: translate(-5px, -5px);
     }
     .block{
-        background-color: #ffffff;
         line-height: 100%;
         text-align: center;
         vertical-align: middle;
-        box-shadow: 0 4px 10px 0 rgba(60, 32, 64, 0.5), 0 6px 40px 0 rgba(60, 32, 64, 0.49);
         word-break: break-all;
     }
 </style>
 
 <div id="theBlock" class="row">
-    <div id="container" class="col-md-12">
+    <div id="container" class="col-md-12 col-sm-12 col-xs-12">
 
         @foreach($data as $key => $routes)
             <div class="row rowBlock">
-                <div class="col-md-2 prefix">
+                <div class="col-md-2 col-sm-4 sol-xs-12 prefix">
                     {{$key}}
                 </div>
             </div>
             <div class="row h10 rowBlock">
                 @foreach($routes as $index => $route)
-                    <div class="col-md-2 h100 container">
+                    <div class="col-md-2 col-sm-4 sol-xs-12 h100 container">
                         <a href="http://semanticlab.com/{{$route}}">
                             <div class="block h100">
                                 {{$route}}
