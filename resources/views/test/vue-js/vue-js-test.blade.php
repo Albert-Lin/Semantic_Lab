@@ -115,6 +115,19 @@
 		</div>
 		<br><hr><br>
 
+		<div id="container">
+			<the_temp></the_temp>
+		</div>
+		<template id="theTemp">
+			<div>
+				<div> @{{ prop0 }} </div>
+				<div> @{{ prop1 }} </div>
+				<div> @{{ prop2 }} </div>
+			</div>
+		</template>
+		<br><hr><br>
+
+
 	</body>
 </html>
 
@@ -273,6 +286,20 @@
 					}
 				}
 			}
+		});
+
+		var theTemp = Vue.component('the_temp', {
+			template: '#theTemp',
+			data: function(){
+				return {
+					prop0: 'value0',
+					prop1: 'value1',
+					prop2: 'value2'
+				};
+			}
+		});
+		var container = new Vue({
+			el: '#container'
 		});
 
 </script>

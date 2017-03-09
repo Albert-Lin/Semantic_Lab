@@ -972,28 +972,50 @@ class TestController extends Controller{
 		return response()->view('test/vue-js/vue-js-test', ['title'=>'VUE JS !!']);
 	}
 
-	public function vueCtrl(){
+	public function vueCtrl($char = null){
+
 		$object = [];
-		$object['components'] = [];
-		for($i = 0; $i < 10; $i++){
-			$object['components'][$i] = 'component_'.$i;
-		}
-		$object['params'] = [];
-		for($i = 0; $i < 10; $i++){
-			$object['params'][$i] = 'params_'.$i;
+		$object['name'] = 'Dirk';
+		$object['characterName'] = 'PF';
+		$object['action'] = [];
+
+		if(isset($char)){
+			if($char === 'o'){
+				$object['action']['actionName'] = 'one_legged_fadeaway';
+				$object['action']['actionProps'] = [];
+				$object['action']['actionProps']['imgs'] = [];
+				$object['action']['actionProps']['imgs'][0] = 'http://basketballsocietyonline.com/wp-content/uploads/2014/12/usatsi_7896714.jpg';
+				$object['action']['actionProps']['imgs'][1] = 'https://d13csqd2kn0ewr.cloudfront.net/uploads/image/file/65723/cropped_REU_2014922.jpg?ts=1408459960';
+				$object['action']['actionProps']['imgs'][2] = 'http://i.imgur.com/33dycpC.jpg';
+				$object['action']['actionProps']['imgs'][3] = 'http://pic.pimg.tw/rvd1129/1380683559-4273256996.jpg?v=1380683560';
+			}
+			else if($char === '3'){
+				$object['action']['actionName'] = 'three_point_shooter';
+				$object['action']['dataArray'] = ['Ray Allen', 'Reggie Miller', 'Jason Terry', 'Jason Kidd', 'Dirk Nowitzki', 'Steve Nash'];
+			}
 		}
 
-		$obj = new \stdClass();
-		$obj->components = new \stdClass();
-		for($i = 0; $i < 10; $i++){
-			$obj->components->$i = 'comp_'.$i;
-		}
-		$obj->params = new \stdClass();
-		for($i = 0; $i < 5; $i++){
-			$obj->params->$i = 'param_'.$i;
-		}
-
-
-		return response()->view('test/vue-js/vue-js-ctrl', ['data' => json_encode($object)]);
+		return response()->view('test/vue-js/vue-js-ctrl', ['data' => json_encode($object), 'tag' => 'span']);
 	}
+
+	public function vueBsk($playerId){
+		$object = [];
+
+		// get the info of player:
+		$object['info'] = Player.getPlayerInfo($playerId); // name, team, number, position
+		if($object['info']['position'] === 'PF'){
+			PF.setData($object);
+		}
+		else if($object['info']['position'] === 'PG'){
+			PG.setData($object);
+		}
+
+		return response()->View('test/vue-js/vue-js-bsk', [
+			'title'=> 'Vue BSK Component',
+			'data'=> json_encode($object)
+		]);
+
+	}
+
+
 }
