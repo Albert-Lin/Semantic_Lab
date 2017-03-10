@@ -150,6 +150,7 @@ Route::group(['prefix'=>'test'], function(){
 	Route::group(['prefix' => 'vue'],	function(){
 		Route::get('vue-test',	'TestController@vueTest');
 		Route::get('vue-ctrl/{char?}', 'TestController@vueCtrl');
+		Route::get('vue-dash', 'TestController@vueDashboard');
 	});
 
 });

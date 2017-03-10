@@ -998,23 +998,25 @@ class TestController extends Controller{
 		return response()->view('test/vue-js/vue-js-ctrl', ['data' => json_encode($object), 'tag' => 'span']);
 	}
 
-	public function vueBsk($playerId){
-		$object = [];
+	public function vueDashboard(){
 
-		// get the info of player:
-		$object['info'] = Player.getPlayerInfo($playerId); // name, team, number, position
-		if($object['info']['position'] === 'PF'){
-			PF.setData($object);
-		}
-		else if($object['info']['position'] === 'PG'){
-			PG.setData($object);
-		}
+		$chartData = [];
+		$chartData['components'] = [];
 
-		return response()->View('test/vue-js/vue-js-bsk', [
-			'title'=> 'Vue BSK Component',
-			'data'=> json_encode($object)
-		]);
+		// pie:
+		$chartData['components'][0]['name'] = 'pie';
+		$chartData['components'][0]['r'] = 100;
+		$chartData['components'][0]['elements'] = [10, 20, 30, 40, 50];
 
+		$chartData['components'][1]['name'] = 'pie';
+		$chartData['components'][1]['r'] = 100;
+		$chartData['components'][1]['elements'] = [10, 20, 150];
+
+		//
+
+		return response()->View('test/vue-js/vue-js-dashboard', [
+			'title'=>'Dashboard',
+			'chartData' => json_encode($chartData)]);
 	}
 
 

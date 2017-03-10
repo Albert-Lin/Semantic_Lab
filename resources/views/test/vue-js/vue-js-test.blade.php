@@ -128,6 +128,26 @@
 		<br><hr><br>
 
 
+		TEMPLATE COMPUTED EXAMPLE:
+		<div id="comTempCont">
+			<com_temp ref="comT"></com_temp>
+		</div>
+		{{--<template id="comTemp">--}}
+			{{--<div>--}}
+				{{--<div v-for="ele in elements"> @{{ ele }}</div>--}}
+			{{--</div>--}}
+		{{--</template>--}}
+		<br><hr><br>
+
+
+		MOUNTED EXAMPLE
+		<div id="mouTempCont">
+			<mou_temp v-bind:say="sayFromRoot"></mou_temp>
+		</div>
+		<div id="mouTempCont">
+			<component v-for="com in coms" v-bind:is="com"></component>
+		</div>
+		<br><hr><br>
 	</body>
 </html>
 
@@ -300,6 +320,71 @@
 		});
 		var container = new Vue({
 			el: '#container'
+		});
+
+
+		var computedTemp = Vue.component('com_temp', {
+			template: '<div><div v-for="ele in elements"> @{{ ele }}</div></div>',
+			name: 'ComputedComponent',
+			data: function(){
+				var eles = [10, 20, 30, 40];
+				var elements = [];
+
+				for(var i = 0; i < eles.length; i++){
+					elements.push('init_ele_'+i);
+				}
+
+				return {
+					eles: eles,
+					elements: elements
+				};
+			},
+			watch: {
+				eles: function(newEles){
+					this.resetElements();
+				}
+			},
+			methods: {
+				resetElements: function(){
+					this.elements = [];
+					for(var i = 0; i < this.eles.length; i++){
+						this.elements.push('Ele__'+i);
+					}
+				}
+			}
+
+
+		});
+		var computedTempCont = new Vue({
+			el: '#comTempCont',
+			data:{chartName:''},
+			components: [computedTemp],
+			mounted:function() {
+				if(this.chartName === 'pie') {
+					this.mount(pieComponent);
+				}
+			}
+		});
+
+
+
+		var mountedTemp = Vue.component('mou_temp', {
+			template: '' +
+			'<div>' +
+			'	<div>@{{ say }}</div>' +
+			'</div>',
+			props: ['say'],
+		});
+		var mountedTempCont = new Vue({
+			el: '#mouTempCont',
+			components: [mountedTemp],
+			data: {
+				sayFromRoot: '',
+				coms: ['mountedTemp'],
+			},
+			mounted: function(){
+				this.sayFromRoot = 'root mounted'
+			}
 		});
 
 </script>
