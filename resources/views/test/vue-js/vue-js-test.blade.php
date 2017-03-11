@@ -12,6 +12,7 @@
 	<head>
 		<title>{{ $title }}</title>
 		<script src=" https://unpkg.com/vue"></script>
+		<script src=" http://semanticlab.com/js/require.js"></script>
 	</head>
 	<body>
 
@@ -148,10 +149,38 @@
 			<component v-for="com in coms" v-bind:is="com"></component>
 		</div>
 		<br><hr><br>
+
+
+		MULTI COMPONENT EXAMPLE
+		<style>
+			.redFont{
+				color: #ff4444;
+			}
+
+			.blueFont{
+				color: #2a88bd;
+			}
+		</style>
+		<div id="multiCompCont">
+			<component v-for="data in bindingData" :is="data.component" :prop="data.prop"></component>
+		</div>
+		<br><hr><br>
+
+
+		<div id="includeComCont">
+			<component v-for="data in info" :is="data.component" :prop="data.prop"></component>
+		</div>
+		<br><hr><br>
+
 	</body>
 </html>
 
 <script type="text/javascript">
+
+	import comp0 from 'http://semanticlab.com/js/test/vue/component0.vue';
+	import comp1 from 'http://semanticlab.com/js/test/vue/component1.vue';
+	import comp2 from 'http://semanticlab.com/js/test/vue/component2.vue';
+
 		var simple = new Vue({
 			el: '#simple',
 			data: {
@@ -386,6 +415,82 @@
 				this.sayFromRoot = 'root mounted'
 			}
 		});
+
+
+		var component0 = Vue.component('component0', {
+			template: '<div class="redFont"> @{{ prop.prop0 }} </div>',
+			props: ['prop']
+		});
+		var component1 = Vue.component('component1', {
+			template: '<div  class="blueFont"><div v-for="ele in prop.prop1"> @{{ ele }} </div></div>',
+			props: ['prop']
+		});
+		var component2 = Vue.component('component2', {
+			template: '<div class="redFont"> @{{ prop.prop2 }}_@{{ prop.prop3 }} </div>',
+			props: ['prop']
+		});
+		var multiCompCont = new Vue({
+			el: '#multiCompCont',
+			components: [component0, component1, component2],
+			data: {
+				bindingData: [
+					{
+						component: 'component0',
+						prop: {
+							prop0: 'This prop is for component0'
+						}
+					},
+					{
+						component: 'component1',
+						prop: {
+							prop1: ['ele_0', 'ele_1', 'ele_2']
+						}
+					},
+					{
+						component: 'component2',
+						prop: {
+							prop2: 'component2_0',
+							prop3: 'component2_1'
+						}
+					}
+				]
+			}
+		});
+
+
+		var includeC0 = Vue.component('includeC0', comp0);
+		var includeC1 = Vue.component('includeC1', comp1);
+		var includeC2 = Vue.component('includeC2', comp2);
+		var includeComCont = new Vue({
+			el: '#includeComCont',
+			data: {
+				info: [
+					{
+						component: 'includeC0',
+						prop: {
+							prop0: 'I am in component 0 !!'
+						}
+					},
+					{
+						component: 'includeC1',
+						prop: {
+							prop1: ['comp2_A', 'comp2_B', 'comp2_C']
+						}
+					},
+					{
+						component: 'includeC2',
+						prop: {
+							prop2: 'Dirk',
+							prop3: 'Nowitzki'
+						}
+					}
+				]
+			},
+			mounted: function(){
+				console.log("mounted started");
+			}
+		});
+
 
 </script>
 
