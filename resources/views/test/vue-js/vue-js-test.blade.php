@@ -12,7 +12,6 @@
 	<head>
 		<title>{{ $title }}</title>
 		<script src=" https://unpkg.com/vue"></script>
-		<script src=" http://semanticlab.com/js/require.js"></script>
 	</head>
 	<body>
 
@@ -133,11 +132,11 @@
 		<div id="comTempCont">
 			<com_temp ref="comT"></com_temp>
 		</div>
-		{{--<template id="comTemp">--}}
-			{{--<div>--}}
-				{{--<div v-for="ele in elements"> @{{ ele }}</div>--}}
-			{{--</div>--}}
-		{{--</template>--}}
+		<template id="comTemp">
+			<div>
+				<div v-for="ele in elements"> @{{ ele }}</div>
+			</div>
+		</template>
 		<br><hr><br>
 
 
@@ -167,20 +166,18 @@
 		<br><hr><br>
 
 
+		MULTI COMPONENT EXAMPLE (single file vue component)
 		<div id="includeComCont">
 			<component v-for="data in info" :is="data.component" :prop="data.prop"></component>
 		</div>
 		<br><hr><br>
 
+
+
 	</body>
 </html>
 
 <script type="text/javascript">
-
-	import comp0 from 'http://semanticlab.com/js/test/vue/component0.vue';
-	import comp1 from 'http://semanticlab.com/js/test/vue/component1.vue';
-	import comp2 from 'http://semanticlab.com/js/test/vue/component2.vue';
-
 		var simple = new Vue({
 			el: '#simple',
 			data: {
@@ -458,40 +455,6 @@
 		});
 
 
-		var includeC0 = Vue.component('includeC0', comp0);
-		var includeC1 = Vue.component('includeC1', comp1);
-		var includeC2 = Vue.component('includeC2', comp2);
-		var includeComCont = new Vue({
-			el: '#includeComCont',
-			data: {
-				info: [
-					{
-						component: 'includeC0',
-						prop: {
-							prop0: 'I am in component 0 !!'
-						}
-					},
-					{
-						component: 'includeC1',
-						prop: {
-							prop1: ['comp2_A', 'comp2_B', 'comp2_C']
-						}
-					},
-					{
-						component: 'includeC2',
-						prop: {
-							prop2: 'Dirk',
-							prop3: 'Nowitzki'
-						}
-					}
-				]
-			},
-			mounted: function(){
-				console.log("mounted started");
-			}
-		});
-
-
 </script>
-
+<script src=" http://semanticlab.com/js/vue/test/vueComp.js"></script>
 
