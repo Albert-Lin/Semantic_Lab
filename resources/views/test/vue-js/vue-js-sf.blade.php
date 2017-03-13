@@ -16,7 +16,12 @@
 	<title>Document</title>
 </head>
 <body>
-	<div id="singleFile"></div>
+	<div id="singleFile">
+		<comment v-for="obj in info" :is="obj.component" :prop="obj.prop" ></comment>
+		<input type="text" v-model="name" />
+		<input type="text" v-model="mvp" />
+		<input type="text" v-model="team" />
+	</div>
 </body>
 </html>
 <script>
