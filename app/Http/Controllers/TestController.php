@@ -1021,26 +1021,6 @@ class TestController extends Controller{
 
 	public function vueSingleFile(){
 		$data = [];
-//		$data[0] = [];
-//		$data[0]['component'] = '';
-//		$data[0]['props'] = [];
-//		$data[0]['props']['rdf:type'] = 'dbo:Athlete';
-//		$data[0]['props']['rdfs_label'] = 'Dirk Nowitzki (en)';
-//		$data[0]['props']['dbp_team'] = 'dbr:Dallas_Mavericks';
-//		$data[0]['props']['dbo_position'] = 'dbr:Dallas_Mavericks';
-//
-//		$data[1]['component'] = '';
-//		$data[1]['props'] = [];
-//		$data[1]['props']['rdf:type'] = 'dbo:Scientist';
-//		$data[1]['props']['rdfs_label'] = 'Albert Einstein (en)';
-//		$data[1]['props']['dbp_awards'] = ['dbr:Nobel_Prize_in_Physics', 'dbr:Royal_Society', 'dbr:Time_100:_The_Most_Important_People_of_the_Century'];
-//
-//		$data[2]['component'] = '';
-//		$data[2]['props'] = [];
-//		$data[2]['props']['rdf:type'] = 'dbo:BasketballTeam';
-//		$data[2]['props']['rdfs_label'] = 'Dallas Mavericks (en)';
-//		$data[2]['props']['foaf_homepage'] = 'http://www.mavs.com/';
-
 		$data[0] = [];
 		$data[0]['component'] = 'comp0';
 		$data[0]['prop'] = [];
@@ -1063,5 +1043,22 @@ class TestController extends Controller{
 		return response()->View('test/vue-js/vue-js-sf', ['data'=>json_encode($data)]);
 	}
 
+
+	public function axiosRoot(){
+		return response()->View('test/vue-js/axios', ['title'=>'AXIOS']);
+	}
+
+	public function axiosPost(Request $request){
+		$this->validate($request, [
+			'param0' => 'required',
+			'param1' => 'required'
+		]);
+
+		$response = [];
+		$response['resp0'] = 'resp0';
+		$response['resp1'] = ['1_1', '1_2', '1_3'];
+
+		return json_encode($response);
+	}
 
 }

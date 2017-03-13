@@ -152,6 +152,10 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('vue-ctrl/{char?}', 'TestController@vueCtrl');
 		Route::get('vue-dash', 'TestController@vueDashboard');
 		Route::get('vue-sf', 'TestController@vueSingleFile');
+		Route::group(['prefix' => 'axios'], function(){
+			Route::get('root', 'TestController@axiosRoot');
+			Route::post('post', 'TestController@axiosPost');
+		});
 	});
 
 });
