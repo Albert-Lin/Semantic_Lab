@@ -7,7 +7,6 @@ require('../bootstrap');
 Vue.component('comp0', require('../components/vue/comp0.vue'));
 Vue.component('comp1', require('../components/vue/comp1.vue'));
 Vue.component('comp2', require('../components/vue/comp2.vue'));
-Vue.component('component2', require('../components/vue/component2.vue'));
 
 const singleFile = new Vue({
 	el: '#singleFile',
@@ -41,5 +40,15 @@ const singleFile = new Vue({
 	},
 	mounted: function(){
 		// this.info = passData;
+		this.info[0].prop.fun = [];
+		this.info[0].prop.fun.push(function(){
+			console.log('fun 0');
+		});
+		this.info[0].prop.fun.push(function(){
+			console.log('fun 1');
+		});
+		this.info[0].prop.fun.push(function(){
+			console.log('fun 2');
+		});
 	}
 });

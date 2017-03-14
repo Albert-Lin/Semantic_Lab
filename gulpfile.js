@@ -18,6 +18,7 @@ elixir(function(mix){
 		// .sass('app.scss')
 //		.webpack('./resources/assets/js/app.js', './public/js/app.js')
 // 		.webpack('./resources/assets/js/test/vueComp.js', './public/js/vue/test/vueComp.js')
-		.webpack('./resources/assets/js/test/vueSf.js', './public/js/vue/test/vueSf.js')
+// 		.webpack('./resources/assets/js/test/vueSf.js', './public/js/vue/test/vueSf.js')
+		.webpack('./resources/assets/js/test/d3_pie.js', './public/js/vue/test/pie.js')
 	;
 });

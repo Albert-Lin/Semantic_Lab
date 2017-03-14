@@ -20827,7 +20827,7 @@ Stream.Duplex = require('readable-stream/duplex.js');
 Stream.Transform = require('readable-stream/transform.js');
 Stream.PassThrough = require('readable-stream/passthrough.js');
 
-// Backwards-compat with node 0.4.x
+// Backwards-compat with node 0.4_x
 Stream.Stream = Stream;
 
 

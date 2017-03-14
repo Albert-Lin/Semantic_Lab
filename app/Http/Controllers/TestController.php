@@ -556,6 +556,11 @@ class TestController extends Controller{
 	}
 
 
+	public function shape(){
+		return response()->View('test/d3/4_x/shape', ['title'=>'D3 4_x Shape']);
+	}
+
+
 	// NEO4J:
 	//=====================================================================================
 	/**
@@ -1042,7 +1047,6 @@ class TestController extends Controller{
 
 		return response()->View('test/vue-js/vue-js-sf', ['data'=>json_encode($data)]);
 	}
-
 
 	public function axiosRoot(){
 		return response()->View('test/vue-js/axios', ['title'=>'AXIOS']);

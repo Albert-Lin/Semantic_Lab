@@ -95,6 +95,9 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('/svg', 'TestController@d3Svg');
 		Route::get('/svg/json', 'TestController@d3SvgJson');
 		Route::get('/svg/path', 'TestController@path');
+		Route::group(['prefix'=>'4_x'], function(){
+			Route::get('shape', 'TestController@shape');
+		});
 	});
 
 	// NEO4J:
