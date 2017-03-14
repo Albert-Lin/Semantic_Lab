@@ -2,14 +2,20 @@
  * Created by AlbertLin on 2017/3/14.
  */
 
+require('../bootstrap');
+
 Vue.component('pie', require('../components/vue/pie.vue'));
 
-var svgPie = new Vue({
+const svgPie = new Vue({
 
 	el: '#pieChart',
 	data: {
-		component: 'pie',
-		prop: [1, 2, 5]
+		info:[
+			{
+				component: 'pie',
+				prop: [1, 1, 1]
+			}
+		]
 	}
 
 });

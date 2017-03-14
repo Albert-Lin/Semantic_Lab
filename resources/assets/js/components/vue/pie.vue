@@ -16,13 +16,16 @@
             paths(){
                 var result = [];
                 var total = 0;
+                var last = 0;
                 for(var i = 0; i < this.prop.length; i++){
                     total += this.prop[i];
                 }
                 for(var i = 0; i < this.prop.length; i++){
-                    var svgInfo = getSVGPath(this.prop[i]/total);
+                    var svgInfo = getSVGPath(last/total, (last+this.prop[i])/total);
                     result.push(svgInfo);
+                    last += this.prop[i];
                 }
+                return result;
             }
         },
         watch: {
@@ -31,7 +34,7 @@
         methods:{
 
         },
-        mounted: {
+        mounted(){
 
         }
 

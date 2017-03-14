@@ -557,7 +557,27 @@ class TestController extends Controller{
 
 
 	public function shape(){
-		return response()->View('test/d3/4_x/shape', ['title'=>'D3 4_x Shape']);
+		$data = [];
+		$data[0] = [];
+		$data[0]['component'] = 'comp0';
+		$data[0]['prop'] = [];
+		$data[0]['prop']['name'] = 'Dirk Nowitzki';
+		$data[0]['prop']['champ'] = '2011';
+
+		$data[1] = [];
+		$data[1]['component'] = 'comp1';
+		$data[1]['prop'] = [];
+		$data[1]['prop']['name'] = 'Dirk Nowitzki';
+		$data[1]['prop']['age'] = 38;
+		$data[1]['prop']['mvp'] = [1998, 2007, 2011];
+
+		$data[2] = [];
+		$data[2]['component'] = 'comp2';
+		$data[2]['prop'] = [];
+		$data[2]['prop']['name'] = 'Dirk Nowitzki';
+		$data[2]['prop']['team'] = 'Dallas Mavericks';
+
+		return response()->View('test/d3/4_x/shape', ['title'=>'D3 4_x Shape', 'data'=>json_encode($data)]);
 	}
 
 
