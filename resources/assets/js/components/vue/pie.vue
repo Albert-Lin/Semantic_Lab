@@ -1,41 +1,85 @@
 <template>
-    <svg  style="width: 400px; height: 400px;">
-        <g class="pie" style="transform: translate(100px, 100px)">
-            <path v-for="path in paths" :d="path"></path>
-        </g>
-    </svg>
+	<svg :style="{height: svgHeight+'px'}">
+		<g :style="{transform: 'translate('+outR+'px, '+outR+'px)'}">
+		    <path v-for="(d, index) in dArray" :d="d" :style="{fill: hslArray[index]}"></path>
+		</g>
+	</svg>
 </template>
 
 <script>
     export default{
         props:['prop'],
         data(){
-            return {};
+            return {
+            	outR: 100,
+            	inR: 50
+            };
         },
         computed: {
-            paths(){
-                var result = [];
-                var total = 0;
-                var last = 0;
-                for(var i = 0; i < this.prop.length; i++){
-                    total += this.prop[i];
-                }
-                for(var i = 0; i < this.prop.length; i++){
-                    var svgInfo = getSVGPath(last/total, (last+this.prop[i])/total);
-                    result.push(svgInfo);
-                    last += this.prop[i];
-                }
-                return result;
+        	svgHeight(){
+        		return 2*this.outR;
+        	},
+            Σ(){
+            	var result = 0;
+            	for(var i = 0; i < this.prop.data.length; i++){
+            		result += this.prop.data[i];
+            	}
+            	return result;
+            },
+            dArray(){
+            	return this.getDArray();
+            },
+            hslArray(){
+                return this.getHslArray();
             }
         },
         watch: {
 
         },
         methods:{
+            propValid(){
+            	if(this.prop.outR !== undefined){
+            		this.outR = this.prop.outR;
+            	}
 
+            	if(this.prop.inR !== undefined){
+            		this.inR = this.prop.inR;
+            	}
+            },
+            getDArray(){
+                var result = [];
+                var startAngle = 0;
+                for(var i = 0; i < this.prop.data.length; i++){
+                    var endAngle = startAngle + this.prop.data[i];
+                    result.push(d3.arc({
+                    	innerRadius: this.inR,
+                    	outerRadius: this.outR,
+                    	startAngle: (startAngle/this.Σ)*2*Math.PI,
+                    	endAngle: (endAngle/this.Σ)*2*Math.PI
+                    }));
+                    startAngle = endAngle;
+                }
+                return result;
+            },
+            getHslArray(){
+            	var result = [];
+				var unit = 360/this.Σ;
+				var startUnit = 0;
+                if(this.prop.color === undefined){
+                    for(var i = 0; i < this.prop.data.length; i++){
+                        var h = startUnit * unit;
+                        result.push('hsl('+h+', 100%, 65%)');
+                        startUnit += this.prop.data[i];
+                    }
+                }
+                else{
+                    result = this.prop.color;
+                }
+            	return result;
+            }
         },
         mounted(){
-
+        	this.propValid();
         }
 
 

@@ -6,16 +6,24 @@ require('../bootstrap');
 
 Vue.component('pie', require('../components/vue/pie.vue'));
 
-const svgPie = new Vue({
+var svgPie = new Vue({
 
 	el: '#pieChart',
 	data: {
+		id: 'pieChart',
 		info:[
 			{
 				component: 'pie',
-				prop: [1, 1, 1]
+				prop: {
+					data: [1, 2, 3, 4, 5, 6]
+				}
 			}
 		]
+	},
+	mounted: function(){
+		for(var i = 0; i < this.info.length; i++){
+			this.info[i].idClass = this.id+'_'+this.info[i].component+'_'+i;
+		}
 	}
 
 });
