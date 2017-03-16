@@ -32,10 +32,10 @@
 
         },
         mounted(){
-            console.log("=============");
-            console.log(passData);
-            console.log(singleFile);
-            console.log("=============");
+//            console.log("=============");
+//            console.log(passData);
+//            console.log(singleFile);
+//            console.log("=============");
         }
     }
 

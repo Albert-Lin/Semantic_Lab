@@ -159,6 +159,7 @@ Route::group(['prefix'=>'test'], function(){
 			Route::get('root', 'TestController@axiosRoot');
 			Route::post('post', 'TestController@axiosPost');
 		});
+		Route::get('vue-gs', 'TestController@gridSystem');
 	});
 
 });
