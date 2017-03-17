@@ -1128,4 +1128,48 @@ class TestController extends Controller{
 
 	}
 
+	public function templateGenerator(){
+		return response()->View('test/vue-js/vue-js-tempGenerator');
+	}
+
+	public function simpleStructure(){
+
+		$ctrlData = [];
+
+		$ctrlData[0] = [];
+		$ctrlData[0]['component'] = 'pie';
+		$ctrlData[0]['prop'] = [];
+		$ctrlData[0]['prop']['data'] = [1, 3, 5, 9];
+
+		$ctrlData[1] = [];
+		$ctrlData[1]['component'] = 'pie';
+		$ctrlData[1]['prop'] = [];
+		$ctrlData[1]['prop']['data'] = [90, 90, 90];
+
+		$ctrlData[2] = [];
+		$ctrlData[2]['component'] = 'includeC1';
+		$ctrlData[2]['prop'] = [];
+		$ctrlData[2]['prop']['prop1'] = ['comp2_A', 'comp2_B', 'comp2_C'];
+
+		$ctrlData[3] = [];
+		$ctrlData[3]['component'] = 'includeC2';
+		$ctrlData[3]['prop'] = [];
+		$ctrlData[3]['prop']['prop2'] = 'Dirk';
+		$ctrlData[3]['prop']['prop3'] = 'Nowitzki';
+
+		$ctrlData[4] = [];
+		$ctrlData[4]['component'] = 'comp1';
+		$ctrlData[4]['prop'] = [];
+		$ctrlData[4]['prop']['name'] = 'Dirk Nowitzki';
+		$ctrlData[4]['prop']['age'] = 38;
+		$ctrlData[4]['prop']['mvp'] = [1998, 2007, 2011];
+
+		$ctrlData[5] = [];
+		$ctrlData[5]['component'] = 'comp0';
+		$ctrlData[5]['prop'] = [];
+		$ctrlData[5]['prop']['name'] = 'Dirk Nowitzki';
+		$ctrlData[5]['prop']['champ'] = '2011';
+
+		return response()->View('test/vue-js/vue-js-simpleStructure', ['ctrlData' => json_encode($ctrlData)]);
+	}
 }

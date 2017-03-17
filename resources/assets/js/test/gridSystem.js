@@ -4,7 +4,7 @@
 
 require('../require.js');
 
-Vue.component('gridSystem', require('../templates/gridSystem.vue'));
+Vue.component('gridSystem', require('../grids/gridSystem.vue'));
 
 let gridS = new Vue({
 
@@ -25,18 +25,10 @@ let gridS = new Vue({
 			}
 		]
 	},
-	computed: {
-
-	},
-	watch: {
-
-	},
-	methods: {
-
-	},
-	mounted: function(){
-
-	}
+	computed: {},
+	watch: {},
+	methods: {},
+	mounted: function(){}
 
 
 });

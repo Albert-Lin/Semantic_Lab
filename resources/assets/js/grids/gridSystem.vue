@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="gridContainer">
 		<div v-for="row in rowArray" class="row">
 			<div v-for="col in row.cols" class="col" :class="classArray"> <component :is="col.component" :prop="col.prop"></component> </div>
 		</div>
@@ -9,13 +9,7 @@
 
 
 <script>
-	import pie from '../components/vue/pie.vue';
-	import includeC0 from '../components/vue/component0.vue';
-	import includeC1 from '../components/vue/component1.vue';
-	import includeC2 from '../components/vue/component2.vue';
-	import comp0 from '../components/vue/comp0.vue';
-	import comp1 from '../components/vue/comp1.vue';
-	import comp2 from '../components/vue/comp2.vue';
+	import componentsLib from '../components/ComponentsLib.js';
 
 	/*
 		prop: {
@@ -45,19 +39,9 @@
 	    classArray: [ 'col-lg-offset-x', 'col-lg-x', ... ]
 	 */
 	export default{
-		components:{
-			'pie': pie,
-			'includeC0': includeC0,
-			'includeC1': includeC1,
-			'includeC2': includeC2,
-			'comp0': comp0,
-			'comp1': comp1,
-			'comp2': comp2
-		},
+		components: componentsLib,
 		props: ['prop'],
-		data(){
-			return {};
-		},
+		data(){ return {}; },
 		computed:{
 			rowArray(){
 				let result = [];
@@ -109,16 +93,9 @@
 				return result;
 			}
 		},
-		watch: {
-
-		},
-		methods: {
-
-		},
-		mounted(){
-
-		}
-
+		watch: {},
+		methods: {},
+		mounted(){}
 	}
 
 </script>
@@ -126,8 +103,14 @@
 
 
 <style>
-	.col{
-		padding: 10px;
+	.gridContainer > .row{
+		width: 100%;
+		height: 100%; /* Think about it */
+		padding: 0;
+		border: 0;
+	}
+	.gridContainer > .row > .col{
+		padding: 5px;
 		border: 0;
 		margin: 0;
 	}
