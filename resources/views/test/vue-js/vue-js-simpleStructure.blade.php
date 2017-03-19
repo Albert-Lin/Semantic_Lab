@@ -18,11 +18,22 @@
     <script src=" http://semanticlab.com/js/Dom.js"></script>
     <script src=" http://semanticlab.com/js/test/d3/d3_plugin.js"></script>
     <script src=" http://semanticlab.com/js/vue/Template.js"></script>
+
+	<style>
+		html, body, #root{
+			background-color: #333333;
+			padding: 0;
+			border: 0;
+			margin: 0;
+		}
+	</style>
+
 </head>
 <body>
 
     <div id="root">
-        <component v-for="data in info" :is="data.template" :prop="data.prop"></component>
+        <component :is="currentTemplate.template" :prop="currentTemplate.prop"></component>
+	    <button v-on:click="changeTemp('temp0')">change</button>
     </div>
 
 </body>
@@ -47,10 +58,12 @@
 		},
 		block1: {
 			componentData: [ctrlData[2], ctrlData[3]],
+			lg: [3, 3],
+			md: [0, 6],
 		},
 		block2: {
 			componentData: [ctrlData[0], ctrlData[1]],
-			lg: [1, 5],
+			lg: [2, 4],
 			md: [0, 6],
 		},
     }).config;

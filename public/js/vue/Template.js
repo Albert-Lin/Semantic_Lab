@@ -25,7 +25,7 @@ function Template(config){
 		this.template = config.template;
 		this[this.template] = {};
 		switch(config.template){
-			case 'block':
+			case 'blank':
 				this.blank.block0 = grid();
 				break;
 			case 'temp0':
@@ -83,6 +83,7 @@ function Template(config){
 				for(let col in config[block]){
 					if(col === 'componentData'){
 						this[this.template][block].prop.componentData = config[block].componentData;
+						this[this.template][block].prop.block = block;
 					}
 					else{
 						let colData = config[block][col];

@@ -1,5 +1,5 @@
 <template>
-    <div class="tempContainer">
+    <div class="temp0Container">
         <div class="row">
             <div class=" col-lg-offset-0 col-lg-6 col-md-offset-0 col-md-6
                 col-sm-offset-0 col-sm-12 col-xs-offset-0 col-xs-12 ">
@@ -32,8 +32,8 @@
 
 
 <style>
-    .tempContainer,
-    .tempContainer > div{
+    .temp0Container,
+    .temp0Container > .row{
         width: 100%;
         height: 100%;
         padding: 5px;
@@ -41,7 +41,8 @@
         margin: 0;
     }
 
-    .block0, .block1{
+    .temp0Container > .row > div > .block0,
+    .temp0Container > .row > div > .block1{
         width: 100%;
         height: 50%;
         padding: 5px;
@@ -49,7 +50,7 @@
         margin: 0;
     }
 
-    .block2{
+    .temp0Container > .row > div > .block2{
         width: 100%;
         height: 100%;
         padding: 5px;

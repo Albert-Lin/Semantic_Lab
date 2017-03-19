@@ -1,5 +1,5 @@
 <template>
-    <div class="tempContainer">
+    <div class="blankContainer">
         <component :is="prop.block0.grid" :prop="prop.block0.prop" class="block0"></component>
     </div>
 </template>
@@ -22,7 +22,7 @@
 
 
 <style>
-    .tempContainer{
+    .blankContainer{
         width: 100%;
         height: 100%;
         padding: 5px;

@@ -95,7 +95,23 @@
 		},
 		watch: {},
 		methods: {},
-		mounted(){}
+		mounted(){
+			let rows = Ψ('.'+this.prop.block+' > .row');
+			for(let i = 0; i < this.rowArray.length; i++){
+				let maxHeight = 0;
+				for(let j = 0; j < this.rowArray[i].cols.length; j++){
+					let height = Ψ('.col', rows[i])[j].offsetHeight;
+					if(height > maxHeight){
+						maxHeight = height;
+					}
+				}
+				for(let j = 0; j < this.rowArray[i].cols.length; j++){
+					if(Ψ('.col', rows[i])[j].style !== undefined){
+						Ψ('.col', rows[i])[j].style.height = maxHeight;
+					}
+				}
+			}
+		}
 	}
 
 </script>
@@ -105,14 +121,17 @@
 <style>
 	.gridContainer > .row{
 		width: 100%;
-		height: 100%; /* Think about it */
+		/*height: 100%; !* Think about it *!*/
 		padding: 0;
 		border: 0;
+		margin: 0;
 	}
 	.gridContainer > .row > .col{
 		padding: 5px;
-		border: 0;
-		margin: 0;
+		border: 1px;
+		border-style: solid;
+		/*margin: 0;*/
+		background-color: #ff4444;
 	}
 
 </style>
