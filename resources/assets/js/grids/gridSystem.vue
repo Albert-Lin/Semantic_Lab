@@ -11,6 +11,8 @@
 <script>
 	import componentsLib from '../components/ComponentsLib.js';
 
+	require('../plugIn/Dom.js');
+
 	/*
 		prop: {
 			componentData: [

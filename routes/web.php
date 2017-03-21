@@ -162,6 +162,7 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('vue-gs', 'TestController@gridSystem');
 		Route::get('vue-tg', 'TestController@templateGenerator');
 		Route::get('vue-ss', 'TestController@simpleStructure');
+		Route::post('vue-ss', 'TestController@simpleStructure');
 	});
 
 });
