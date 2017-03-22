@@ -12,8 +12,8 @@ let comp1;
 let comp2;
 
 (function(){
-	for(let i = 0; i < currentVueConfig.components.length; i++){
-		switch(currentVueConfig.components[i]){
+	for(let i = 0; i < window.currentVue.components.length; i++){
+		switch(window.currentVue.components[i]){
 			case 'pie':
 				pie = require(componentsPath+'pie.vue');
 				break;

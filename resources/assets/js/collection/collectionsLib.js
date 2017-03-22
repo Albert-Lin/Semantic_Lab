@@ -6,8 +6,8 @@ let collectionsPath = './';
 let blank;
 
 (function(){
-	for(let i = 0; i < currentVueConfig.collections.length; i++){
-		switch(currentVueConfig.collections[i]) {
+	for(let i = 0; i < window.currentVue.collections.length; i++){
+		switch(window.currentVue.collections[i]) {
 			case 'blank':
 				blank = require(collectionsPath + 'blank.vue');
 				break;

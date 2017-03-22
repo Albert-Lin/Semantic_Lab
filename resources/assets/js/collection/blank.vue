@@ -1,6 +1,6 @@
 <template>
     <div class="blankCollectionContainer">
-        <component v-for="ele in prop" :is="ele.component" :prop="ele.prop"></component>
+        <component v-for="ele in prop.components" :is="ele.component" :prop="ele.prop"></component>
     </div>
 </template>
 

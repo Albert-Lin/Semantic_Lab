@@ -16,54 +16,22 @@ var rootVue = function(rootName){
 };
 
 function RootVue(rootName) {
+	this.vueConfig = {};
 	this.templates = [];
 	this.RootVue = function (rootName) {
-		// window.vueConfigs[rootName] = {
-		// 	templates: [],
-		// 	grids: ['gridSystem'],
-		// 	collections: [],
-		// 	components: [],
-		// };
-		// this.vueConfig = window.vueConfigs[rootName];
+		 window.vueConfigs[rootName] = {
+		 	templates: [],
+		 	grids: ['gridSystem'],
+		 	collections: [],
+		 	components: [],
+		 };
+		 this.vueConfig = window.vueConfigs[rootName];
 		window.templates[rootName] = [];
 		this.templates = window.templates[rootName];
 		window.current = rootName;
 
 		return this;
 	};
-	// this.setTemplate = function(tempConfig){
-	// 	let template = new Template(tempConfig).config;
-	// 	this.templates.push(template);
-	//
-	// 	return this;
-	// };
-	// this.setVueConfig = function(tempsArray, gridsArray, compsArray){
-	// 	this.vueConfig.templates = tempsArray;
-	// 	this.vueConfig.grids = gridsArray;
-	// 	if(typeof compsArray !== 'undefined'){
-	// 		this.vueConfig.components = compsArray;
-	// 	}
-	//
-	// 	return this;
-	// };
-	// this.setCollections = function(components){
-	// 	for(let i = 0; i < components.length; i++){
-	// 		if(this.vueConfig.collections.indexOf(components[i].collection) === -1){
-	// 			this.vueConfig.collections.push(components[i].collection);
-	// 		}
-	// 	}
-	//
-	// 	return this;
-	// };
-	// this.setComponents = function(components){
-	// 	for(let i = 0; i < components.length; i++){
-	// 		if(this.vueConfig.components.indexOf(components[i].component) === -1){
-	// 			this.vueConfig.components.push(components[i].component);
-	// 		}
-	// 	}
-	//
-	// 	return this;
-	// };
 
 	this.setTemplate = function (config) {
 		let result = {
@@ -73,6 +41,9 @@ function RootVue(rootName) {
 
 		if(config.template !== undefined){
 			result.template = config.template;
+			if(this.vueConfig.templates.indexOf(config.template) === -1){
+				this.vueConfig.templates.push(config.template);
+			}
 		}
 		else{
 			console.error('setTemplate: missing property "template" in config');
@@ -93,6 +64,9 @@ function RootVue(rootName) {
 
 				if (config[key].grid !== undefined) {
 					result.prop[key].grid = config[key].grid;
+					if(this.vueConfig.grids.indexOf(config[key].grid) === -1){
+						this.vueConfig.grids.push(config[key].grid);
+					}
 				}
 
 				if (config[key].lg !== undefined) {
@@ -109,6 +83,8 @@ function RootVue(rootName) {
 				}
 
 				result.prop[key].prop.collections = config[key].collections;
+				result.prop[key].prop.block = key;
+				this.setConfig(config[key].collections);
 			}
 		}
 
@@ -126,17 +102,22 @@ function RootVue(rootName) {
 		}
 	};
 
+	this.setConfig = function(collections){
+		for(let i = 0; i < collections.length; i++){
+			if(this.vueConfig.collections.indexOf(collections[i].collection) === -1){
+				this.vueConfig.collections.push(collections[i].collection);
+			}
+
+			for(let j = 0; j < collections[i].prop.components.length; j++){
+				if(this.vueConfig.components.indexOf(collections[i].prop.components[j].component) === -1){
+					this.vueConfig.components.push(collections[i].prop.components[j].component);
+				}
+			}
+		}
+	};
 
 	this.RootVue(rootName);
 }
-
-// function $C(componentData, collectionName){
-// 	if(typeof collectionName === 'undefined'){
-// 		collectionName = 'blank';
-// 	}
-// 	componentData.collection = collectionName;
-// 	return componentData;
-// }
 
 function $C(componentArray, collectionName){
 	if(typeof collectionName === 'undefined'){

@@ -8,13 +8,15 @@ let temp0;
 
 
 (function(){
-	switch(currentTemplate.template){
-		case 'blank':
-			blank = require(templatesPath+'blank.vue');
-			break;
-		case 'temp0':
-			temp0 = require(templatesPath+'temp0.vue');
-			break;
+	for(let i = 0; i < window.currentVue.templates.length; i++){
+		switch(window.currentVue.templates[i]){
+			case 'blank':
+				blank = require(templatesPath+'blank.vue');
+				break;
+			case 'temp0':
+				temp0 = require(templatesPath+'temp0.vue');
+				break;
+		}
 	}
 })();
 

@@ -27,7 +27,7 @@ require('../require.js');
 				.setTemplate({
 					template: 'temp0',
 					block0: {
-						componentData: [$C(serviceData[4]), $C(serviceData[5])],
+						collections: [$C(serviceData[4]), $C(serviceData[5])],
 						lg: [0, 4],
 						md: [0, 6],
 					},
@@ -54,7 +54,7 @@ require('../require.js');
 
 
 function setROOT(rootName){
-	window.currentTemplate = templates[rootName][0];
+	window.currentVue = vueConfigs['root'];
 	window.ROOT = new Vue({
 		el: '#root',
 		components: require('../templates/TemplatesLib.js').default,

@@ -1,101 +1,43 @@
 <template>
-	<!--<div class="gridContainer">-->
-		<!--<div v-for="row in rowArray" class="row">-->
-			<!--<div v-for="col in row.cols" class="col" :class="classArray"> <component :is="col.component" :prop="col.prop"></component> </div>-->
-		<!--</div>-->
-	<!--</div>-->
 	<div class="gridContainer">
 		<div v-for="row in rowArray" class="row">
-		<div v-for="col in row.cols" class="col" :class="classArray"> <component :is="col.collection" :prop="col.prop"></component> </div>
-	</div>
+			<div v-for="col in row.cols" class="col" :class="classArray"> <component :is="col.collection" :prop="col.prop"></component> </div>
+		</div>
 	</div>
 </template>
 
 
 
 <script>
-//	import componentsLib from '../components/ComponentsLib.js';
 	import collectionsLib from '../collection/collectionsLib.js';
 
 	require('../plugIn/Dom.js');
 
-	/*
-		prop: {
-			componentData: [
-				{
-					component: '',
-					prop: {},
-				},
-				{},
-				{},
-				...
-			],
-			classArray: {
-				lg: [offset, current], // required
-				md: [offset, current],
-				sm: [offset, current],
-				xs: [offset, current]
-			}
-		},
-		rowArray: [
-			{
-				cols: [ {}, {}, {}, ...]
-			},
-			{},
-			...
-		],
-	    classArray: [ 'col-lg-offset-x', 'col-lg-x', ... ]
-	 */
 	export default{
-//		components: componentsLib,
 		components: collectionsLib,
 		props: ['prop'],
 		data(){ return {}; },
 		computed:{
-			collections(){
-				let result = [];
-				let collection = [];
-				for(let i = 0; i < this.prop.componentData.length; i++){
-					let index = collection.indexOf(this.prop.componentData[i].collection);
-					if(index === -1){
-						collection.push(this.prop.componentData[i].collection);
-						result.push({
-							collection: this.prop.componentData[i].collection,
-							prop: [this.prop.componentData[i]]
-						});
-					}
-					else{
-						result[index].prop.push(this.prop.componentData[i]);
-					}
-				}
-
-				return result;
-			},
-			rowArray(){ console.log(this.collections);
+			rowArray(){
 				let result = [];
 				let numRow;
 				let numComponent;
 				let index = 0;
-				if( this.prop.classArray.lg.length === 1 ){
-					numComponent = Math.ceil(12/this.prop.classArray.lg[0]);
+				if( this.prop.lg.length === 1 ){
+					numComponent = Math.ceil(12/this.prop.lg[0]);
 				}
-				else if( this.prop.classArray.lg.length === 2 ){
-					numComponent = Math.ceil(12/this.prop.classArray.lg[1]);
+				else if( this.prop.lg.length === 2 ){
+					numComponent = Math.ceil(12/this.prop.lg[1]);
 				}
 				else{
 					numComponent = Math.ceil(12/12);
 				}
-//				numRow = Math.ceil(this.prop.componentData.length/numComponent);
-				numRow = Math.ceil(this.collections.length/numComponent);
+				numRow = Math.ceil(this.prop.collections.length/numComponent);
 				for(let i = 0; i < numRow; i++){
 					let cols = [];
 					for(let j = 0; j < numComponent; j++){
-//						if(index < this.prop.componentData.length){
-//							cols.push(this.prop.componentData[index]);
-//							index++;
-//						}
-						if(index < this.collections.length){
-							cols.push(this.collections[index]);
+						if(index < this.prop.collections.length){
+							cols.push(this.prop.collections[index]);
 							index++;
 						}
 						else{
@@ -105,22 +47,16 @@
 
 					result.push({ cols: cols });
 				}
-				console.log('=====');
-				console.log(result);
-				console.log('=====');
 				return result;
 			},
-			classArray(){
+			classArray(){ console.log(this.prop);
 				let result = [];
 				let classObject = this.prop.classArray;
 
-				for(let key in classObject){
-					if(classObject[key].length === 1){
-						result.push('col-'+key+'-'+classObject[key][0]);
-					}
-					else{
-						result.push('col-'+key+'-offset-'+classObject[key][0]);
-						result.push('col-'+key+'-'+classObject[key][1]);
+				for(let key in this.prop){
+					if(key !== 'block' && key !== 'collections'){
+						result.push('col-'+key+'-offset-'+this.prop[key][0]);
+						result.push('col-'+key+'-'+this.prop[key][1]);
 					}
 				}
 
