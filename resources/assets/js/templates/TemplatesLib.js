@@ -8,15 +8,13 @@ let temp0;
 
 
 (function(){
-	for(let i = 0; i < vueConfig.templates.length; i++){
-		switch(vueConfig.templates[i]){
-			case 'blank':
-				blank = require(templatesPath+'blank.vue');
-				break;
-			case 'temp0':
-				temp0 = require(templatesPath+'temp0.vue');
-				break;
-		}
+	switch(currentTemplate.template){
+		case 'blank':
+			blank = require(templatesPath+'blank.vue');
+			break;
+		case 'temp0':
+			temp0 = require(templatesPath+'temp0.vue');
+			break;
 	}
 })();
 

@@ -22,55 +22,34 @@
 
 	<style>
 		html, body, #root{
+            width: 100%;
+            height: 100%;
 			background-color: #333333;
 			padding: 0;
 			border: 0;
 			margin: 0;
 		}
+        .blankContainer, .temp0Container{
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
 	</style>
 
 </head>
 <body>
 
     <div id="root">
-        <component v-if="info.length > 0" :is="currentTemplate.template" :prop="currentTemplate.prop" ref="currentTemplateRef"></component>
+        <component v-if="info.length > 0" :is="currentTemplate.template" :prop="currentTemplate.prop"></component>
 	    <button v-on:click="changeTemp('temp0')">change</button>
     </div>
 
 </body>
 </html>
-<script>
-
-    {{--var serviceData = {!! $ctrlData !!};--}}
-
-//	config.setTemplate({
-//		template: 'blank',
-//		block0: {
-//			componentData: [serviceData[0], serviceData[1], serviceData[2], serviceData[3], serviceData[4], serviceData[5]],
-//		},
-//	})
-//		.setTemplate({
-//			template: 'temp0',
-//			block0: {
-//				componentData: [serviceData[4], serviceData[5]],
-//				lg: [0, 4],
-//				md: [0, 6],
-//			},
-//			block1: {
-//				componentData: [serviceData[2], serviceData[3]],
-//				lg: [3, 3],
-//				md: [0, 6],
-//			},
-//			block2: {
-//				componentData: [serviceData[0], serviceData[1]],
-//				lg: [2, 4],
-//				md: [0, 6],
-//			},
-//		})
-//		.setVueConfig(['blank', 'temp0'], ['gridSystem'])
-//		.setComponents(serviceData);
-
-//	config.setTemplate({});
-
-</script>
 <script src=" http://semanticlab.com/js/vue/test/Root.js"></script>
+<style>
+    .blankContainer, .temp0Container{
+        overflow-x: hidden;
+        overflow-y: auto;
+        height: 90%;
+    }
+</style>

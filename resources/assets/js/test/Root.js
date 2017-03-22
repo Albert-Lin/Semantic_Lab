@@ -5,7 +5,7 @@
 require('../require.js');
 
 
-(function(){
+(function(callback){
 	axios.defaults.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	axios({
 		url: 'http://semanticlab.com/test/vue/vue-ss',
@@ -13,50 +13,54 @@ require('../require.js');
 	})
 		.then(function(response){
 			let serviceData = response.data;
-			window.config
+			rootVue('root')
 				.setTemplate({
-				template: 'blank',
-				block0: {
-					componentData: [serviceData[0], serviceData[1], serviceData[2], serviceData[3], serviceData[4], serviceData[5]],
-				},
-			})
+					template: 'blank',
+					block0: {
+						collections: [
+							$C(serviceData[0]), $C(serviceData[1]),
+							$C(serviceData[2]), $C(serviceData[3]),
+							$C(serviceData[4]), $C(serviceData[5]),
+						]
+					},
+				})
 				.setTemplate({
 					template: 'temp0',
 					block0: {
-						componentData: [serviceData[4], serviceData[5]],
+						componentData: [$C(serviceData[4]), $C(serviceData[5])],
 						lg: [0, 4],
 						md: [0, 6],
 					},
 					block1: {
-						componentData: [serviceData[2], serviceData[3]],
+						collections: [$C(serviceData[2]), $C(serviceData[3])],
 						lg: [3, 3],
 						md: [0, 6],
 					},
 					block2: {
-						componentData: [serviceData[0], serviceData[1]],
+						collections: [$C(serviceData[0]), $C(serviceData[1])],
 						lg: [2, 4],
 						md: [0, 6],
 					},
-				})
-				.setVueConfig(['blank', 'temp0'], ['gridSystem'])
-				.setComponents(serviceData);
-
-			setROOT();
+				});
+				// .setVueConfig(['blank', 'temp0'], ['gridSystem'])
+				// .setCollections(serviceData)
+				// .setComponents(serviceData);
+			setROOT('root');
 		})
 		.catch(function(error){
-			console.log('Error: ');
-			console.log(error.response);
+			console.error('AXIOS: '+error.response);
 		});
-})();
+})(setROOT);
 
 
-function setROOT(){
+function setROOT(rootName){
+	window.currentTemplate = templates[rootName][0];
 	window.ROOT = new Vue({
 		el: '#root',
 		components: require('../templates/TemplatesLib.js').default,
 		data: {
-			info: templates,
-			currentTemplate: templates[0],
+			info: templates[rootName],
+			currentTemplate: templates[rootName][0],
 		},
 		computed: {},
 		watch: {},

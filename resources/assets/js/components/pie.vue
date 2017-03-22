@@ -1,15 +1,17 @@
 <template>
-	<svg :style="{height: svgHeight+'px'}">
-		<g :style="{transform: 'translate('+outR+'px, '+outR+'px)'}">
-		    <path v-for="(d, index) in dArray" :d="d" :style="{fill: hslArray[index]}"></path>
-		</g>
-	</svg>
+	<div>
+		<svg :style="{height: svgHeight+'px'}">
+			<g :style="{transform: 'translate('+outR+'px, '+outR+'px)'}">
+				<path v-for="(d, index) in dArray" :d="d" :style="{fill: hslArray[index]}"></path>
+			</g>
+		</svg>
+	</div>
 </template>
 
 <script>
 	require('../plugIn/d3_plugin.js');
     export default{
-        props:['prop'],
+        props:['id', 'prop'],
         data(){
             return {
             	outR: 100,
@@ -34,9 +36,7 @@
                 return this.getHslArray();
             }
         },
-        watch: {
-
-        },
+        watch: {},
         methods:{
             propValid(){
             	if(this.prop.outR !== undefined){
@@ -77,7 +77,7 @@
                     result = this.prop.color;
                 }
             	return result;
-            }
+            },
         },
         mounted(){
         	this.propValid();
