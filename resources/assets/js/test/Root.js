@@ -81,6 +81,6 @@ function setROOT(rootName){
 				}
 			}
 		},
-		mounted: function(){console.log(this.currentTemplate)}
+		mounted: function(){}
 	});
 }
