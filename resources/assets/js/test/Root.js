@@ -18,10 +18,12 @@ require('../require.js');
 					template: 'blank',
 					block0: {
 						collections: [
-							$C(serviceData[0]), $C(serviceData[1]),
+							$C(serviceData[0], 'ctrl_bashBoard'), $C(serviceData[1]),
 							$C(serviceData[2]), $C(serviceData[3]),
 							$C(serviceData[4]), $C(serviceData[5]),
-						]
+						],
+						lg: [0, 4],
+						md: [0, 6],
 					},
 				})
 				.setTemplate({
@@ -42,9 +44,6 @@ require('../require.js');
 						md: [0, 6],
 					},
 				});
-				// .setVueConfig(['blank', 'temp0'], ['gridSystem'])
-				// .setCollections(serviceData)
-				// .setComponents(serviceData);
 			setROOT('root');
 		})
 		.catch(function(error){
@@ -61,18 +60,27 @@ function setROOT(rootName){
 		data: {
 			info: templates[rootName],
 			currentTemplate: templates[rootName][0],
+			templateName: templates[rootName][1].template,
 		},
 		computed: {},
 		watch: {},
 		methods: {
-			changeTemp: function(temp){
+			changeTemp: function(){
 				for(let i = 0; i < this.info.length; i++){
-					if(this.info[i].template === temp){
+					if(this.info[i].template === this.templateName){
 						this.currentTemplate = this.info[i];
+						if(i === 0){
+							this.templateName = this.info[1].template; console.log(this.templateName);
+							break;
+						}
+						else if(i === 1){
+							this.templateName = this.info[0].template; console.log(this.templateName);
+							break;
+						}
 					}
 				}
 			}
 		},
-		mounted: function(){}
+		mounted: function(){console.log(this.currentTemplate)}
 	});
 }

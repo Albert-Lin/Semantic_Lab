@@ -4,6 +4,7 @@
 
 let collectionsPath = './';
 let blank;
+let ctrl_bashBoard;
 
 (function(){
 	for(let i = 0; i < window.currentVue.collections.length; i++){
@@ -11,10 +12,14 @@ let blank;
 			case 'blank':
 				blank = require(collectionsPath + 'blank.vue');
 				break;
+			case 'ctrl_bashBoard':
+				ctrl_bashBoard = require(collectionsPath + 'ctrlDashboard.vue');
+				break;
 		}
 	}
 })();
 
 export default{
 	blank: blank,
+	ctrl_bashBoard: ctrl_bashBoard,
 }

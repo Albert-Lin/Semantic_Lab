@@ -49,7 +49,7 @@
 				}
 				return result;
 			},
-			classArray(){ console.log(this.prop);
+			classArray(){
 				let result = [];
 				let classObject = this.prop.classArray;
 
@@ -70,15 +70,19 @@
 			for(let i = 0; i < this.rowArray.length; i++){
 				let maxHeight = 0;
 				for(let j = 0; j < this.rowArray[i].cols.length; j++){
-					let height = Ψ('.col', rows[i])[j].offsetHeight;
-					if(height > maxHeight){
-						maxHeight = height;
-					}
+//					if(Array.isArray(Ψ('.col', rows[i])) === true && Ψ('.col', rows[i]).length > 0){
+						let height = Ψ('.col', rows[i])[j].offsetHeight;
+						if(height > maxHeight){
+							maxHeight = height;
+						}
+//					}
 				}
 				for(let j = 0; j < this.rowArray[i].cols.length; j++){
-					if(Ψ('.col', rows[i])[j].style !== undefined){
-						Ψ('.col', rows[i])[j].style.height = maxHeight;
-					}
+//					if(Array.isArray(Ψ('.col', rows[i])) === true && Ψ('.col', rows[i]).length > 0){
+						if(Ψ('.col', rows[i])[j].style !== undefined){
+							Ψ('.col', rows[i])[j].style.height = maxHeight;
+						}
+//					}
 				}
 			}
 		}

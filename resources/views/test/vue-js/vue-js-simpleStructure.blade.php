@@ -33,6 +33,10 @@
             overflow-x: hidden;
             overflow-y: auto;
         }
+
+        #root > div{
+            padding: 10px;
+        }
 	</style>
 
 </head>
@@ -40,7 +44,7 @@
 
     <div id="root">
         <component v-if="info.length > 0" :is="currentTemplate.template" :prop="currentTemplate.prop"></component>
-	    <button v-on:click="changeTemp('temp0')">change</button>
+	    <div><button v-on:click="changeTemp()">change</button></div>
     </div>
 
 </body>
@@ -50,6 +54,6 @@
     .blankContainer, .temp0Container{
         overflow-x: hidden;
         overflow-y: auto;
-        height: 90%;
+        height: 94%;
     }
 </style>
