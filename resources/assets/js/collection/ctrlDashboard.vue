@@ -3,8 +3,8 @@
         <div class="row">
             <div class="col-lg-offset-0 col-lg-3 col-md-offset-0 col-md-3
                     col-sm-offset-0 col-sm-12 col-xs-offset-0 col-xs-12">
-                <pie v-for="ele in prop.components" :prop="ele.prop"></pie>
-                <pie v-for="ele in prop.components" :prop="ele.prop"></pie>
+                <pie v-for="ele in components" :prop="ele.prop"></pie>
+                <pie v-for="ele in components" :prop="ele.prop"></pie>
             </div>
         </div>
         <div>
@@ -24,6 +24,10 @@
         },
         data(){ return {}; },
         computed: {
+        	components(){
+				this.pieInit();
+				return this.prop.components;
+            },
         	theData(){
         		let result = this.prop.components[0].prop.data;
         		return result;
@@ -31,6 +35,15 @@
         },
         watch: {},
         methods: {
+        	pieInit(){
+        		for(let i = 0; i < this.prop.components.length; i++){
+        			if(this.prop.components[i].component === 'pie'){
+        				this.prop.components[i].prop.fun = function(){
+        					console.log('the function set from collection.');
+                        };
+                    }
+                }
+            },
         	updateData(index){
         		let inputDom = document.getElementById('ctrlDB_input_'+index);
 				let newValue = undefined;

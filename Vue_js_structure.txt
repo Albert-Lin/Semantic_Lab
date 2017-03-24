@@ -1,0 +1,123 @@
+Service:
+	01. 產生各種需要的 component 資料，並以 JSON 回傳, 同時 JSON 必須是要一個 array object 帶頭，
+		single component format:
+		{
+			component: 'componentName',
+			prop: {
+				propName: {propValues}, // prop value 可以是 {}, number, string ([] ==> ??)
+			}
+		}
+		*若 service 主要功能並非組出 component data, 則在呼叫 service 成功之後需要另外處理
+
+
+
+HTML:
+	01. 引入 bootstrap3.css, Template.js, vueConfig.js 以及其他 components 需要且屬於外部的檔案
+	02. 建立符合 root 的 component
+
+
+
+ROOT:
+	01. 引入需要的 internal 檔案 (e.g., require('../require.js'); )
+	02. 利用 IIFE 存取 Service || Model 資料
+		A. success/then:
+			a. 針對接收到的資料進行前處理
+			b. 利用 rootVue().setTemplate() 進行所有資料的設定 (資料格式說明於文件最後)
+			c. 建立 root Vue object (習慣上會另外拉出來當 function 這樣會更為方便)
+				c_01. 引入 TemplatesLib.js
+				c_02. 若有 templates 之間轉換的需求，可以在此進行設計
+				c_03. 做為 root Vue object, 記得要以 el 綁定 DOM id
+		B. error/catch:
+			a. 輸出錯誤訊息，必要時做額外行為，如 ajax status為 404, 500, etc.,
+
+
+
+Template:
+	01. 設計所有版型
+	02. 引入 GridsLib.js
+	03. 為了方便使用，grid 和 component的所有資料基本上都會包在 this.prop 中
+		其餘屬於 template 的資料可以以其他 properties 傳遞
+	04. 完成建立新 template.vue 元件之後，需要再到 TemplatesLib.js 註冊
+
+
+
+Grid:
+	01. 設計各種以 Bootstrap 3 grid system 為基礎的排列樣板
+	02. 引入 collectionsLib.js
+	03. 目前設計的 gridSystem.vue 主要的功能為:
+		A. 透過簡單設定 lg, md, sm 和 xs 的欄寬數量，自動產生對應 Bootstrap col class
+		B. 在同一個 row 中的所有 column 其 css height 皆相同
+	04. 完成建立新 grid.vue 元件之後，需要再到 GridsLib.js 註冊
+
+
+
+collection: 
+	01. 依照專案需求，取用各種 components 以及額外的設計，有點類似 implement 的概念
+	02. 引入 ComponentsLib.js
+	03. 當沒有特定需求只要呈現靜態資料時，目前建立了一個 blank collection
+	04. 完成建立新 collection.vue 元件之後，需要再到 collectionsLib.js 註冊
+
+
+
+Component: 
+	01. 專注於設計各種 components
+	02. 引入 plugin 和各種需要的資料 (e.g., d3) 
+	03. 需要將 variable, methods 和 design 個別抽離
+	04. 為了讓 a component 與  b coponent相互影響與控制
+	05. 完成建立新 component.vue 元件之後，需要再到 ComponentsLib.js 註冊
+
+
+
+Data structure:
+
+ROOT config for setTemplate() :
+{
+	template: 'tempName',
+	block*:{
+		collections: [
+			$C([ /*data object*/ ], 'collectionName'), // collection name is not necessary, default as 'blank'
+			$C([ {DATA}, {DATA}, ... ], 'ctrl_bashBoard'),
+			...
+		],
+		grid: 'gridName' // collection name is not necessary, default as gridSystem
+		lg: [/*offset*/, /*col*/], // four props of grid system is not necessary, default as [0, 12]
+		md: [0, 4],
+		sm: [0, 6],
+		xs: [0, 12],
+	},
+	block*: {},
+	block*: {}
+};
+
+
+True data structure: 
+{
+	template: 'temp0',
+	prop: {
+		block*: {
+			grid: 'gridSystem',
+			prop:{
+				collections: [
+					{
+						collection: 'blank',
+						prop:{
+							components: [
+								{
+									component: 'pie',
+									prop: {DATA}
+								}
+							];
+						}
+					}
+				],
+				grid: 'gridSystem'
+				lg:[0, 3],
+				md:[0, 4],
+				sm:[0, 6],
+				xs:[0, 12],
+			}
+		},
+		block*: {},
+		block*: {}
+	}
+}

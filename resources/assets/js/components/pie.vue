@@ -2,7 +2,7 @@
 	<div>
 		<svg :style="{height: svgHeight+'px'}">
 			<g :style="{transform: 'translate('+outR+'px, '+outR+'px)'}">
-				<path v-for="(d, index) in dArray" :d="d" :style="{fill: hslArray[index]}"></path>
+				<path v-for="(d, index) in dArray" :d="d" :style="{fill: hslArray[index]}"  v-on:click="fun"></path>
 			</g>
 		</svg>
 	</div>
@@ -15,7 +15,10 @@
         data(){
             return {
             	outR: 100,
-            	inR: 50
+            	inR: 50,
+				fun: function(){
+            		console.log('pie original function');
+				},
             };
         },
         computed: {
@@ -38,6 +41,11 @@
         },
         watch: {},
         methods:{
+        	init(){
+				if(this.prop.fun !== undefined){
+					this.fun = this.prop.fun;
+				}
+			},
             propValid(){
             	if(this.prop.outR !== undefined){
             		this.outR = this.prop.outR;
@@ -78,8 +86,12 @@
                 }
             	return result;
             },
+			fun(){
+				console.log('pie original function 22');
+			}
         },
         mounted(){
+        	this.init();
         	this.propValid();
         }
 

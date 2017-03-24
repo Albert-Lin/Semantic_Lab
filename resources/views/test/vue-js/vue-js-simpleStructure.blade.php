@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="//d3js.org/d3.v4.0.0-alpha.4.min.js"></script>
-	<script src=" http://semanticlab.com/js/vue/Template.js"></script>
 	<script src=" http://semanticlab.com/js/vue/vueConfig.js"></script>
 
 	<style>
