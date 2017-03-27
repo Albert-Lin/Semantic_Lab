@@ -22,6 +22,7 @@ elixir(function(mix){
 // 		.webpack('./resources/assets/js/test/d3_pie.js', './public/js/vue/test/pie.js')
 // 		.webpack('./resources/assets/js/test/gridSystem.js', './public/js/vue/test/gridSystem.js')
 //		.webpack('./resources/assets/js/test/Root.js', './public/js/vue/test/Root.js')
-		.webpack('./resources/assets/js/test/SideBarRoot.js', './public/js/vue/test/SideBarRoot.js')
+//		.webpack('./resources/assets/js/test/SideBarRoot.js', './public/js/vue/test/SideBarRoot.js')
+		.webpack('./resources/assets/js/test/es6Extends.js', './public/js/vue/test/es6Extends.js')
 	;
 });

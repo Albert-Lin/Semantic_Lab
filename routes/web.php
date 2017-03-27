@@ -164,6 +164,7 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('vue-ss', 'TestController@simpleStructure');
 		Route::post('vue-ss', 'TestController@simpleStructure');
 		Route::get('vue-sb', 'TestController@sideBar');
+		Route::get('vue-es6', 'TestController@es6Extends');
 	});
 
 });

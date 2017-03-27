@@ -1181,4 +1181,8 @@ class TestController extends Controller{
 	public function sideBar(){
 		return response()->View('test/vue-js/vue-js-sideBar', ['title' => 'Side Bar']);
 	}
+
+	public function es6Extends(){
+		return response()->View('test/vue-js/vue-js-es6-extends', ['title' => 'ES6 Extends']);
+	}
 }
