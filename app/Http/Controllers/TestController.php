@@ -1177,4 +1177,8 @@ class TestController extends Controller{
 			return response()->View('test/vue-js/vue-js-simpleStructure', ['title' => 'Simple Structure']);
 		}
 	}
+
+	public function sideBar(){
+		return response()->View('test/vue-js/vue-js-sideBar', ['title' => 'Side Bar']);
+	}
 }

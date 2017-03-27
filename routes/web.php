@@ -163,6 +163,7 @@ Route::group(['prefix'=>'test'], function(){
 		Route::get('vue-tg', 'TestController@templateGenerator');
 		Route::get('vue-ss', 'TestController@simpleStructure');
 		Route::post('vue-ss', 'TestController@simpleStructure');
+		Route::get('vue-sb', 'TestController@sideBar');
 	});
 
 });

@@ -6,11 +6,13 @@ let gridsPath = './';
 let gridSystem;
 
 (function(){
-	for(let i = 0; i < window.currentVue.grids.length; i++){
-		switch(window.currentVue.grids[i]){
-			case 'gridSystem':
-				gridSystem = require(gridsPath+'gridSystem.vue');
-				break;
+	if(window.currentVue !== undefined){
+		for(let i = 0; i < window.currentVue.grids.length; i++){
+			switch(window.currentVue.grids[i]){
+				case 'gridSystem':
+					gridSystem = require(gridsPath+'gridSystem.vue');
+					break;
+			}
 		}
 	}
 })();

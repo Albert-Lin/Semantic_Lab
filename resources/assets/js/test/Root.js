@@ -44,7 +44,7 @@ require('../require.js');
 						md: [0, 6],
 					},
 				});
-			setROOT('root');
+			callback('root');
 		})
 		.catch(function(error){
 			console.error('AXIOS: '+error.response);

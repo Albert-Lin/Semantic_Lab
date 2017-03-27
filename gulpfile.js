@@ -21,6 +21,7 @@ elixir(function(mix){
 // 		.webpack('./resources/assets/js/test/vueSf.js', './public/js/vue/test/vueSf.js')
 // 		.webpack('./resources/assets/js/test/d3_pie.js', './public/js/vue/test/pie.js')
 // 		.webpack('./resources/assets/js/test/gridSystem.js', './public/js/vue/test/gridSystem.js')
-		.webpack('./resources/assets/js/test/Root.js', './public/js/vue/test/Root.js')
+//		.webpack('./resources/assets/js/test/Root.js', './public/js/vue/test/Root.js')
+		.webpack('./resources/assets/js/test/SideBarRoot.js', './public/js/vue/test/SideBarRoot.js')
 	;
 });

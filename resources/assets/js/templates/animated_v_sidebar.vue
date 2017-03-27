@@ -3,7 +3,8 @@
         <div class="row h100 box0">
             <div class="col-lg-offset-0 col-lg-12 col-md-offset-0 col-md-12
 	                        col-sm-offset-0 col-sm-12 col-xs-offset-0 col-xs-12 h100 box0">
-                <component :is="prop.block0.grid" :prop="prop.block0.prop" class="block0 h100"></component>
+                <component v-if="prop.main !== undefined" :is="prop.main.grid" :prop="prop.main.prop" class="main h100"
+                           :style="'padding-left: '+functionBarWidth+'px;'"></component>
             </div>
         </div>
 
@@ -13,13 +14,14 @@
                 <div class="row h100 box0">
                     <div class="col-lg-offset-0 col-lg-12 col-md-offset-0 col-md-12
 			                        col-sm-offset-0 col-sm-12 col-xs-offset-0 col-xs-12 h100 box0">
-                        <component :is="prop.block1.grid" :prop="prop.block1.prop" class="block1 h100" :style="transform: 'translate('+block1Status+'%, 0)';"></component>
+                        <component v-if="prop.funContent !== undefined" :is="prop.funContent.grid" :prop="prop.funContent.prop" class="funContent h100"
+                                   :style="'transform: translate('+block1Status+'%, 0); padding-left: '+functionBarWidth+'px;'"></component>
                     </div>
                 </div>
 
                 <div class="row h100 box0">
-                    <div class="functionalBar h100 box0">
-                        <component :is="prop.block2.grid" :prop="prop.block2.prop" class="block2 h100"></component>
+                    <div class="funBar h100 box0" :style="'width: '+functionBarWidth+'px;'" v-on:click="block1Animate('x')">
+                        <component v-if="prop.funBar !== undefined" :is="prop.funBar.grid" :prop="prop.funBar.prop" class="funBar h100"></component>
                     </div>
                 </div>
             </div>
@@ -31,10 +33,14 @@
 <script>
     export default{
     	props: ['prop'],
+	    components: {
+    		gridSystem: require('../grids/gridSystem.vue')
+    	},
         data(){
     		return{
     			block1Status: '-100',
                 lastClick: 'null',
+			    functionBarWidth: 70,
             };
     	},
         computed:{},
@@ -97,17 +103,17 @@
         z-index: 2;
     }
 
-    .aniVSideBarContainer > .row > div > .block0{
+    .aniVSideBarContainer > .row > div > .main{
         background-color: #9d9d9d;
 
     }
-    .aniVSideBarContainer > .row:nth-child(2) > div > .row:nth-child(1) > div > .block1{
+    .aniVSideBarContainer > .row:nth-child(2) > div > .row:nth-child(1) > div > .funContent{
         background-color: #ff9d9d;
-        transform: translate(-100%, 0);
+        /*transform: translate(-100%, 0);*/
         transition: 0.7s;
     }
 
-    .aniVSideBarContainer > .row:nth-child(2) > div > .row:nth-child(2) > div > .block2{
+    .aniVSideBarContainer > .row:nth-child(2) > div > .row:nth-child(2) > div > .funBar{
         background-color: #9d9dff;
     }
 </style>
