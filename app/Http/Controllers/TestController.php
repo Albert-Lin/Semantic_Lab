@@ -17,7 +17,8 @@ use Facebook\Facebook;
 use App\Utility\Cookie;
 use App\semsol\arc2\TripleStore;
 use App\semsol\Triple;
-use League\Flysystem\Exception;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Description of TestController
@@ -502,6 +503,26 @@ class TestController extends Controller{
 		$jsonData = json_encode($data);
 
 		return $jsonData;
+	}
+
+	public function apiResponse(Request $request){
+		$destinationPath = 'D:\Desktop';
+		$request['key0']->move($destinationPath,$request['key0']->getClientOriginalName());
+
+		return response(['key' => 'success']);
+	}
+
+	public function apiMoveFile(){
+
+		$fs = new Filesystem();
+		$fs->move('D:\Desktop\SemanticLabBG.jpg', 'D:\2.Personal\0.Git\Semantic_Lab\public\uploads\SemanticLabBG.jpg');
+		$result = file_exists('./uploads\SemanticLabBG.jpg');
+		return response(['result' => $result]);
+	}
+
+
+	public function apiAuth(){
+		return 'IN';
 	}
 
 

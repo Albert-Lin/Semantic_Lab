@@ -19,3 +19,9 @@ Route::get('/user', function (Request $request) {
 
 
 Route::post('new-api', 'TestController@newAPI');
+
+Route::post('api_response', 'TestController@apiResponse');
+
+Route::post('api_move', 'TestController@apiMoveFile');
+
+Route::get('api_get', 'TestController@apiAuth');
