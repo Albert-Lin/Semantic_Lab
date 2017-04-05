@@ -130,11 +130,11 @@ Route::group(['prefix'=>'test'], function(){
         Route::get('/verNavTransLayout', 'TestController@verNavTransLayout');
 	});
 
-	// FACEBOOK:
-	Route::group(['prefix'=>'facebook'], function(){
-		Route::get('/', 'TestController@facebook');
-		Route::get('/login', 'TestController@fbLogin');
-	});
+	// // FACEBOOK:
+	// Route::group(['prefix'=>'facebook'], function(){
+	// 	Route::get('/', 'TestController@facebook');
+	// 	Route::get('/login', 'TestController@fbLogin');
+	// });
 
 	// UTILITY:
 	Route::group(['prefix' => 'utility'], function(){
